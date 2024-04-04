@@ -241,13 +241,18 @@ class _HomePageViewState extends State<HomePageView> {
             padding: const EdgeInsets.all(19.0),
             child: InkWell(
               onTap: (){
-                Navigator.push(
+                Navigator.pushNamedAndRemoveUntil(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        LoginPage(),
-                  ),
+                  '/',
+                      (route) => false,
                 );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) =>
+                //         LoginPage(),
+                //   ),
+                // );
               },
               child:  Icon(Icons.logout, size: 30,color: Colors.white,),),
           ),
