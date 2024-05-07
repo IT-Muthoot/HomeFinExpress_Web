@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 
 import 'HomePageView.dart';
 import 'LoginPageView.dart';
+import 'PrivacyPolicy.dart';
+import 'SplashView.dart';
+import 'TermsAndCondition.dart';
 import 'firebase_options.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,8 +32,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home:
-      //HomePageView(),
-      LoginPage(),
+     //HomePageView(),
+     SplashView(),
     );
   }
 }

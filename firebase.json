@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "lms-application-be1ea",
+    "site": "homefintermsandcondition",
     "public": "build/web",
     "ignore": [
       "firebase.json",

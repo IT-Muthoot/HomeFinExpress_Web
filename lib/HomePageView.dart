@@ -49,89 +49,46 @@ class _HomePageViewState extends State<HomePageView> {
   String? VerificationStatus;
 
 
-  void fetchdata() async {
+  Future<void> fetchdata() async {
     CollectionReference users = FirebaseFirestore.instance.collection('convertedLeads');
     SharedPreferences pref = await SharedPreferences.getInstance();
-    // var userId = pref.getString("token");
-    var userId = pref.getString("userID");
     var managerEmployeeCode = pref.getString("employeeCode");
     setState(() {
       userType = pref.getString("logintype");
-   //   userType = pref.getString("Managerlogintype");
     });
-    print(userType);
-    if (userType == "user") {
-      users.where("ManagerCode", isEqualTo: managerEmployeeCode).get().then((value) {
-        setState(() {
-          ListOfLeads = value.docs;
-          data = value.docs;
-          ManagerName = ListOfLeads[0]["ManagerName"] ?? "";
-          BranchCode  = ListOfLeads[0]["homeFinBranchCode"] ?? "";
-          EmployeeName  = ListOfLeads[0]["EmployeeName"] ?? "";
-          Designation  = ListOfLeads[0]["Designation"] ?? "";
-        });
-              print(ManagerName);
-              print(BranchCode);
-              print(EmployeeName);
-              print(Designation);
 
-        for (var i = 0; value.docs.length > i; i++) {
-          print(value.docs[i].data());
+    if (userType == "SalesManager") {
+      users.where("ManagerCode", isEqualTo: managerEmployeeCode).get().then((value) {
+        List<DocumentSnapshot> filteredList = value.docs.where((doc) => (doc["LeadID"] as String).length > 1).toList();
+
+        setState(() {
+          ListOfLeads = filteredList;
+          data = filteredList;
+          ManagerName = filteredList.isNotEmpty ? filteredList[0]["ManagerName"] ?? "" : "";
+          BranchCode = filteredList.isNotEmpty ? filteredList[0]["homeFinBranchCode"] ?? "" : "";
+          EmployeeName = filteredList.isNotEmpty ? filteredList[0]["EmployeeName"] ?? "" : "";
+          Designation = filteredList.isNotEmpty ? filteredList[0]["Designation"] ?? "" : "";
+        });
+
+        for (var i = 0; i < filteredList.length; i++) {
+          print(filteredList[i].data());
         }
       });
     } else {
       users.get().then((value) {
+        List<DocumentSnapshot> filteredList = value.docs.where((doc) => (doc["LeadID"] as String).length > 1).toList();
+
         setState(() {
-          ListOfLeads = value.docs;
+          ListOfLeads = filteredList;
         });
-        for (var i = 0; value.docs.length > i; i++) {
-          print(value.docs[i].data());
+
+        for (var i = 0; i < filteredList.length; i++) {
+          print(filteredList[i].data());
         }
       });
     }
   }
 
-  // void fetchdata1() async {
-  //   CollectionReference users = FirebaseFirestore.instance.collection(
-  //       'convertedLeads');
-  //   SharedPreferences pref = await SharedPreferences.getInstance();
-  //
-  //   var userId = pref.getString("userID");
-  //   var employeeCode = pref.getString(
-  //       "employeeCode"); // Retrieve entered employee code
-  //   print("Retrieve entered employee code");
-  //   print(employeeCode);
-  //   setState(() {
-  //     userType = pref.getString("logintype");
-  //   });
-  //
-  //   if (userType == "user") {
-  //     Query query;
-  //     if (employeeCode != null) {
-  //       query = users.where("userId", isEqualTo: userId).where(
-  //           "ManagerCode", isEqualTo: employeeCode);
-  //     } else {
-  //       query = users.where("userId", isEqualTo: userId);
-  //     }
-  //     query.get().then((value) {
-  //       setState(() {
-  //         ListOfLeads = value.docs;
-  //       });
-  //       for (var i = 0; value.docs.length > i; i++) {
-  //         print(value.docs[i].data());
-  //       }
-  //     });
-  //   } else {
-  //     users.get().then((value) {
-  //       setState(() {
-  //         ListOfLeads = value.docs;
-  //       });
-  //       for (var i = 0; value.docs.length > i; i++) {
-  //         print(value.docs[i].data());
-  //       }
-  //     });
-  //   }
-  // }
 
   List<DocumentSnapshot> searchListOfLeads = [];
   void _runFilter(String enteredKeyword) {
@@ -148,7 +105,10 @@ class _HomePageViewState extends State<HomePageView> {
         .contains(enteredKeyword.toUpperCase())  || row["VisitID"]
         .toString()
         .toUpperCase()
-        .contains(enteredKeyword.toUpperCase()) || row["EmployeeName"]
+        .contains(enteredKeyword.toUpperCase()) || row["customerNumber"]
+        .toString()
+        .toUpperCase()
+        .contains(enteredKeyword.toUpperCase())||  row["EmployeeName"]
         .toString()
         .toUpperCase()
         .contains(enteredKeyword.toUpperCase()))).toList() ;
@@ -212,7 +172,6 @@ class _HomePageViewState extends State<HomePageView> {
     // TODO: implement initState
     fetchdata();
     super.initState();
-    bool listVisibility = true;
     _startDateController.text = formatDate(DateTime.now().toLocal().toString());
     _endDateController.text = formatDate(DateTime.now().toLocal().toString());
   }
@@ -221,7 +180,6 @@ class _HomePageViewState extends State<HomePageView> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    var screenSize = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
         // Navigate to HomePageView when back button is pressed
@@ -628,12 +586,11 @@ class _HomePageViewState extends State<HomePageView> {
 
                                           ],
                                         ),
-
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             SizedBox(
-                                              width: width * 0.15,
+                                              width: width * 0.05,
                                             ),
                                             Column(
                                               children: [
@@ -692,11 +649,41 @@ class _HomePageViewState extends State<HomePageView> {
                                                 ),
                                               ],
                                             ),
+                                            SizedBox(
+                                              width: width * 0.05,
+                                            ),
+                                            Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      "Mobile Number",
+                                                      style: TextStyle(
+                                                        color: Colors.red.shade300,
+                                                        fontSize: 16.0,
+                                                        fontWeight: FontWeight.bold,
+                                                        fontFamily: 'Poppins',
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Text(
+                                                  searchKEY.text.isEmpty
+                                                      ? ListOfLeads[index]["customerNumber"]
+                                                      : searchListOfLeads[index]["customerNumber"],
+                                                  style: TextStyle(
+                                                    color: Colors.black54,
+                                                    fontSize: 14.0,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                             // SizedBox(
                                             //   width: width * 0.5,
                                             // ),
                                             SizedBox(
-                                              width: width * 0.2,
+                                              width: width * 0.03,
                                             ),
                                             IconButton(
                                               onPressed: () async {
@@ -838,7 +825,19 @@ class _HomePageViewState extends State<HomePageView> {
                                             ],
                                           ),
                                         ),
-                                    ListOfLeads[index]["VerificationStatus"] == 'Verified' ?
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "SM Status",
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.w400,
+                                            fontFamily: 'Poppins',
+                                          ),
+                                        ),
+                                        ListOfLeads[index]["VerificationStatus"] == 'Verified' ?
                                         Card(
                                           child: Container(
                                             width: width * 0.06,
@@ -871,6 +870,56 @@ class _HomePageViewState extends State<HomePageView> {
                                               ),
                                             ),
                                           ),
+                                        )
+                                      ],
+                                    ),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "CM Status",
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 14.0,
+                                                fontWeight: FontWeight.w400,
+                                                fontFamily: 'Poppins',
+                                              ),
+                                            ),
+                                            ListOfLeads[index]["VerificationStatus"] == 'Verified' ?
+                                            Card(
+                                              child: Container(
+                                                width: width * 0.06,
+                                                color: Colors.white,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    searchKEY.text.isEmpty ? ListOfLeads[index]["VerificationStatus"] ?? "Pending" : searchListOfLeads[index]["VerificationStatus"] ?? "Pending",
+                                                    style: TextStyle(
+                                                      color:ListOfLeads[index]["VerificationStatus"] == 'Verified' ? Colors.green : Colors.red,
+                                                      fontSize: 14.0,
+                                                      fontFamily: 'Poppins',
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ) : Card(
+                                              child: Container(
+                                                width: width * 0.06,
+                                                color: Colors.white,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    searchKEY.text.isEmpty ? ListOfLeads[index]["VerificationStatus"] ?? "": searchListOfLeads[index]["VerificationStatus"] ?? "",
+                                                    style: TextStyle(
+                                                      color: Colors.red,
+                                                      fontSize: 14.0,
+                                                      fontFamily: 'Poppins',
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          ],
                                         )
                                       ],
                                     ),

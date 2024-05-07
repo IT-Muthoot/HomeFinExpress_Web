@@ -43,32 +43,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
   List employeeList = [];
   List outputList1 = [];
 
+  List employeeList2 = [];
+  List outputList2 = [];
+
   String? Designation;
   String? RegionName;
   String? Zone;
 
-  //
-  // getEmployeeDetails(String emp) async {
-  //   FirebaseFirestore.instance
-  //       .collection("employeeList")
-  //       .doc("employeeList")
-  //       .get()
-  //       .then((value) async {
-  //     for (var element in value.data()!["employeeList"]) {
-  //       setState(() {
-  //         employeeList.add(element);
-  //       });
-  //     }
-  //     setState(() {
-  //       outputList1 =
-  //           employeeList.where((o) => o['EMP_CODE'] == empCodeController.text).toList();
-  //       empNameController.text = outputList1[0]['NAME'];
-  //       branchcode.text = outputList1[0]['BRANCH CODE'];
-  //     });
-  //     print("Output List " + outputList1.toString());
-  //
-  //   });
-  // }
+  String? Designation1;
+  String? RegionName1;
+  String? Zone1;
+
+  bool isSalesManager = false;
+
+
+
 
 
   getEmployee1Details(String emp) async {
@@ -82,6 +71,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           employeeList.add(element);
         });
       }
+
       setState(() {
         outputList1 =
             employeeList.where((o) => o['Reporting Manager Code'] == ReportingManagerCode.text).toList();
@@ -95,6 +85,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     });
   }
+
+
+  String? selectedOption;
 
 
   @override
@@ -142,6 +135,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 textAlign: TextAlign.left,
                               ),
                             ),
+                            // Column(
+                            //   mainAxisAlignment: MainAxisAlignment.start,
+                            //   children: [
+                            //     RadioListTile<String>(
+                            //       title: Text('RM'),
+                            //       value: 'RM',
+                            //       activeColor: StyleData.appBarColor,
+                            //       groupValue: selectedOption,
+                            //       onChanged: (value) {
+                            //         setState(() {
+                            //           selectedOption = value!;
+                            //         });
+                            //       },
+                            //     ),
+                            //     RadioListTile<String>(
+                            //       title: Text('CM'),
+                            //       value: 'CM',
+                            //       activeColor: StyleData.appBarColor,
+                            //       groupValue: selectedOption,
+                            //       onChanged: (value) {
+                            //         setState(() {
+                            //           selectedOption = value!;
+                            //         });
+                            //       },
+                            //     ),
+                            //   ],
+                            // ),
                             Form(
                               key: registerformKey,
                               child: Column(
@@ -161,9 +181,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         UppercaseInputFormatter(),
                                       ],
                                       onChanged: (empCode) {
-                                        // Call the fetchEmployeeDetails function when the code is entered
-                                      //  getEmployeeDetails(empCode);
-                                      getEmployee1Details(empCode);
+                                        getEmployee1Details(empCode);
                                       },
                                       validator: (isusernamevalid) {
                                         if (isusernamevalid.toString().isNotEmpty)
@@ -348,7 +366,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             "Zone": Zone,
                                             "userId": credential.user!.uid,
                                             "createdDate": Timestamp.now(),
-                                            "userType": "user",
+                                            "userType": selectedOption == "RM" ? "SalesManager" : "CreditManager",
                                           };
                                           users.add(params);
                                           customSuccessSnackBar1("Registered Successfully");

@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: StyleData.appBarColor,
+        backgroundColor: StyleData.appBarColor2,
         title: Center(child: Text('HomeFin Express',style: TextStyle(color: StyleData.appBarColor3,fontSize: 25),)),
 
       ),
@@ -225,7 +225,7 @@ class _LoginPageState extends State<LoginPage> {
                                         if (value.docs.isNotEmpty) {
                                           //  pref.setString("token", credential.user!.uid);
                                           pref.setString("logintype",
-                                              value.docs[0].get("userType") ?? "user");
+                                              value.docs[0].get("userType") ?? "SalesManager");
                                           pref.setString("Managerlogintype",
                                               value.docs[0].get("userType") ?? "ManagerLogin");
                                           pref.setString("userID", value.docs[0].get("userId"));
@@ -243,7 +243,7 @@ class _LoginPageState extends State<LoginPage> {
                                           );
                                         } else {
                                           Navigator.pop(context);
-                                        //  customSuccessSnackBar("Enter valid credentials");
+                                         customSuccessSnackBar("Enter valid credentials");
                                         }
                                       }).catchError((error) {
                                         print('Error getting document: $error');
@@ -315,6 +315,65 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
+  void customSuccessSnackBar(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        action: SnackBarAction(
+          label: '',
+          onPressed: () {
+            // Code to execute.
+          },
+        ),
+        content: Container(
+
+          // margin: const EdgeInsets.only(left: 10),
+          // decoration: BoxDecoration(
+          //   border: Border.all(color: Colors.white)
+          // ),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    height: 35,
+                    width: 20,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white)
+                    ),
+                    child: const Icon(
+                      Icons.error_rounded,
+                      size: 20,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  SizedBox(
+                      width: 230,
+                      child: Text(msg)),
+                  const SizedBox(
+                    width: 10,
+                  ),
+
+                  // Icon(Icons.done,color: Colors.white,)
+                ])),
+        duration: const Duration(seconds: 2),
+        // width:MediaQuery.of(context).size. width * 0.9, // Width of the SnackBar.
+        // padding: const EdgeInsets.symmetric(
+        //   horizontal: 8.0, // Inner padding for SnackBar content.
+        // ),
+        // behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        backgroundColor: StyleData.appBarColor2,
+        // backgroundColor: const Color(0xffee5b5b),
+      ),
+    );
+  }
+
 }
 class UppercaseTextInputFormatter extends TextInputFormatter {
   @override
