@@ -40,14 +40,14 @@ class _HomePageViewState extends State<HomePageView> {
   TextEditingController _searchController = TextEditingController();
 
   var userType;
-  List<DocumentSnapshot> ListOfLeads = [];
+  List<Map<String, dynamic>> ListOfLeads = [];
+  List<DocumentSnapshot> ListOfLeadsId = [];
   TextEditingController searchKEY = TextEditingController();
   String? ManagerName;
   String? BranchCode;
   String? EmployeeName;
   String? Designation;
-  String? VerificationStatus;
-
+  String VerificationStatus = "Pending";
 
   Future<void> fetchdata() async {
     CollectionReference users = FirebaseFirestore.instance.collection('convertedLeads');
@@ -59,10 +59,12 @@ class _HomePageViewState extends State<HomePageView> {
 
     if (userType == "SalesManager") {
       users.where("ManagerCode", isEqualTo: managerEmployeeCode).get().then((value) {
-        List<DocumentSnapshot> filteredList = value.docs.where((doc) => (doc["LeadID"] as String).length > 1).toList();
+        List<Map<String, dynamic>> filteredList = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).map((doc) => doc.data() as Map<String, dynamic>).toList();
+        List<DocumentSnapshot> filteredList1 = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).toList();
 
         setState(() {
           ListOfLeads = filteredList;
+          ListOfLeadsId = filteredList1;
           data = filteredList;
           ManagerName = filteredList.isNotEmpty ? filteredList[0]["ManagerName"] ?? "" : "";
           BranchCode = filteredList.isNotEmpty ? filteredList[0]["homeFinBranchCode"] ?? "" : "";
@@ -71,26 +73,30 @@ class _HomePageViewState extends State<HomePageView> {
         });
 
         for (var i = 0; i < filteredList.length; i++) {
-          print(filteredList[i].data());
+          print(filteredList[i]);
         }
       });
     } else {
       users.get().then((value) {
-        List<DocumentSnapshot> filteredList = value.docs.where((doc) => (doc["LeadID"] as String).length > 1).toList();
-
+        List<Map<String, dynamic>> filteredList = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).map((doc) => doc.data() as Map<String, dynamic>).toList();
+        List<DocumentSnapshot> filteredList1 = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).toList();
         setState(() {
           ListOfLeads = filteredList;
+          ListOfLeadsId = filteredList1;
         });
 
         for (var i = 0; i < filteredList.length; i++) {
-          print(filteredList[i].data());
+          print(filteredList[i]);
         }
       });
     }
   }
 
 
-  List<DocumentSnapshot> searchListOfLeads = [];
+
+
+  List<Map<String, dynamic>> searchListOfLeads = [];
+  List<DocumentSnapshot> searchListOfLeads1 = [];
   void _runFilter(String enteredKeyword) {
     var data = ListOfLeads.where((row) => (row["firstName"]
         .toString()
@@ -112,8 +118,29 @@ class _HomePageViewState extends State<HomePageView> {
         .toString()
         .toUpperCase()
         .contains(enteredKeyword.toUpperCase()))).toList() ;
+    var data1 = ListOfLeadsId.where((row) => (row["firstName"]
+        .toString()
+        .toUpperCase()
+        .contains(enteredKeyword.toUpperCase())||
+        row["LeadID"]
+            .toString()
+            .toUpperCase()
+            .contains(enteredKeyword.toUpperCase()) || row["productCategory"]
+        .toString()
+        .toUpperCase()
+        .contains(enteredKeyword.toUpperCase())  || row["VisitID"]
+        .toString()
+        .toUpperCase()
+        .contains(enteredKeyword.toUpperCase()) || row["customerNumber"]
+        .toString()
+        .toUpperCase()
+        .contains(enteredKeyword.toUpperCase())||  row["EmployeeName"]
+        .toString()
+        .toUpperCase()
+        .contains(enteredKeyword.toUpperCase()))).toList() ;
     setState(() {
-      searchListOfLeads = data;
+      searchListOfLeads = List<Map<String, dynamic>>.from(data);
+      searchListOfLeads1 = data1;
     });
   }
 
@@ -460,7 +487,7 @@ class _HomePageViewState extends State<HomePageView> {
 
                     itemBuilder: (context, index) {
                       Map<String, dynamic> data =
-                      searchKEY.text.isEmpty ?  ListOfLeads[index].data()  as Map<String, dynamic> : searchListOfLeads[index].data()
+                      searchKEY.text.isEmpty ?  ListOfLeads[index] as Map<String, dynamic> : searchListOfLeads[index]
                       as Map<String, dynamic>;
                       ListOfLeads.sort((a, b) =>
                           (b['createdDateTime'] as Timestamp).compareTo(a['createdDateTime'] as Timestamp));
@@ -612,7 +639,7 @@ class _HomePageViewState extends State<HomePageView> {
                                                 Text(
                                                   searchKEY.text.isEmpty
                                                       ? ListOfLeads[index]["firstName"] + " " + ListOfLeads[index]["lastName"]
-                                                      : searchListOfLeads[index]["firstName"] + " " + ListOfLeads[index]["lastName"],
+                                                      : searchListOfLeads[index]["firstName"] + " " + searchListOfLeads[index]["lastName"],
                                                   style: TextStyle(
                                                     color: Colors.black54,
                                                     fontSize: 14.0,
@@ -806,7 +833,7 @@ class _HomePageViewState extends State<HomePageView> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) => DocumentPageView(
-                                                      docId: searchKEY.text.isEmpty ? ListOfLeads[index].id : searchListOfLeads[index].id,
+                                                      docId: searchKEY.text.isEmpty ? ListOfLeadsId[index].id: searchListOfLeads1[index].id,
                                                     )));
                                           },
                                           child: Column(
@@ -830,7 +857,7 @@ class _HomePageViewState extends State<HomePageView> {
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Text(
-                                          "SM Status",
+                                          "Status",
                                           style: TextStyle(
                                             color: Colors.grey,
                                             fontSize: 14.0,
@@ -838,10 +865,10 @@ class _HomePageViewState extends State<HomePageView> {
                                             fontFamily: 'Poppins',
                                           ),
                                         ),
-                                        ListOfLeads[index]["VerificationStatus"] == 'Verified' ?
+                                        ListOfLeads[index]["VerificationStatus"] == 'Verified' && ListOfLeads[index]["VerifiedBy"] == 'Verified By CM' ?
                                         Card(
                                           child: Container(
-                                            width: width * 0.06,
+                                            width: width * 0.08,
                                             color: Colors.white,
                                             child: Padding(
                                               padding: const EdgeInsets.all(8.0),
@@ -857,7 +884,7 @@ class _HomePageViewState extends State<HomePageView> {
                                           ),
                                         ) : Card(
                                           child: Container(
-                                            width: width * 0.06,
+                                            width: width * 0.08,
                                             color: Colors.white,
                                             child: Padding(
                                               padding: const EdgeInsets.all(8.0),
@@ -874,54 +901,157 @@ class _HomePageViewState extends State<HomePageView> {
                                         )
                                       ],
                                     ),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "CM Status",
-                                              style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 14.0,
-                                                fontWeight: FontWeight.w400,
-                                                fontFamily: 'Poppins',
+                                        // Column(
+                                        //   crossAxisAlignment: CrossAxisAlignment.center,
+                                        //   children: [
+                                        //     Text(
+                                        //       "CM Status",
+                                        //       style: TextStyle(
+                                        //         color: Colors.grey,
+                                        //         fontSize: 14.0,
+                                        //         fontWeight: FontWeight.w400,
+                                        //         fontFamily: 'Poppins',
+                                        //       ),
+                                        //     ),
+                                        //     ListOfLeads[index]["VerificationStatus"] == 'Verified' ?
+                                        //     Card(
+                                        //       child: Container(
+                                        //         width: width * 0.06,
+                                        //         color: Colors.white,
+                                        //         child: Padding(
+                                        //           padding: const EdgeInsets.all(8.0),
+                                        //           child: Text(
+                                        //             searchKEY.text.isEmpty ? ListOfLeads[index]["VerificationStatus"] ?? "Pending" : searchListOfLeads[index]["VerificationStatus"] ?? "Pending",
+                                        //             style: TextStyle(
+                                        //               color:ListOfLeads[index]["VerificationStatus"] == 'Verified' ? Colors.green : Colors.red,
+                                        //               fontSize: 14.0,
+                                        //               fontFamily: 'Poppins',
+                                        //             ),
+                                        //           ),
+                                        //         ),
+                                        //       ),
+                                        //     ) : Card(
+                                        //       child: Container(
+                                        //         width: width * 0.06,
+                                        //         color: Colors.white,
+                                        //         child: Padding(
+                                        //           padding: const EdgeInsets.all(8.0),
+                                        //           child: Text(
+                                        //             searchKEY.text.isEmpty ? ListOfLeads[index]["VerificationStatus"] ?? "": searchListOfLeads[index]["VerificationStatus"] ?? "",
+                                        //             style: TextStyle(
+                                        //               color: Colors.red,
+                                        //               fontSize: 14.0,
+                                        //               fontFamily: 'Poppins',
+                                        //             ),
+                                        //           ),
+                                        //         ),
+                                        //       ),
+                                        //     )
+                                        //   ],
+                                        // ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "SM/CM Status",
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.w400,
+                                            fontFamily: 'Poppins',
+                                          ),
+                                        ),
+                                        // ListOfLeads[index]["VerificationStatus"] == 'Verified' ?
+                                        // Card(
+                                        //   child: Container(
+                                        //     width: width * 0.06,
+                                        //     color: Colors.white,
+                                        //     child: Padding(
+                                        //       padding: const EdgeInsets.all(8.0),
+                                        //       child: Text(
+                                        //         searchKEY.text.isEmpty ? ListOfLeads[index]["VerificationStatus"] : searchListOfLeads[index]["VerificationStatus"],
+                                        //         style: TextStyle(
+                                        //           color: Colors.green,
+                                        //           fontSize: 14.0,
+                                        //           fontFamily: 'Poppins',
+                                        //         ),
+                                        //       ),
+                                        //     ),
+                                        //   ),
+                                        // ) :
+                                        Card(
+                                          child: Container(
+                                            width: width * 0.06,
+                                            color: Colors.white,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                searchKEY.text.isEmpty
+                                                    ? ListOfLeads[index]["VerifiedBy"] ?? "Pending"
+                                                    : searchListOfLeads[index]["VerifiedBy"] ?? "Pending",
+                                                style: TextStyle(
+                                                  color: (searchKEY.text.isEmpty ? ListOfLeads[index]["VerifiedBy"] : searchListOfLeads[index]["VerifiedBy"]) == "Pending"
+                                                      ? Colors.red
+                                                      : Colors.orange,
+                                                  fontSize: 14.0,
+                                                  fontFamily: 'Poppins',
+                                                ),
                                               ),
+
                                             ),
-                                            ListOfLeads[index]["VerificationStatus"] == 'Verified' ?
-                                            Card(
-                                              child: Container(
-                                                width: width * 0.06,
-                                                color: Colors.white,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: Text(
-                                                    searchKEY.text.isEmpty ? ListOfLeads[index]["VerificationStatus"] ?? "Pending" : searchListOfLeads[index]["VerificationStatus"] ?? "Pending",
-                                                    style: TextStyle(
-                                                      color:ListOfLeads[index]["VerificationStatus"] == 'Verified' ? Colors.green : Colors.red,
-                                                      fontSize: 14.0,
-                                                      fontFamily: 'Poppins',
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ) : Card(
-                                              child: Container(
-                                                width: width * 0.06,
-                                                color: Colors.white,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: Text(
-                                                    searchKEY.text.isEmpty ? ListOfLeads[index]["VerificationStatus"] ?? "": searchListOfLeads[index]["VerificationStatus"] ?? "",
-                                                    style: TextStyle(
-                                                      color: Colors.red,
-                                                      fontSize: 14.0,
-                                                      fontFamily: 'Poppins',
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          ],
+                                          ),
                                         )
+
+                                      ],
+                                    ),
+                                    //     Column(
+                                    //       crossAxisAlignment: CrossAxisAlignment.center,
+                                    //       children: [
+                                    //         Text(
+                                    //           "CM Status",
+                                    //           style: TextStyle(
+                                    //             color: Colors.grey,
+                                    //             fontSize: 14.0,
+                                    //             fontWeight: FontWeight.w400,
+                                    //             fontFamily: 'Poppins',
+                                    //           ),
+                                    //         ),
+                                    //         ListOfLeads[index]["VerificationStatus"] == 'Verified' ?
+                                    //         Card(
+                                    //           child: Container(
+                                    //             width: width * 0.06,
+                                    //             color: Colors.white,
+                                    //             child: Padding(
+                                    //               padding: const EdgeInsets.all(8.0),
+                                    //               child: Text(
+                                    //                 searchKEY.text.isEmpty ? ListOfLeads[index]["VerificationStatus"] ?? "Pending" : searchListOfLeads[index]["VerificationStatus"] ?? "Pending",
+                                    //                 style: TextStyle(
+                                    //                   color:ListOfLeads[index]["VerificationStatus"] == 'Verified' ? Colors.green : Colors.red,
+                                    //                   fontSize: 14.0,
+                                    //                   fontFamily: 'Poppins',
+                                    //                 ),
+                                    //               ),
+                                    //             ),
+                                    //           ),
+                                    //         ) : Card(
+                                    //           child: Container(
+                                    //             width: width * 0.06,
+                                    //             color: Colors.white,
+                                    //             child: Padding(
+                                    //               padding: const EdgeInsets.all(8.0),
+                                    //               child: Text(
+                                    //                 searchKEY.text.isEmpty ? ListOfLeads[index]["VerificationStatus"] ?? "": searchListOfLeads[index]["VerificationStatus"] ?? "",
+                                    //                 style: TextStyle(
+                                    //                   color: Colors.red,
+                                    //                   fontSize: 14.0,
+                                    //                   fontFamily: 'Poppins',
+                                    //                 ),
+                                    //               ),
+                                    //             ),
+                                    //           ),
+                                    //         )
+                                    //       ],
+                                    //     )
                                       ],
                                     ),
                                   ],
