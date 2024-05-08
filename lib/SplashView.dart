@@ -56,6 +56,7 @@ class _SplashViewState extends State<SplashView> {
 
 
 
+
   @override
   void initState() {
     // TODO: implement initState
