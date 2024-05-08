@@ -57,6 +57,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
   String? QueryStatus;
   String? QueryUpdatedByRO;
   var docData;
+  Map<String, dynamic> filteredData = {};
+
 
   void fetchdata() async {
     CollectionReference users =
@@ -83,6 +85,16 @@ class _DocumentPageViewState extends State<DocumentPageView> {
       //  print(_leadSource.text);
       print(ApplicantFirstName);
       print(LeadID);
+
+
+      // Using for Technical Checklist
+
+      docData.forEach((key, value) {
+        List<String> parts = key.split("-");
+        if (parts.isNotEmpty && parts.last == "checklist") {
+          filteredData[key] = value;
+        }
+      });
 
     });
 
@@ -500,8 +512,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                           (docData != null && docData.containsKey('Application_Form'))
                                               ? InkWell(
                                             onTap: () async {
-                                              print(docData);
-                                              print("bjksjjjjjjjj");
+                                              // print(docData);
+                                              // print("bjksjjjjjjjj");
 
                                               if (docData.containsKey('Application_Form')) {
                                                 docId = docData['Application_Form'].toString();
@@ -521,7 +533,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                               final data1 = response.bodyBytes;
                                               final mime =
                                               lookupMimeType('', headerBytes: data1);
-                                              print(mime);
+                                              // print(mime);
                                               if (docId.toString().contains(",")) {
                                                 AnchorElement(
                                                     href:
@@ -601,8 +613,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                           (docData != null && docData.containsKey('Bank_PassBook'))
                                               ? InkWell(
                                             onTap: () async {
-                                              print(docData);
-                                              print("bjksjjjjjjjj");
+                                              // print(docData);
+                                              // print("bjksjjjjjjjj");
 
                                               if (docData.containsKey('Bank_PassBook')) {
                                                 docId = docData['Bank_PassBook'].toString();
@@ -622,7 +634,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                               final data1 = response.bodyBytes;
                                               final mime =
                                               lookupMimeType('', headerBytes: data1);
-                                              print(mime);
+                                              // print(mime);
                                               if (docId.toString().contains(",")) {
                                                 AnchorElement(
                                                     href:
@@ -696,8 +708,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                           (docData != null && docData.containsKey('Date_Of_Birth')) ?
                                           InkWell(
                                             onTap: () async {
-                                              print(docData);
-                                              print("bjksjjjjjjjj");
+                                              // print(docData);
+                                              // print("bjksjjjjjjjj");
 
                                               if (docData.containsKey(
                                                   'Date_Of_Birth')) {
@@ -724,7 +736,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                               lookupMimeType('',
                                                   headerBytes:
                                                   data1);
-                                              print(mime);
+                                              // print(mime);
                                               if (docId.toString().contains(",")) {
                                                 AnchorElement(
                                                     href: "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
@@ -786,8 +798,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                           (docData != null && docData.containsKey('Login_Fee_Check')) ?
                                           InkWell(
                                             onTap: () async {
-                                              print(docData);
-                                              print("bjksjjjjjjjj");
+                                              // print(docData);
+                                              // print("bjksjjjjjjjj");
 
                                               if (docData.containsKey(
                                                   'Login_Fee_Check')) {
@@ -814,7 +826,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                               lookupMimeType('',
                                                   headerBytes:
                                                   data1);
-                                              print(mime);
+                                              // print(mime);
                                               if (docId.toString().contains(",")) {
                                                 AnchorElement(
                                                     href: "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
@@ -884,8 +896,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                           (docData != null && docData.containsKey('Passport_Size_Photo')) ?
                                           InkWell(
                                             onTap: () async {
-                                              print(docData);
-                                              print("bjksjjjjjjjj");
+                                              // print(docData);
+                                              // print("bjksjjjjjjjj");
 
                                               if (docData.containsKey(
                                                   'Passport_Size_Photo')) {
@@ -912,7 +924,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                               lookupMimeType('',
                                                   headerBytes:
                                                   data1);
-                                              print(mime);
+                                              // print(mime);
                                               if (docId.toString().contains(",")) {
                                                 AnchorElement(
                                                     href: "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
@@ -974,8 +986,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                           (docData != null && docData.containsKey('Photo_Id_Proof')) ?
                                           InkWell(
                                             onTap: () async {
-                                              print(docData);
-                                              print("bjksjjjjjjjj");
+                                              // print(docData);
+                                              // print("bjksjjjjjjjj");
 
                                               if (docData.containsKey(
                                                   'Photo_Id_Proof')) {
@@ -1002,7 +1014,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                               lookupMimeType('',
                                                   headerBytes:
                                                   data1);
-                                              print(mime);
+                                              // print(mime);
                                               if (docId.toString().contains(",")) {
                                                 AnchorElement(
                                                     href: "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
@@ -1072,8 +1084,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                           (docData != null && docData.containsKey('Residence_Proof')) ?
                                           InkWell(
                                             onTap: () async {
-                                              print(docData);
-                                              print("bjksjjjjjjjj");
+                                              // print(docData);
+                                              // print("bjksjjjjjjjj");
 
                                               if (docData.containsKey(
                                                   'Residence_Proof')) {
@@ -1100,7 +1112,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                               lookupMimeType('',
                                                   headerBytes:
                                                   data1);
-                                              print(mime);
+                                              // print(mime);
                                               if (docId.toString().contains(",")) {
                                                 AnchorElement(
                                                     href: "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
@@ -1162,8 +1174,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                           (docData != null && docData.containsKey('Salary_Slip')) ?
                                           InkWell(
                                             onTap: () async {
-                                              print(docData);
-                                              print("bjksjjjjjjjj");
+                                              // print(docData);
+                                              // print("bjksjjjjjjjj");
 
                                               if (docData.containsKey(
                                                   'Salary_Slip')) {
@@ -1190,7 +1202,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                               lookupMimeType('',
                                                   headerBytes:
                                                   data1);
-                                              print(mime);
+                                              // print(mime);
                                               if (docId.toString().contains(",")) {
                                                 AnchorElement(
                                                     href: "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
@@ -1260,8 +1272,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                           (docData != null && docData.containsKey('Signature_Proof')) ?
                                           InkWell(
                                             onTap: () async {
-                                              print(docData);
-                                              print("bjksjjjjjjjj");
+                                              // print(docData);
+                                              // print("bjksjjjjjjjj");
 
                                               if (docData.containsKey(
                                                   'Signature_Proof')) {
@@ -1288,7 +1300,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                               lookupMimeType('',
                                                   headerBytes:
                                                   data1);
-                                              print(mime);
+                                              // print(mime);
                                               if (docId.toString().contains(",")) {
                                                 AnchorElement(
                                                     href: "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
@@ -1375,8 +1387,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                           (docData != null && docData.containsKey('Copy_Of_Property')) ?
                                           InkWell(
                                             onTap: () async {
-                                              print(docData);
-                                              print("bjksjjjjjjjj");
+                                              // print(docData);
+                                              // print("bjksjjjjjjjj");
 
                                               if (docData.containsKey(
                                                   'Copy_Of_Property')) {
@@ -1403,7 +1415,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                               lookupMimeType('',
                                                   headerBytes:
                                                   data1);
-                                              print(mime);
+                                              // print(mime);
                                               if (docId.toString().contains(",")) {
                                                 AnchorElement(
                                                     href: "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
@@ -1465,8 +1477,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                           (docData != null && docData.containsKey('Total_Work_Experience')) ?
                                           InkWell(
                                             onTap: () async {
-                                              print(docData);
-                                              print("bjksjjjjjjjj");
+                                              // print(docData);
+                                              // print("bjksjjjjjjjj");
 
                                               if (docData.containsKey(
                                                   'Total_Work_Experience')) {
@@ -1493,7 +1505,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                               lookupMimeType('',
                                                   headerBytes:
                                                   data1);
-                                              print(mime);
+                                              // print(mime);
                                               if (docId.toString().contains(",")) {
                                                 AnchorElement(
                                                     href: "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
@@ -1563,8 +1575,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                           (docData != null && docData.containsKey('Work_Experience')) ?
                                           InkWell(
                                             onTap: () async {
-                                              print(docData);
-                                              print("bjksjjjjjjjj");
+                                              // print(docData);
+                                              // print("bjksjjjjjjjj");
 
                                               if (docData.containsKey(
                                                   'Work_Experience')) {
@@ -1591,7 +1603,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                               lookupMimeType('',
                                                   headerBytes:
                                                   data1);
-                                              print(mime);
+                                              // print(mime);
                                               if (docId.toString().contains(",")) {
                                                 AnchorElement(
                                                     href: "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
@@ -1653,8 +1665,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                           (docData != null && docData.containsKey('Qualification_Proof')) ?
                                           InkWell(
                                             onTap: () async {
-                                              print(docData);
-                                              print("bjksjjjjjjjj");
+                                              // print(docData);
+                                              // print("bjksjjjjjjjj");
 
                                               if (docData.containsKey(
                                                   'Qualification_Proof')) {
@@ -1681,7 +1693,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                               lookupMimeType('',
                                                   headerBytes:
                                                   data1);
-                                              print(mime);
+                                              // print(mime);
                                               if (docId.toString().contains(",")) {
                                                 AnchorElement(
                                                     href: "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
@@ -1778,8 +1790,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                           (docData != null && docData.containsKey('Application_Form'))
                                               ? InkWell(
                                             onTap: () async {
-                                              print(docData);
-                                              print("bjksjjjjjjjj");
+                                              // print(docData);
+                                              // print("bjksjjjjjjjj");
 
                                               if (docData.containsKey('Application_Form')) {
                                                 docId = docData['Application_Form'].toString();
@@ -1799,7 +1811,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                               final data1 = response.bodyBytes;
                                               final mime =
                                               lookupMimeType('', headerBytes: data1);
-                                              print(mime);
+                                              // print(mime);
                                               if (docId.toString().contains(",")) {
                                                 AnchorElement(
                                                     href:
@@ -1865,8 +1877,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                           (docData != null && docData.containsKey('Bank_PassBook'))
                                               ? InkWell(
                                             onTap: () async {
-                                              print(docData);
-                                              print("bjksjjjjjjjj");
+                                              // print(docData);
+                                              // print("bjksjjjjjjjj");
 
                                               if (docData.containsKey('Bank_PassBook')) {
                                                 docId = docData['Bank_PassBook'].toString();
@@ -1886,7 +1898,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                               final data1 = response.bodyBytes;
                                               final mime =
                                               lookupMimeType('', headerBytes: data1);
-                                              print(mime);
+                                              // print(mime);
                                               if (docId.toString().contains(",")) {
                                                 AnchorElement(
                                                     href:
@@ -1968,8 +1980,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
               ),
               InkWell(
                 onTap: () async {
-                  print(docData);
-                  print("bjksjjjjjjjj");
+                  // print(docData);
+                  // print("bjksjjjjjjjj");
                   if (docData.containsKey(
                       'Application_Form')) {
                     docId = docData['Application_Form'].toString();
@@ -2051,7 +2063,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                   lookupMimeType('',
                       headerBytes:
                       data1);
-                  print(mime);
+                  // print(mime);
                   if (docId.toString().contains(",")) {
                     AnchorElement(
                         href: "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
