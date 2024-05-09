@@ -1767,187 +1767,105 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                 fontSize: 17,
                               ),
                             ),
-                            Table(
-                              border: TableBorder.all(color: Colors.grey),
-                              children: [
-                                TableRow(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              "Application Form",
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontFamily: StyleData.boldFont,
-                                                fontSize: 17,
-                                              ),
-                                            ),
-                                          ),
-                                          (docData != null && docData.containsKey('Application_Form'))
-                                              ? InkWell(
-                                            onTap: () async {
-                                              // print(docData);
-                                              // print("bjksjjjjjjjj");
-
-                                              if (docData.containsKey('Application_Form')) {
-                                                docId = docData['Application_Form'].toString();
-                                                // "${docData['Application_Form'].toString()}";
-                                              }
-                                              print(docId);
-                                              // New Implementation
-                                              var map = <String, dynamic>{};
-                                              map['DocId'] = docId;
-                                              map['LUSR'] = 'HomeFin';
-
-                                              http.Response response = await http.post(
-                                                Uri.parse(
-                                                    "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
-                                                body: map,
-                                              );
-                                              final data1 = response.bodyBytes;
-                                              final mime =
-                                              lookupMimeType('', headerBytes: data1);
-                                              // print(mime);
-                                              if (docId.toString().contains(",")) {
-                                                AnchorElement(
-                                                    href:
-                                                    "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
-                                                  ..setAttribute(
-                                                      "download",
-                                                      (docData['LeadID'] != null &&
-                                                          docData['LeadID'].isNotEmpty)
-                                                          ? "${docData['LeadID']}.zip"
-                                                          : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.zip")
-                                                  ..click();
-                                              } else {
-                                                AnchorElement(
-                                                    href:
-                                                    "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
-                                                  ..setAttribute(
-                                                      "download",
-                                                      (docData['LeadID'] != null &&
-                                                          docData['LeadID'].isNotEmpty)
-                                                          ? "${docData['LeadID']}.${mime.toString().split("/").last}"
-                                                          : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.${mime.toString().split("/").last}")
-                                                  ..click();
-                                              }
-                                            },
-                                            child: Column(
-                                              children: [
-                                                Icon(
-                                                  Icons.download_for_offline,
-                                                  color: Colors.green,
-                                                ),
-                                                Text("Download")
-                                              ],
-                                            ),
-                                          )
-                                              : Column(
-                                            children: [
-                                              Icon(
-                                                Icons.pending,
-                                                color: Colors.red.shade300,
-                                              ),
-                                              Text("No File")
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    // Second cell content
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              "Bank Passbook (Latest 6 months)",
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontFamily: StyleData.boldFont,
-                                                fontSize: 17,
-                                              ),
-                                            ),
-                                          ),
-                                          (docData != null && docData.containsKey('Bank_PassBook'))
-                                              ? InkWell(
-                                            onTap: () async {
-                                              // print(docData);
-                                              // print("bjksjjjjjjjj");
-
-                                              if (docData.containsKey('Bank_PassBook')) {
-                                                docId = docData['Bank_PassBook'].toString();
-                                                // "${docData['Application_Form'].toString()}";
-                                              }
-                                              print(docId);
-                                              // New Implementation
-                                              var map = <String, dynamic>{};
-                                              map['DocId'] = docId;
-                                              map['LUSR'] = 'HomeFin';
-
-                                              http.Response response = await http.post(
-                                                Uri.parse(
-                                                    "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
-                                                body: map,
-                                              );
-                                              final data1 = response.bodyBytes;
-                                              final mime =
-                                              lookupMimeType('', headerBytes: data1);
-                                              // print(mime);
-                                              if (docId.toString().contains(",")) {
-                                                AnchorElement(
-                                                    href:
-                                                    "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
-                                                  ..setAttribute(
-                                                      "download",
-                                                      (docData['LeadID'] != null &&
-                                                          docData['LeadID'].isNotEmpty)
-                                                          ? "${docData['LeadID']}.zip"
-                                                          : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.zip")
-                                                  ..click();
-                                              } else {
-                                                AnchorElement(
-                                                    href:
-                                                    "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
-                                                  ..setAttribute(
-                                                      "download",
-                                                      (docData['LeadID'] != null &&
-                                                          docData['LeadID'].isNotEmpty)
-                                                          ? "${docData['LeadID']}.${mime.toString().split("/").last}"
-                                                          : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.${mime.toString().split("/").last}")
-                                                  ..click();
-                                              }
-                                            },
-                                            child: Column(
-                                              children: [
-                                                Icon(
-                                                  Icons.download_for_offline,
-                                                  color: Colors.green,
-                                                ),
-                                                Text("Download")
-                                              ],
-                                            ),
-                                          )
-                                              : Column(
-                                            children: [
-                                              Icon(
-                                                Icons.pending,
-                                                color: Colors.red.shade300,
-                                              ),
-                                              Text("No File")
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                            Expanded(
+                              child : GridView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  mainAxisSpacing: 0,
+                                  crossAxisSpacing: 0,
+                                  childAspectRatio: 3.0, // Adjust aspect ratio to give more space to keys
                                 ),
-                              ],
+                                itemCount: filteredData.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  var key = filteredData.keys.toList()[index];
+                                  var value = filteredData[key];
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              key,
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontFamily: StyleData.boldFont,
+                                                fontSize: 17,
+                                              ),
+                                            ),
+                                          ),
+                                          // Text(value.toString()),
+                                          InkWell(
+                                            onTap: () async {
+                                              // print(docData);
+                                              // print("bjksjjjjjjjj");
+
+                                              // if (docData.containsKey('Bank_PassBook')) {
+                                              //   docId = docData['Bank_PassBook'].toString();
+                                              //   // "${docData['Application_Form'].toString()}";
+                                              // }
+                                              docId = value.toString();
+                                              print(docId);
+                                              // New Implementation
+                                              var map = <String, dynamic>{};
+                                              map['DocId'] = docId;
+                                              map['LUSR'] = 'HomeFin';
+
+                                              http.Response response = await http.post(
+                                                Uri.parse(
+                                                    "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
+                                                body: map,
+                                              );
+                                              final data1 = response.bodyBytes;
+                                              final mime =
+                                              lookupMimeType('', headerBytes: data1);
+                                              // print(mime);
+                                              if (docId.toString().contains(",")) {
+                                                AnchorElement(
+                                                    href:
+                                                    "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
+                                                  ..setAttribute(
+                                                      "download",
+                                                      (docData['LeadID'] != null &&
+                                                          docData['LeadID'].isNotEmpty)
+                                                          ? "${docData['LeadID']}.zip"
+                                                          : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.zip")
+                                                  ..click();
+                                              } else {
+                                                AnchorElement(
+                                                    href:
+                                                    "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
+                                                  ..setAttribute(
+                                                      "download",
+                                                      (docData['LeadID'] != null &&
+                                                          docData['LeadID'].isNotEmpty)
+                                                          ? "${docData['LeadID']}.${mime.toString().split("/").last}"
+                                                          : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.${mime.toString().split("/").last}")
+                                                  ..click();
+                                              }
+                                            },
+                                            child: Column(
+                                              children: [
+                                                Icon(
+                                                  Icons.download_for_offline,
+                                                  color: Colors.green,
+                                                ),
+                                                Text("Download")
+                                              ],
+                                            ),
+                                          )// Assuming value is a string, adjust accordingly
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
                           ],
                         ),
