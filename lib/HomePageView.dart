@@ -766,6 +766,15 @@ class _HomePageViewState extends State<HomePageView> {
                                                   docId =
                                                   "$docId,${data['Signature_Proof'].toString()}";
                                                 }
+                                                data.forEach((key, value) {
+                                                  List<String> parts = key.split("-");
+                                                  if (parts.isNotEmpty && parts.last == "checklist") {
+                                                    docId =
+                                                    "$docId,${value}";
+                                                    print(value.runtimeType);
+                                                  }
+                                                });
+                                                print(data);
                                                 print(docId);
                                                 // New Implementation
 
