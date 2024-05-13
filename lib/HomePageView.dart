@@ -769,8 +769,12 @@ class _HomePageViewState extends State<HomePageView> {
                                                 data.forEach((key, value) {
                                                   List<String> parts = key.split("-");
                                                   if (parts.isNotEmpty && parts.last == "checklist") {
-                                                    docId =
-                                                    "$docId,${value}";
+                                                    if (docId != null && docId!.isNotEmpty) {
+                                                      docId = "$docId,$value";
+                                                    } else {
+                                                      docId = value ?? ''; // Assign value if it's not null, otherwise empty string
+                                                    }
+                                                    // docId = "$docId,${value}";
                                                     print(value.runtimeType);
                                                   }
                                                 });
