@@ -42,6 +42,7 @@ class _HomePageViewState extends State<HomePageView> {
   var userType;
   List<Map<String, dynamic>> ListOfLeads = [];
   List<DocumentSnapshot> ListOfLeadsId = [];
+  List<DocumentSnapshot> ListOfLeads1 = [];
   TextEditingController searchKEY = TextEditingController();
   String? ManagerName;
   String? BranchCode;
@@ -61,9 +62,11 @@ class _HomePageViewState extends State<HomePageView> {
       users.where("ManagerCode", isEqualTo: managerEmployeeCode).get().then((value) {
         List<Map<String, dynamic>> filteredList = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).map((doc) => doc.data() as Map<String, dynamic>).toList();
         List<DocumentSnapshot> filteredList1 = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).toList();
+        List<DocumentSnapshot> filteredList2 = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).toList();
 
         setState(() {
           ListOfLeads = filteredList;
+          ListOfLeads1 = filteredList2;
           ListOfLeadsId = filteredList1;
           data = filteredList;
           ManagerName = filteredList.isNotEmpty ? filteredList[0]["ManagerName"] ?? "" : "";
@@ -80,9 +83,11 @@ class _HomePageViewState extends State<HomePageView> {
       users.get().then((value) {
         List<Map<String, dynamic>> filteredList = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).map((doc) => doc.data() as Map<String, dynamic>).toList();
         List<DocumentSnapshot> filteredList1 = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).toList();
+        List<DocumentSnapshot> filteredList2 = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).toList();
         setState(() {
           ListOfLeads = filteredList;
           ListOfLeadsId = filteredList1;
+          ListOfLeads1 = filteredList2;
         });
 
         for (var i = 0; i < filteredList.length; i++) {
@@ -722,9 +727,9 @@ class _HomePageViewState extends State<HomePageView> {
                                                       .toString();
                                                 }
                                                 if (data.containsKey(
-                                                    'Bank_PassBook')) {
+                                                    'Bank_Passbook')) {
                                                   docId =
-                                                  "$docId,${data['Bank_PassBook'].toString()}";
+                                                  "$docId,${data['Bank_Passbook'].toString()}";
                                                 }
                                                 if (data.containsKey(
                                                     'Date_Of_Birth')) {
@@ -833,7 +838,8 @@ class _HomePageViewState extends State<HomePageView> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) => DocumentPageView(
-                                                      docId: searchKEY.text.isEmpty ? ListOfLeadsId[index].id: searchListOfLeads1[index].id,
+                                                      leadID : searchKEY.text.isEmpty ? ListOfLeads[index]['LeadID'] : searchListOfLeads[index]['LeadID'] ,
+                                                      docId: searchKEY.text.isEmpty ? ListOfLeads1[index].id: searchListOfLeads1[index].id,
                                                     )));
                                           },
                                           child: Column(
