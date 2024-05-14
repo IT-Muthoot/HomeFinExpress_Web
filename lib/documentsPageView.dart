@@ -18,8 +18,9 @@ import '../Utils/StyleData.dart';
 class DocumentPageView extends StatefulWidget {
   final String docId;
   final String leadID;
+  final String token;
   const DocumentPageView({Key? key,
-    required this.docId, required this.leadID})
+    required this.docId, required this.leadID, required this.token})
       : super(key: key);
 
   @override
@@ -88,7 +89,6 @@ class _DocumentPageViewState extends State<DocumentPageView> {
           QueryUpdatedByRO = docData["QueryBy"] ?? "";
 
           docData.forEach((key, value) {
-            print("jhfvjsf");
             List<String> parts = key.split("-");
             if (parts.isNotEmpty && parts.last == "checklist") {
               filteredData[key] = value;
@@ -174,6 +174,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
         // setState(() {
         //   isVerified = true;
         // });
+        sendNotificationToDevice1(FCMServerKey,widget.token);
         _showAlertDialogSuccess(context);
         print('Documents updated successfully');
       } else {
@@ -247,6 +248,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
           isQuery = true;
         });
         _showAlertDialogSuccess1(context);
+        sendNotificationToDevice(FCMServerKey,widget.token);
         print('Query updated successfully');
       } else {
         // Handle the case where no document with the specified LeadID is found
@@ -257,7 +259,83 @@ class _DocumentPageViewState extends State<DocumentPageView> {
     }
   }
 
+ // String FCMTOken = "dtC7SAuDRMS3faHIXwuD_8:APA91bEFq-NPddhhT0h5JuYGQykJq-pDX6PDOaxVzhNDvAhgahl9U6FgaOBCGtxJjlyRF-D3N_s1jXrefcLsZVpgJJC2ydjGr7abnkrU0HbnycQKJpjqHi1FxLEDj5mojqyxNXkdxMJH";
+  String FCMServerKey = "AAAAvnuEuSw:APA91bGhzDJBFD0fM8U5D-WRsSYWG9egY7sJX_sL6VnGZ7AC7wrrgC5WmUFIK7-GttG_U4VmLSQ4_TRJy-SDtWD-bABrmIKU7bdg604i3IUgk6zVj-k0elas3fwHN1vmUy6egG0-O4cj";
 
+  void sendNotificationToDevice(String FCMServerKey, String FCMTOken,) async {
+    final Uri url = Uri.parse('https://fcm.googleapis.com/fcm/send');
+
+    // Define your notification message
+    Map<String, dynamic> notification = {
+      'notification': {
+        'title': '"HomeFin Express" Verification Status Updated',
+        'body': widget.leadID +"-" + "Query By SM : " + queryReason.text,
+        'icon': "https://firebasestorage.googleapis.com/v0/b/lms-application-be1ea.appspot.com/o/ic_launcher.png?alt=media&token=c37f6227-036f-4ed9-b757-bd1dc0c27809"
+      },
+      'priority': 'high',
+      'data': {
+        'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+        // Add any additional data you want to send with the notification
+      },
+      'to': FCMTOken, // FCM token of the device you want to send the notification to
+    };
+
+    // Encode the notification message
+    final String notificationJson = jsonEncode(notification);
+
+    // Send HTTP POST request to FCM endpoint
+    final http.Response response = await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$FCMServerKey', // Include FCM server key in Authorization header
+      },
+      body: notificationJson,
+    );
+
+    // Check if the request was successful
+    if (response.statusCode == 200) {
+      print('Notification sent successfully');
+    } else {
+      print('Failed to send notification. Error: ${response.body}');
+    }
+  }
+  void sendNotificationToDevice1(String FCMServerKey, String FCMTOken,) async {
+    final Uri url = Uri.parse('https://fcm.googleapis.com/fcm/send');
+    Map<String, dynamic> notification = {
+      'notification': {
+        'title': '"HomeFin Express" Verification Status Updated',
+        'body': widget.leadID +"-" + "Verification Completed By SM",
+        'icon': "https://firebasestorage.googleapis.com/v0/b/lms-application-be1ea.appspot.com/o/ic_launcher.png?alt=media&token=c37f6227-036f-4ed9-b757-bd1dc0c27809"
+      },
+      'priority': 'high',
+      'data': {
+        'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+        // Add any additional data you want to send with the notification
+      },
+      'to': FCMTOken, // FCM token of the device you want to send the notification to
+    };
+
+    // Encode the notification message
+    final String notificationJson = jsonEncode(notification);
+
+    // Send HTTP POST request to FCM endpoint
+    final http.Response response = await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$FCMServerKey', // Include FCM server key in Authorization header
+      },
+      body: notificationJson,
+    );
+
+    // Check if the request was successful
+    if (response.statusCode == 200) {
+      print('Notification sent successfully');
+    } else {
+      print('Failed to send notification. Error: ${response.body}');
+    }
+  }
 
   @override
   void initState() {

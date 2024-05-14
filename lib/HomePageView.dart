@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../Utils/StyleData.dart';
 import 'LoginPageView.dart';
@@ -49,6 +50,9 @@ class _HomePageViewState extends State<HomePageView> {
   String? EmployeeName;
   String? Designation;
   String VerificationStatus = "Pending";
+  Map<dynamic, String> employeeFCMTokens = {};
+  var fcmToken;
+  bool _isLoading = true;
 
   Future<void> fetchdata() async {
     CollectionReference users = FirebaseFirestore.instance.collection('convertedLeads');
@@ -60,7 +64,17 @@ class _HomePageViewState extends State<HomePageView> {
 
     if (userType == "SalesManager") {
       users.where("ManagerCode", isEqualTo: managerEmployeeCode).get().then((value) {
-        List<Map<String, dynamic>> filteredList = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).map((doc) => doc.data() as Map<String, dynamic>).toList();
+        List<Map<String, dynamic>> filteredList = value.docs.where((doc) =>
+        (doc.data() as Map<String, dynamic>).containsKey("LeadID") &&
+            (doc["LeadID"] as String).length > 1 &&
+            (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")
+        ).map((doc) => doc.data() as Map<String, dynamic>).toList();
+
+// Print out DocumentSnapshot for debugging
+        for (var doc in value.docs) {
+          print(doc.data());
+        }
+
         List<DocumentSnapshot> filteredList1 = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).toList();
         List<DocumentSnapshot> filteredList2 = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).toList();
 
@@ -68,6 +82,7 @@ class _HomePageViewState extends State<HomePageView> {
           ListOfLeads = filteredList;
           ListOfLeads1 = filteredList2;
           ListOfLeadsId = filteredList1;
+          print(ListOfLeads);
           data = filteredList;
           ManagerName = filteredList.isNotEmpty ? filteredList[0]["ManagerName"] ?? "" : "";
           BranchCode = filteredList.isNotEmpty ? filteredList[0]["homeFinBranchCode"] ?? "" : "";
@@ -81,9 +96,9 @@ class _HomePageViewState extends State<HomePageView> {
       });
     } else {
       users.get().then((value) {
-        List<Map<String, dynamic>> filteredList = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).map((doc) => doc.data() as Map<String, dynamic>).toList();
-        List<DocumentSnapshot> filteredList1 = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).toList();
-        List<DocumentSnapshot> filteredList2 = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).toList();
+        List<Map<String, dynamic>> filteredList = value.docs.where((doc) => (doc["LeadID"] ?? "" as String ).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).map((doc) => doc.data() as Map<String, dynamic>).toList();
+        List<DocumentSnapshot> filteredList1 = value.docs.where((doc) => (doc["LeadID"] ?? "" as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).toList();
+        List<DocumentSnapshot> filteredList2 = value.docs.where((doc) => (doc["LeadID"] ?? "" as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).toList();
         setState(() {
           ListOfLeads = filteredList;
           ListOfLeadsId = filteredList1;
@@ -96,6 +111,58 @@ class _HomePageViewState extends State<HomePageView> {
       });
     }
   }
+
+  Future<void> fetchFCMdata() async {
+    CollectionReference users = FirebaseFirestore.instance.collection('convertedLeads');
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var managerEmployeeCode = pref.getString("employeeCode");
+
+    setState(() {
+      userType = pref.getString("logintype");
+    });
+
+    if (userType == "SalesManager") {
+      users.where("ManagerCode", isEqualTo: managerEmployeeCode).get().then((value) {
+        for (var doc in value.docs) {
+          var employeeCode = doc["EmployeeCode"] as String;
+          employeeFCMTokens.putIfAbsent(employeeCode, () => "");
+        }
+        fetchFCMTokens(employeeFCMTokens);
+      });
+    } else {
+      // Fetch all leads
+      users.get().then((value) {
+        for (var doc in value.docs) {
+          var employeeCode = doc["EmployeeCode"] as String;
+
+          // Store EmployeeCode from leads
+          employeeFCMTokens.putIfAbsent(employeeCode, () => "");
+        }
+
+        // Fetch FCMToken for each EmployeeCode
+        fetchFCMTokens(employeeFCMTokens);
+      });
+    }
+  }
+
+  Future<void> fetchFCMTokens(Map<dynamic, String> employeeFCMTokens) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    // Iterate through EmployeeCodes
+    for (var employeeCode in employeeFCMTokens.keys) {
+      // Query users collection for FCMToken based on EmployeeCode
+      var querySnapshot = await users.where("EmployeeCode", isEqualTo: employeeCode).get();
+
+      // If user found, update FCMToken in map
+      if (querySnapshot.docs.isNotEmpty) {
+       fcmToken = querySnapshot.docs.first.get("FCMToken") as String;
+        employeeFCMTokens[employeeCode] = fcmToken;
+      }
+    }
+
+    print(employeeFCMTokens);
+  }
+
 
 
 
@@ -204,10 +271,18 @@ class _HomePageViewState extends State<HomePageView> {
     // TODO: implement initState
     fetchdata();
     super.initState();
+    fetchFCMdata();
     _startDateController.text = formatDate(DateTime.now().toLocal().toString());
     _endDateController.text = formatDate(DateTime.now().toLocal().toString());
+    Future.delayed(Duration(seconds: 1), () {
+      loadData();
+    });
   }
-
+  void loadData() {
+    setState(() {
+      _isLoading = false;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -254,7 +329,7 @@ class _HomePageViewState extends State<HomePageView> {
                   ),
                   Builder(
                     builder: (context) {
-                      String countText = ManagerName.toString();
+                      String countText =  ManagerName.toString();
                       double textWidth = countText.length * 8.0; // Adjust 8.0 based on your font size and preference
                       print(BranchCode);
                       print(EmployeeName);
@@ -476,6 +551,48 @@ class _HomePageViewState extends State<HomePageView> {
               SizedBox(
                 height: height * 0.01,
               ),
+              _isLoading ?
+              Column(
+                children: List.generate(5, (index) {
+                  return Shimmer.fromColors(
+                    baseColor: Colors.black12,
+                    highlightColor: Colors.white70,
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: double.infinity,
+                                  height: 20,
+                                  color: Colors.grey[300],
+                                ),
+                                SizedBox(height: 10),
+                                Container(
+                                  width: double.infinity,
+                                  height: 20,
+                                  color: Colors.grey[300],
+                                ),
+                                SizedBox(height: 10),
+                                Container(
+                                  width: 100,
+                                  height: 20,
+                                  color: Colors.grey[300],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+              )
+                  :
               SizedBox(
                 height: height * 0.9,
                 width: MediaQuery.of(context).size.width,
@@ -524,7 +641,9 @@ class _HomePageViewState extends State<HomePageView> {
                                     Row(
                                       children: [
                                         Text(
-                                          EmployeeName.toString(),
+                                          searchKEY.text.isEmpty
+                                              ? ListOfLeads[index]["EmployeeName"]
+                                              : searchListOfLeads[index]["EmployeeName"],
                                           style: TextStyle(
                                             color: Colors.black54,
                                             fontSize: 14.0,
@@ -577,7 +696,9 @@ class _HomePageViewState extends State<HomePageView> {
                                                   ),
                                                 ),
                                                 Text(
-                                                  ListOfLeads[index]["VisitID"],
+                                                  searchKEY.text.isEmpty
+                                                      ? ListOfLeads[index]["VisitID"]
+                                                      : searchListOfLeads[index]["VisitID"],
                                                   style: TextStyle(
                                                     color: Colors.black54,
                                                     fontSize: 14.0,
@@ -723,8 +844,7 @@ class _HomePageViewState extends State<HomePageView> {
                                                 if (data.containsKey(
                                                     'Application_Form')) {
                                                   docId = data[
-                                                  'Application_Form']
-                                                      .toString();
+                                                  'Application_Form'].toString();
                                                 }
                                                 if (data.containsKey(
                                                     'Bank_Passbook')) {
@@ -734,7 +854,7 @@ class _HomePageViewState extends State<HomePageView> {
                                                 if (data.containsKey(
                                                     'Date_Of_Birth')) {
                                                   docId =
-                                                  "$docId,${data['Date_Of_Birth'].toString()}";
+                                                  "$docId,${data['Date_Of_Birth'].toString()}" ?? "";
                                                 }
                                                 if (data.containsKey(
                                                     'Login_Fee_Check')) {
@@ -775,10 +895,10 @@ class _HomePageViewState extends State<HomePageView> {
                                                       docId = value ?? ''; // Assign value if it's not null, otherwise empty string
                                                     }
                                                     // docId = "$docId,${value}";
-                                                    print(value.runtimeType);
+                                                    // print(value.runtimeType);
                                                   }
                                                 });
-                                                print(data);
+                                                // print(data);
                                                 print(docId);
                                                 // New Implementation
 
@@ -853,7 +973,9 @@ class _HomePageViewState extends State<HomePageView> {
                                                     builder: (context) => DocumentPageView(
                                                       leadID : searchKEY.text.isEmpty ? ListOfLeads[index]['LeadID'] : searchListOfLeads[index]['LeadID'] ,
                                                       docId: searchKEY.text.isEmpty ? ListOfLeads1[index].id: searchListOfLeads1[index].id,
+                                                      token:  searchKEY.text.isEmpty ? employeeFCMTokens[ListOfLeads[index]['EmployeeCode']].toString() ?? "" :employeeFCMTokens[searchListOfLeads[index]['EmployeeCode']].toString() ?? "",
                                                     )));
+                                            print(employeeFCMTokens[ListOfLeads[index]['EmployeeCode']]);
                                           },
                                           child: Column(
                                             children: [
