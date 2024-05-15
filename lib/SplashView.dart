@@ -1,27 +1,13 @@
 
-import 'dart:convert';
-
-
-import 'package:dio/dio.dart';
+import 'dart:html' as html;
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
-import 'package:material_dialogs/dialogs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-
 import '../../Utils/NavigatorController.dart';
-import '../../Utils/StyleData.dart';
-import '../Utils/LocalStorage.dart';
+import 'CreditManagerPageView.dart';
 import 'HomePageView.dart';
 import 'LoginPageView.dart';
-
-
-
-
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -44,17 +30,25 @@ class _SplashViewState extends State<SplashView> {
 
 
   startApp() async {
-    LocalStore().get("employeeCode").then((value) {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? employeeCode = pref.getString("employeeCode");
+    String? emailID = pref.getString("emailID");
+    String? loginType = pref.getString("logintype");
+
+    if ((employeeCode != null && employeeCode.isNotEmpty) || (emailID != null && emailID.isNotEmpty)) {
+      // User is already logged in, navigate directly to the appropriate home page
       NavigatorController.pagePush(
-          context, value == "" ?
-      LoginPage()
-          : HomePageView());
-    });
-
+        context,
+        loginType == "SalesManager" ? HomePageView() : CreditManagerPageView(),
+      );
+    } else {
+      // User is not logged in, navigate to the login page
+      NavigatorController.pagePush(
+        context,
+        LoginPage(),
+      );
+    }
   }
-
-
-
 
 
   @override

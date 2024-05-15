@@ -26,9 +26,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController mobileNumber = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController passwordController1 = TextEditingController();
   TextEditingController confirmpasswordController = TextEditingController();
+  TextEditingController confirmpasswordController1 = TextEditingController();
   TextEditingController branchcode = TextEditingController();
+  TextEditingController branchcode1 = TextEditingController();
+  TextEditingController branchName = TextEditingController();
+  TextEditingController region1 = TextEditingController();
+  TextEditingController zoneName = TextEditingController();
+  TextEditingController creditEmailID = TextEditingController();
   final registerformKey = GlobalKey<FormState>();
+  final registerformKey1 = GlobalKey<FormState>();
 
   bool isPasswordVisible = false;
   bool isConfirmPasswordVisible = false;
@@ -41,7 +49,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
 
   List employeeList = [];
-  List outputList1 = [];
+  List creditList = [];
+  List<dynamic> outputList1 = [];
+  List<dynamic> outputCreditList = [];
 
   List employeeList2 = [];
   List outputList2 = [];
@@ -55,9 +65,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String? Zone1;
 
   bool isSalesManager = false;
-
-
-
 
 
   getEmployee1Details(String emp) async {
@@ -85,6 +92,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     });
   }
+
+  
 
 
   String? selectedOption;
@@ -135,37 +144,197 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 textAlign: TextAlign.left,
                               ),
                             ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                RadioListTile<String>(
-                                  title: Text('SM'),
-                                  value: 'SM',
-                                  activeColor: StyleData.appBarColor,
-                                  groupValue: selectedOption,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedOption = value!;
-                                    });
-                                  },
-                                ),
-                                RadioListTile<String>(
-                                  title: Text('CM'),
-                                  value: 'CM',
-                                  activeColor: StyleData.appBarColor,
-                                  groupValue: selectedOption,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedOption = value!;
-                                    });
-                                  },
-                                ),
-                              ],
+                            // Column(
+                            //   mainAxisAlignment: MainAxisAlignment.start,
+                            //   children: [
+                            //     RadioListTile<String>(
+                            //       title: Text('SM'),
+                            //       value: 'SM',
+                            //       activeColor: StyleData.appBarColor,
+                            //       groupValue: selectedOption,
+                            //       onChanged: (value) {
+                            //         setState(() {
+                            //           selectedOption = value!;
+                            //         });
+                            //       },
+                            //     ),
+                            //     RadioListTile<String>(
+                            //       title: Text('CM'),
+                            //       value: 'CM',
+                            //       activeColor: StyleData.appBarColor,
+                            //       groupValue: selectedOption,
+                            //       onChanged: (value) {
+                            //         setState(() {
+                            //           selectedOption = value!;
+                            //         });
+                            //       },
+                            //     ),
+                            //   ],
+                            // ),
+                            Form(
+                              key: registerformKey,
+                              child: Column(
+                                children: [
+                                  SizedBox(height: height * 0.03),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    margin: EdgeInsets.symmetric(horizontal: 40),
+                                    child: TextFormField(
+                                      controller: ReportingManagerCode,
+                                      decoration: InputDecoration(
+                                          labelText: "Employee Code *"
+                                      ),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.singleLineFormatter,
+                                        LengthLimitingTextInputFormatter(7),
+                                        UppercaseInputFormatter(),
+                                      ],
+                                      onChanged: (empCode) {
+                                        getEmployee1Details(empCode);
+                                      },
+                                      validator: (isusernamevalid) {
+                                        if (isusernamevalid.toString().isNotEmpty)
+                                          return null;
+                                        else
+                                          return 'Enter valid Employee code';
+                                      },
+                                    ),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    margin: EdgeInsets.symmetric(horizontal: 40),
+                                    child: TextFormField(
+                                      controller: ReportingManagerName,
+                                      readOnly: true,
+                                      decoration: InputDecoration(
+                                          labelText: "Employee Name *"
+                                      ),
+
+                                    ),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    margin: EdgeInsets.symmetric(horizontal: 40),
+                                    child: TextFormField(
+                                      controller: branchcode,
+                                     readOnly: true,
+                                      decoration: InputDecoration(
+                                          labelText: "Branch Code *"
+                                      ),
+                                    ),
+                                  ),
+                                  // Container(
+                                  //   alignment: Alignment.center,
+                                  //   margin: EdgeInsets.symmetric(horizontal: 40),
+                                  //   child: TextFormField(
+                                  //     controller: mobileNumber,
+                                  //     keyboardType: TextInputType.phone,
+                                  //     inputFormatters: [
+                                  //       FilteringTextInputFormatter.digitsOnly,
+                                  //       LengthLimitingTextInputFormatter(10),
+                                  //     ],
+                                  //     decoration: InputDecoration(
+                                  //         labelText: "Mobile Number *"
+                                  //     ),
+                                  //     validator: (isusernamevalid) {
+                                  //       if (isusernamevalid.toString().isNotEmpty)
+                                  //         return null;
+                                  //       else
+                                  //         return 'Enter valid mobile Number';
+                                  //     },
+                                  //   ),
+                                  // ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    margin: EdgeInsets.symmetric(horizontal: 40),
+                                    child: TextFormField(
+                                      controller: emailController,
+                                      decoration: InputDecoration(
+                                          labelText: "Useremail *"
+                                      ),
+                                      validator: (value) {
+                                        String p =
+                                            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+
+                                        RegExp regExp = RegExp(p);
+
+                                        if (!regExp.hasMatch(value!)) {
+                                          return "Enter valid email id";
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    margin: EdgeInsets.symmetric(horizontal: 40),
+                                    child: TextFormField(
+                                      controller: passwordController,
+                                      decoration: InputDecoration(
+                                          labelText: "Password *",
+                                        suffixIcon: IconButton(
+                                      icon: Icon(
+                                      isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                        color: Colors.black54,
+                                      ),
+                                      onPressed: () {
+                                        // Toggle the password visibility
+                                        setState(() {
+                                          isPasswordVisible = !isPasswordVisible;
+                                        });
+                                      },
+                                    ),
+                                      ),
+                                      obscureText: !isPasswordVisible,
+                                      validator: (ispasswordvalid) {
+                                        if (ispasswordvalid.toString().isNotEmpty)
+                                          return null;
+                                        else
+                                          return 'Enter valid password';
+                                      },
+                                    ),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    margin: EdgeInsets.symmetric(horizontal: 40),
+                                    child: TextFormField(
+                                      controller: confirmpasswordController,
+                                      decoration: InputDecoration(
+                                          labelText: "Confirm Password *",
+                                        suffixIcon: IconButton(
+                                          icon: Icon(
+                                            isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                            color: Colors.black54,
+                                          ),
+                                          onPressed: () {
+                                            // Toggle the password visibility
+                                            setState(() {
+                                              isConfirmPasswordVisible = !isConfirmPasswordVisible;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      obscureText: !isConfirmPasswordVisible,
+                                      validator: (isconfirmpasswordvalid) {
+                                        if (isconfirmpasswordvalid.toString().isNotEmpty)
+                                          return null;
+                                        else if (passwordController !=
+                                            confirmpasswordController) {
+                                          return 'Confirm password must match to the password';
+                                        } else
+                                          return 'Enter valid confirm password';
+                                      },
+                                    ),
+                                  ),
+                                  SizedBox(height: height * 0.05),
+                                ],
+                              ),
                             ),
+
                             Visibility(
-                              visible: selectedOption == 'SM',
+                              visible: selectedOption == 'CM',
                               child: Form(
-                                key: registerformKey,
+                                key: registerformKey1,
                                 child: Column(
                                   children: [
                                     SizedBox(height: height * 0.03),
@@ -173,23 +342,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       alignment: Alignment.center,
                                       margin: EdgeInsets.symmetric(horizontal: 40),
                                       child: TextFormField(
-                                        controller: ReportingManagerCode,
+                                        controller: creditEmailID,
                                         decoration: InputDecoration(
-                                            labelText: "Employee Code *"
+                                            labelText: "Email Id *"
                                         ),
-                                        inputFormatters: [
-                                          FilteringTextInputFormatter.singleLineFormatter,
-                                          LengthLimitingTextInputFormatter(7),
-                                          UppercaseInputFormatter(),
-                                        ],
-                                        onChanged: (empCode) {
-                                          getEmployee1Details(empCode);
-                                        },
                                         validator: (isusernamevalid) {
                                           if (isusernamevalid.toString().isNotEmpty)
                                             return null;
                                           else
-                                            return 'Enter valid Employee code';
+                                            return 'Enter valid email ID';
                                         },
                                       ),
                                     ),
@@ -197,86 +358,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       alignment: Alignment.center,
                                       margin: EdgeInsets.symmetric(horizontal: 40),
                                       child: TextFormField(
-                                        controller: ReportingManagerName,
+                                        controller: branchcode1,
                                         readOnly: true,
-                                        decoration: InputDecoration(
-                                            labelText: "Employee Name *"
-                                        ),
-
-                                      ),
-                                    ),
-                                    Container(
-                                      alignment: Alignment.center,
-                                      margin: EdgeInsets.symmetric(horizontal: 40),
-                                      child: TextFormField(
-                                        controller: branchcode,
-                                       readOnly: true,
                                         decoration: InputDecoration(
                                             labelText: "Branch Code *"
                                         ),
                                       ),
                                     ),
-                                    // Container(
-                                    //   alignment: Alignment.center,
-                                    //   margin: EdgeInsets.symmetric(horizontal: 40),
-                                    //   child: TextFormField(
-                                    //     controller: mobileNumber,
-                                    //     keyboardType: TextInputType.phone,
-                                    //     inputFormatters: [
-                                    //       FilteringTextInputFormatter.digitsOnly,
-                                    //       LengthLimitingTextInputFormatter(10),
-                                    //     ],
-                                    //     decoration: InputDecoration(
-                                    //         labelText: "Mobile Number *"
-                                    //     ),
-                                    //     validator: (isusernamevalid) {
-                                    //       if (isusernamevalid.toString().isNotEmpty)
-                                    //         return null;
-                                    //       else
-                                    //         return 'Enter valid mobile Number';
-                                    //     },
-                                    //   ),
-                                    // ),
                                     Container(
                                       alignment: Alignment.center,
                                       margin: EdgeInsets.symmetric(horizontal: 40),
                                       child: TextFormField(
-                                        controller: emailController,
+                                        controller: passwordController1,
                                         decoration: InputDecoration(
-                                            labelText: "Useremail *"
-                                        ),
-                                        validator: (value) {
-                                          String p =
-                                              r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-
-                                          RegExp regExp = RegExp(p);
-
-                                          if (!regExp.hasMatch(value!)) {
-                                            return "Enter valid email id";
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                    ),
-                                    Container(
-                                      alignment: Alignment.center,
-                                      margin: EdgeInsets.symmetric(horizontal: 40),
-                                      child: TextFormField(
-                                        controller: passwordController,
-                                        decoration: InputDecoration(
-                                            labelText: "Password *",
+                                          labelText: "Password *",
                                           suffixIcon: IconButton(
-                                        icon: Icon(
-                                        isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                                          color: Colors.black54,
-                                        ),
-                                        onPressed: () {
-                                          // Toggle the password visibility
-                                          setState(() {
-                                            isPasswordVisible = !isPasswordVisible;
-                                          });
-                                        },
-                                      ),
+                                            icon: Icon(
+                                              isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                              color: Colors.black54,
+                                            ),
+                                            onPressed: () {
+                                              // Toggle the password visibility
+                                              setState(() {
+                                                isPasswordVisible = !isPasswordVisible;
+                                              });
+                                            },
+                                          ),
                                         ),
                                         obscureText: !isPasswordVisible,
                                         validator: (ispasswordvalid) {
@@ -291,9 +398,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       alignment: Alignment.center,
                                       margin: EdgeInsets.symmetric(horizontal: 40),
                                       child: TextFormField(
-                                        controller: confirmpasswordController,
+                                        controller: confirmpasswordController1,
                                         decoration: InputDecoration(
-                                            labelText: "Confirm Password *",
+                                          labelText: "Confirm Password *",
                                           suffixIcon: IconButton(
                                             icon: Icon(
                                               isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
@@ -324,8 +431,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
                               ),
                             ),
-
-
                             GestureDetector(
                               onTap: () async {
                                 print("Helloo");
@@ -369,7 +474,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             "Zone": Zone,
                                             "userId": credential.user!.uid,
                                             "createdDate": Timestamp.now(),
-                                            "userType": selectedOption == "RM" ? "SalesManager" : "CreditManager",
+                                            "userType": "SalesManager",
                                           };
                                           users.add(params);
                                           customSuccessSnackBar1("Registered Successfully");

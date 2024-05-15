@@ -14,20 +14,21 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
 import '../Utils/StyleData.dart';
+import 'CreditManagerPageView.dart';
 
-class DocumentPageView extends StatefulWidget {
+class CreditDocumentPageView extends StatefulWidget {
   final String docId;
   final String leadID;
   final String token;
-  const DocumentPageView({Key? key,
+  const CreditDocumentPageView({Key? key,
     required this.docId, required this.leadID, required this.token})
       : super(key: key);
 
   @override
-  State<DocumentPageView> createState() => _DocumentPageViewState();
+  State<CreditDocumentPageView> createState() => _CreditDocumentPageViewState();
 }
 
-class _DocumentPageViewState extends State<DocumentPageView> {
+class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
   bool isVerification = false;
   String? docId;
   bool downloading = false;
@@ -166,8 +167,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
         // Update each document with the new field and value
         querySnapshot.docs.forEach((doc) async {
           await doc.reference.update({
-            'VerificationStatus': 'Sent for Verification',
-            'VerifiedBy': 'Verified By SM',
+            'VerificationStatus': 'Verified',
+            'VerifiedBy': 'Verified By CM',
           });
         });
 
@@ -239,7 +240,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
           await doc.reference.update({
             'Query': queryReason.text,
             'isQuery': true,
-            'QueryBy': 'Query By SM',
+            'QueryBy': 'Query By CM',
             'VerificationStatus': 'Pending',
           });
         });
@@ -259,7 +260,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
     }
   }
 
- // String FCMTOken = "dtC7SAuDRMS3faHIXwuD_8:APA91bEFq-NPddhhT0h5JuYGQykJq-pDX6PDOaxVzhNDvAhgahl9U6FgaOBCGtxJjlyRF-D3N_s1jXrefcLsZVpgJJC2ydjGr7abnkrU0HbnycQKJpjqHi1FxLEDj5mojqyxNXkdxMJH";
+  // String FCMTOken = "dtC7SAuDRMS3faHIXwuD_8:APA91bEFq-NPddhhT0h5JuYGQykJq-pDX6PDOaxVzhNDvAhgahl9U6FgaOBCGtxJjlyRF-D3N_s1jXrefcLsZVpgJJC2ydjGr7abnkrU0HbnycQKJpjqHi1FxLEDj5mojqyxNXkdxMJH";
   String FCMServerKey = "AAAAvnuEuSw:APA91bGhzDJBFD0fM8U5D-WRsSYWG9egY7sJX_sL6VnGZ7AC7wrrgC5WmUFIK7-GttG_U4VmLSQ4_TRJy-SDtWD-bABrmIKU7bdg604i3IUgk6zVj-k0elas3fwHN1vmUy6egG0-O4cj";
 
   void sendNotificationToDevice(String FCMServerKey, String FCMToken) async {
@@ -269,14 +270,14 @@ class _DocumentPageViewState extends State<DocumentPageView> {
     Map<String, dynamic> notification = {
       'notification': {
         'title': '"HomeFin Express" Verification Status Updated',
-        'body': widget.leadID + "-" + "Query By SM : " + queryReason.text,
+        'body': widget.leadID + "-" + "Query By CM : " + queryReason.text,
         'icon': "https://firebasestorage.googleapis.com/v0/b/lms-application-be1ea.appspot.com/o/ic_launcher.png?alt=media&token=c37f6227-036f-4ed9-b757-bd1dc0c27809",
         'click_action': 'FLUTTER_NOTIFICATION_CLICK'
       },
       'priority': 'high',
       'data': {
         'title': '"HomeFin Express" Verification Status Updated',
-        'body': widget.leadID + "-" + "Query By SM : " + queryReason.text,
+        'body': widget.leadID + "-" + "Query By CM : " + queryReason.text,
         // Add any additional data you want to send with the notification
         'click_action': 'FLUTTER_NOTIFICATION_CLICK',
       },
@@ -309,15 +310,15 @@ class _DocumentPageViewState extends State<DocumentPageView> {
     final Uri url = Uri.parse('https://fcm.googleapis.com/fcm/send');
     Map<String, dynamic> notification = {
       'notification': {
-        'title': '"HomeFin Express" Verification Status Updated',
-        'body': widget.leadID +" - " + "Verification Completed By SM",
+        'title': '"HomeFin Express" Verification Status Updated - Verified',
+        'body': widget.leadID +" - " + "Verified By CM",
         'icon': "https://firebasestorage.googleapis.com/v0/b/lms-application-be1ea.appspot.com/o/ic_launcher.png?alt=media&token=c37f6227-036f-4ed9-b757-bd1dc0c27809",
         'click_action': 'FLUTTER_NOTIFICATION_CLICK'
       },
       'priority': 'high',
       'data': {
-        'title': '"HomeFin Express" Verification Status Updated',
-        'body': widget.leadID +" - " + "Verification Completed By SM",
+        'title': '"HomeFin Express" Verification Status Updated - Verified',
+        'body': widget.leadID +" - " + "Verified By CM",
         'click_action': 'FLUTTER_NOTIFICATION_CLICK',
         // Add any additional data you want to send with the notification
       },
@@ -381,7 +382,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        HomePageView(),
+                        CreditManagerPageView(),
                   ),
                 );
               },
@@ -521,13 +522,13 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                               children: [
                                 ElevatedButton(
                                   onPressed: () {
-                                    ((verificationStatus == 'Sent for Verification' || verificationStatus == 'Verified') &&  (verifiedBy == 'Verified By SM' || verifiedBy == 'Verified By CM'  )) ? "" : UpdatedVerificationStatus();
+                                    (verificationStatus == 'Verified' &&  verifiedBy == 'Verified By CM') ? "" : UpdatedVerificationStatus();
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: verifiedBy == 'Verified By SM' ? Colors.green[500] : Colors.green[500],
+                                    primary: verifiedBy == 'Verified By CM' ? Colors.green[500] : Colors.green[500],
                                   ),
                                   child: Text(
-                                    verifiedBy == 'Verified By SM' ? 'Verified' : 'Verify',
+                                    verifiedBy == 'Verified By CM' ? 'Verified' : 'Verify',
                                     style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: StyleData.boldFont),
                                   ),
                                 ),
@@ -536,7 +537,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                 ),
                                 ElevatedButton(
                                   onPressed: () {
-                                    verifiedBy == 'Verified By SM' ? "" :
+                                    verifiedBy == 'Verified By CM' ? "" :
                                     showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
@@ -617,7 +618,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                               ],
                             ),
                             SizedBox(
-                              height : height * 0.05
+                                height : height * 0.05
                             ),
                             // Query != null
                             //     ? SizedBox(
@@ -718,7 +719,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                   onTap: () async {
                                                     // print(docData);
                                                     // print("bjksjjjjjjjj");
-                    
+
                                                     if (docData.containsKey('Application_Form')) {
                                                       docId = docData['Application_Form'].toString();
                                                       // "${docData['Application_Form'].toString()}";
@@ -728,7 +729,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                     var map = <String, dynamic>{};
                                                     map['DocId'] = docId;
                                                     map['LUSR'] = 'HomeFin';
-                    
+
                                                     http.Response response = await http.post(
                                                       Uri.parse(
                                                           "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
@@ -819,7 +820,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                   onTap: () async {
                                                     // print(docData);
                                                     // print("bjksjjjjjjjj");
-                    
+
                                                     if (docData.containsKey('Bank_Passbook')) {
                                                       docId = docData['Bank_Passbook'].toString();
                                                       // "${docData['Application_Form'].toString()}";
@@ -829,7 +830,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                     var map = <String, dynamic>{};
                                                     map['DocId'] = docId;
                                                     map['LUSR'] = 'HomeFin';
-                    
+
                                                     http.Response response = await http.post(
                                                       Uri.parse(
                                                           "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
@@ -914,7 +915,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                   onTap: () async {
                                                     // print(docData);
                                                     // print("bjksjjjjjjjj");
-                    
+
                                                     if (docData.containsKey(
                                                         'Date_Of_Birth')) {
                                                       docId = docData['Date_Of_Birth'].toString();
@@ -926,7 +927,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                         dynamic>{};
                                                     map['DocId'] = docId;
                                                     map['LUSR'] = 'HomeFin';
-                    
+
                                                     http.Response
                                                     response =
                                                     await http.post(
@@ -960,7 +961,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                                 : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.${mime.toString().split("/").last}")
                                                         ..click();
                                                     }
-                    
+
                                                   },
                                                   child: Column(
                                                     children: [
@@ -1004,7 +1005,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                   onTap: () async {
                                                     // print(docData);
                                                     // print("bjksjjjjjjjj");
-                    
+
                                                     if (docData.containsKey(
                                                         'Login_Fee_Check')) {
                                                       docId = docData['Login_Fee_Check'].toString();
@@ -1016,7 +1017,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                         dynamic>{};
                                                     map['DocId'] = docId;
                                                     map['LUSR'] = 'HomeFin';
-                    
+
                                                     http.Response
                                                     response =
                                                     await http.post(
@@ -1050,7 +1051,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                                 : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.${mime.toString().split("/").last}")
                                                         ..click();
                                                     }
-                    
+
                                                   },
                                                   child: Column(
                                                     children: [
@@ -1102,7 +1103,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                   onTap: () async {
                                                     // print(docData);
                                                     // print("bjksjjjjjjjj");
-                    
+
                                                     if (docData.containsKey(
                                                         'Passport_Size_Photo')) {
                                                       docId = docData['Passport_Size_Photo'].toString();
@@ -1114,7 +1115,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                         dynamic>{};
                                                     map['DocId'] = docId;
                                                     map['LUSR'] = 'HomeFin';
-                    
+
                                                     http.Response
                                                     response =
                                                     await http.post(
@@ -1148,7 +1149,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                                 : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.${mime.toString().split("/").last}")
                                                         ..click();
                                                     }
-                    
+
                                                   },
                                                   child: Column(
                                                     children: [
@@ -1192,7 +1193,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                   onTap: () async {
                                                     // print(docData);
                                                     // print("bjksjjjjjjjj");
-                    
+
                                                     if (docData.containsKey(
                                                         'Photo_Id_Proof')) {
                                                       docId = docData['Photo_Id_Proof'].toString();
@@ -1204,7 +1205,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                         dynamic>{};
                                                     map['DocId'] = docId;
                                                     map['LUSR'] = 'HomeFin';
-                    
+
                                                     http.Response
                                                     response =
                                                     await http.post(
@@ -1238,7 +1239,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                                 : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.${mime.toString().split("/").last}")
                                                         ..click();
                                                     }
-                    
+
                                                   },
                                                   child: Column(
                                                     children: [
@@ -1290,7 +1291,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                   onTap: () async {
                                                     // print(docData);
                                                     // print("bjksjjjjjjjj");
-                    
+
                                                     if (docData.containsKey(
                                                         'Residence_Proof')) {
                                                       docId = docData['Residence_Proof'].toString();
@@ -1302,7 +1303,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                         dynamic>{};
                                                     map['DocId'] = docId;
                                                     map['LUSR'] = 'HomeFin';
-                    
+
                                                     http.Response
                                                     response =
                                                     await http.post(
@@ -1336,7 +1337,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                                 : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.${mime.toString().split("/").last}")
                                                         ..click();
                                                     }
-                    
+
                                                   },
                                                   child: Column(
                                                     children: [
@@ -1380,7 +1381,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                   onTap: () async {
                                                     // print(docData);
                                                     // print("bjksjjjjjjjj");
-                    
+
                                                     if (docData.containsKey(
                                                         'Salary_Slip')) {
                                                       docId = docData['Salary_Slip'].toString();
@@ -1392,7 +1393,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                         dynamic>{};
                                                     map['DocId'] = docId;
                                                     map['LUSR'] = 'HomeFin';
-                    
+
                                                     http.Response
                                                     response =
                                                     await http.post(
@@ -1426,7 +1427,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                                 : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.${mime.toString().split("/").last}")
                                                         ..click();
                                                     }
-                    
+
                                                   },
                                                   child: Column(
                                                     children: [
@@ -1478,7 +1479,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                   onTap: () async {
                                                     // print(docData);
                                                     // print("bjksjjjjjjjj");
-                    
+
                                                     if (docData.containsKey(
                                                         'Signature_Proof')) {
                                                       docId = docData['Signature_Proof'].toString();
@@ -1490,7 +1491,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                         dynamic>{};
                                                     map['DocId'] = docId;
                                                     map['LUSR'] = 'HomeFin';
-                    
+
                                                     http.Response
                                                     response =
                                                     await http.post(
@@ -1524,7 +1525,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                                 : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.${mime.toString().split("/").last}")
                                                         ..click();
                                                     }
-                    
+
                                                   },
                                                   child: Column(
                                                     children: [
@@ -1593,7 +1594,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                   onTap: () async {
                                                     // print(docData);
                                                     // print("bjksjjjjjjjj");
-                    
+
                                                     if (docData.containsKey(
                                                         'Copy_Of_Property')) {
                                                       docId = docData['Copy_Of_Property'].toString();
@@ -1605,7 +1606,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                         dynamic>{};
                                                     map['DocId'] = docId;
                                                     map['LUSR'] = 'HomeFin';
-                    
+
                                                     http.Response
                                                     response =
                                                     await http.post(
@@ -1639,7 +1640,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                                 : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.${mime.toString().split("/").last}")
                                                         ..click();
                                                     }
-                    
+
                                                   },
                                                   child: Column(
                                                     children: [
@@ -1683,7 +1684,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                   onTap: () async {
                                                     // print(docData);
                                                     // print("bjksjjjjjjjj");
-                    
+
                                                     if (docData.containsKey(
                                                         'Total_Work_Experience')) {
                                                       docId = docData['Total_Work_Experience'].toString();
@@ -1695,7 +1696,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                         dynamic>{};
                                                     map['DocId'] = docId;
                                                     map['LUSR'] = 'HomeFin';
-                    
+
                                                     http.Response
                                                     response =
                                                     await http.post(
@@ -1729,7 +1730,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                                 : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.${mime.toString().split("/").last}")
                                                         ..click();
                                                     }
-                    
+
                                                   },
                                                   child: Column(
                                                     children: [
@@ -1781,7 +1782,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                   onTap: () async {
                                                     // print(docData);
                                                     // print("bjksjjjjjjjj");
-                    
+
                                                     if (docData.containsKey(
                                                         'Work_Experience')) {
                                                       docId = docData['Work_Experience'].toString();
@@ -1793,7 +1794,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                         dynamic>{};
                                                     map['DocId'] = docId;
                                                     map['LUSR'] = 'HomeFin';
-                    
+
                                                     http.Response
                                                     response =
                                                     await http.post(
@@ -1827,7 +1828,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                                 : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.${mime.toString().split("/").last}")
                                                         ..click();
                                                     }
-                    
+
                                                   },
                                                   child: Column(
                                                     children: [
@@ -1871,7 +1872,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                   onTap: () async {
                                                     // print(docData);
                                                     // print("bjksjjjjjjjj");
-                    
+
                                                     if (docData.containsKey(
                                                         'Qualification_Proof')) {
                                                       docId = docData['Qualification_Proof'].toString();
@@ -1883,7 +1884,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                         dynamic>{};
                                                     map['DocId'] = docId;
                                                     map['LUSR'] = 'HomeFin';
-                    
+
                                                     http.Response
                                                     response =
                                                     await http.post(
@@ -1917,7 +1918,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                                 : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.${mime.toString().split("/").last}")
                                                         ..click();
                                                     }
-                    
+
                                                   },
                                                   child: Column(
                                                     children: [
@@ -1950,7 +1951,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                           ),
                         ),
                         SizedBox(
-                            width: width * 0.001,
+                          width: width * 0.001,
                         ),
                         Card(
                           elevation: 3,
@@ -2009,7 +2010,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                   onTap: () async {
                                                     // print(docData);
                                                     // print("bjksjjjjjjjj");
-                    
+
                                                     // if (docData.containsKey('Bank_Passbook')) {
                                                     //   docId = docData['Bank_Passbook'].toString();
                                                     //   // "${docData['Application_Form'].toString()}";
@@ -2020,7 +2021,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                     var map = <String, dynamic>{};
                                                     map['DocId'] = docId;
                                                     map['LUSR'] = 'HomeFin';
-                    
+
                                                     http.Response response = await http.post(
                                                       Uri.parse(
                                                           "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
@@ -2098,8 +2099,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                       Text(
                         "Query",
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.0,
                             color: StyleData.appBarColor2
                         ),
                       ),
@@ -2148,7 +2149,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                     docId = docData['Application_Form'].toString();
                     // "${docData['Application_Form'].toString()}";
                   }
-                    print(docId);
+                  print(docId);
                   if (docData["Bank_Passbook"]) {
                     docId =
                     "$docId,${docData["Bank_Passbook"]}";
@@ -2304,7 +2305,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                HomePageView(),
+                                CreditManagerPageView(),
                           ),
                         );
                       },
@@ -2371,7 +2372,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                HomePageView(),
+                                CreditManagerPageView(),
                           ),
                         );
                       },
