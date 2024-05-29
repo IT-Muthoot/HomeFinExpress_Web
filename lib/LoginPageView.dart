@@ -98,255 +98,249 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
 
                                   SizedBox(height:height * 0.03),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            selectedOption = 'SM';
-                                          });
-                                        },
-                                        child: Container(
-                                          width: width * 0.08 ,// Adjust width as needed
-                                          height: height * 0.05, // Adjust height as needed
-                                          margin: EdgeInsets.all(8),
-                                          decoration: BoxDecoration(
-                                            color: selectedOption == 'SM'
-                                                ? StyleData.appBarColor
-                                                : Colors.black12, // Change color based on selection
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            'SM',
-                                            style: TextStyle(
-                                              color: selectedOption == 'SM' ? Colors.white : Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            selectedOption = 'CM';
-                                          });
-                                        },
-                                        child: Container(
-                                          width: width * 0.08 ,// Adjust width as needed
-                                          height: height * 0.05, // Adjust height as needed
-                                          margin: EdgeInsets.all(8),
-                                          decoration: BoxDecoration(
-                                            color: selectedOption == 'CM'
-                                                ? StyleData.appBarColor
-                                                : Colors.black12, // Change color based on selection
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            'CM',
-                                            style: TextStyle(
-                                              color: selectedOption == 'CM' ? Colors.white : Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  // Row(
+                                  //   mainAxisAlignment: MainAxisAlignment.center,
+                                  //   children: [
+                                  //     GestureDetector(
+                                  //       onTap: () {
+                                  //         setState(() {
+                                  //           selectedOption = 'SM';
+                                  //         });
+                                  //       },
+                                  //       child: Container(
+                                  //         width: width * 0.08 ,// Adjust width as needed
+                                  //         height: height * 0.05, // Adjust height as needed
+                                  //         margin: EdgeInsets.all(8),
+                                  //         decoration: BoxDecoration(
+                                  //           color: selectedOption == 'SM'
+                                  //               ? StyleData.appBarColor
+                                  //               : Colors.black12, // Change color based on selection
+                                  //           borderRadius: BorderRadius.circular(8),
+                                  //         ),
+                                  //         alignment: Alignment.center,
+                                  //         child: Text(
+                                  //           'SM',
+                                  //           style: TextStyle(
+                                  //             color: selectedOption == 'SM' ? Colors.white : Colors.black,
+                                  //           ),
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //     GestureDetector(
+                                  //       onTap: () {
+                                  //         setState(() {
+                                  //           selectedOption = 'CM';
+                                  //         });
+                                  //       },
+                                  //       child: Container(
+                                  //         width: width * 0.08 ,// Adjust width as needed
+                                  //         height: height * 0.05, // Adjust height as needed
+                                  //         margin: EdgeInsets.all(8),
+                                  //         decoration: BoxDecoration(
+                                  //           color: selectedOption == 'CM'
+                                  //               ? StyleData.appBarColor
+                                  //               : Colors.black12, // Change color based on selection
+                                  //           borderRadius: BorderRadius.circular(8),
+                                  //         ),
+                                  //         alignment: Alignment.center,
+                                  //         child: Text(
+                                  //           'CM',
+                                  //           style: TextStyle(
+                                  //             color: selectedOption == 'CM' ? Colors.white : Colors.black,
+                                  //           ),
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //   ],
+                                  // ),
 SizedBox(
   height: height * 0.01,
 ),
-                                  Visibility(
-                                    visible: selectedOption == "SM",
-                                    child: Form(
-                                      key: loginformKey,
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            alignment: Alignment.center,
-                                            margin: EdgeInsets.symmetric(horizontal: 40),
-                                            child: TextFormField(
-                                              controller: empCodeController,
-                                              inputFormatters: [
-                                                FilteringTextInputFormatter.singleLineFormatter,
-                                                LengthLimitingTextInputFormatter(7),
-                                                // Convert input to uppercase
-                                                UppercaseTextInputFormatter(),
-                                              ],
-                                              style: const TextStyle(fontSize: 13, color: Colors.black54),
-                                              textInputAction: TextInputAction.next,
-                                              cursorColor: Colors.black87,
-                                              decoration: InputDecoration(
-                                                labelText: "Employee Code",
-                                                labelStyle: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Colors.black54,
-                                                ),
-                                                prefixIcon: Icon(Icons.person_3_outlined, size: 18, color: Colors.black54),
-                                                focusedBorder: focus,
-                                                enabledBorder: enb,
-                                                contentPadding: const EdgeInsets.only(left: 5,),
-                                                hintStyle: const TextStyle(fontSize: 14, color: Colors.black54),
+                                  Form(
+                                    key: loginformKey,
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          alignment: Alignment.center,
+                                          margin: EdgeInsets.symmetric(horizontal: 40),
+                                          child: TextFormField(
+                                            controller: empCodeController,
+                                            inputFormatters: [
+                                              FilteringTextInputFormatter.singleLineFormatter,
+                                              LengthLimitingTextInputFormatter(7),
+                                              // Convert input to uppercase
+                                              UppercaseTextInputFormatter(),
+                                            ],
+                                            style: const TextStyle(fontSize: 13, color: Colors.black54),
+                                            textInputAction: TextInputAction.next,
+                                            cursorColor: Colors.black87,
+                                            decoration: InputDecoration(
+                                              labelText: "Employee Code",
+                                              labelStyle: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.black54,
                                               ),
-                                              validator: (isusercodevalid) {
-                                                if (isusercodevalid.toString().isNotEmpty)
-                                                  return null;
-                                                else
-                                                  return 'Enter valid Employee code';
-                                              },
+                                              prefixIcon: Icon(Icons.person_3_outlined, size: 18, color: Colors.black54),
+                                              focusedBorder: focus,
+                                              enabledBorder: enb,
+                                              contentPadding: const EdgeInsets.only(left: 5,),
+                                              hintStyle: const TextStyle(fontSize: 14, color: Colors.black54),
                                             ),
+                                            validator: (isusercodevalid) {
+                                              if (isusercodevalid.toString().isNotEmpty)
+                                                return null;
+                                              else
+                                                return 'Enter valid Employee code';
+                                            },
                                           ),
+                                        ),
 
-                                          SizedBox(height:height * 0.03),
-                                          Container(
-                                            alignment: Alignment.center,
-                                            margin: EdgeInsets.symmetric(horizontal: 40),
-                                            child: TextFormField(
-                                              controller: passwordController,
-                                              style: const TextStyle(fontSize: 13, color: Colors.black54),
-                                              cursorColor: Colors.black87,
-                                              decoration: InputDecoration(
-                                                focusedBorder: focus,
-                                                enabledBorder: enb,
-                                                labelText: "Password",
-                                                prefixIcon: Icon(Ionicons.lock_closed_outline, size: 18, color: Colors.black54),
-                                                contentPadding: const EdgeInsets.only(left: 5,),
-                                                hintStyle: const TextStyle(fontSize: 14, color: Colors.black54),
-                                                labelStyle: TextStyle(
-                                                  fontSize: 16,
+                                        SizedBox(height:height * 0.03),
+                                        Container(
+                                          alignment: Alignment.center,
+                                          margin: EdgeInsets.symmetric(horizontal: 40),
+                                          child: TextFormField(
+                                            controller: passwordController,
+                                            style: const TextStyle(fontSize: 13, color: Colors.black54),
+                                            cursorColor: Colors.black87,
+                                            decoration: InputDecoration(
+                                              focusedBorder: focus,
+                                              enabledBorder: enb,
+                                              labelText: "Password",
+                                              prefixIcon: Icon(Ionicons.lock_closed_outline, size: 18, color: Colors.black54),
+                                              contentPadding: const EdgeInsets.only(left: 5,),
+                                              hintStyle: const TextStyle(fontSize: 14, color: Colors.black54),
+                                              labelStyle: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.black54,
+                                              ),
+                                              suffixIcon: IconButton(
+                                                icon: Icon(
+                                                  isPasswordVisible ? Icons.visibility : Icons.visibility_off,
                                                   color: Colors.black54,
                                                 ),
-                                                suffixIcon: IconButton(
-                                                  icon: Icon(
-                                                    isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                                                    color: Colors.black54,
-                                                  ),
-                                                  onPressed: () {
-                                                    // Toggle the password visibility
-                                                    setState(() {
-                                                      isPasswordVisible = !isPasswordVisible;
-                                                    });
-                                                  },
-                                                ),
+                                                onPressed: () {
+                                                  // Toggle the password visibility
+                                                  setState(() {
+                                                    isPasswordVisible = !isPasswordVisible;
+                                                  });
+                                                },
                                               ),
-                                              obscureText: !isPasswordVisible,
-                                              validator: (isPasswordValid) {
-                                                if (isPasswordValid.toString().isNotEmpty)
-                                                  return null;
-                                                else if (isPasswordValid!.length < 8) {
-                                                  return 'Password must contain at least 8 characters';
-                                                } else
-                                                  return 'Enter a valid password';
-                                              },
                                             ),
+                                            obscureText: !isPasswordVisible,
+                                            validator: (isPasswordValid) {
+                                              if (isPasswordValid.toString().isNotEmpty)
+                                                return null;
+                                              else if (isPasswordValid!.length < 8) {
+                                                return 'Password must contain at least 8 characters';
+                                              } else
+                                                return 'Enter a valid password';
+                                            },
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Visibility(
-                                    visible: selectedOption == "CM",
-                                    child: Form(
-                                      key: loginformKey1,
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            alignment: Alignment.center,
-                                            margin: EdgeInsets.symmetric(horizontal: 40),
-                                            child: TextFormField(
-                                              controller: cmEmailController,
-                                              style: const TextStyle(fontSize: 13, color: Colors.black54),
-                                              textInputAction: TextInputAction.next,
-                                              cursorColor: Colors.black87,
-                                              decoration: InputDecoration(
-                                                labelText: "Email ID",
-                                                labelStyle: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Colors.black54,
-                                                ),
-                                                prefixIcon: Icon(Icons.email_outlined, size: 18, color: Colors.black54),
-                                                focusedBorder: focus,
-                                                enabledBorder: enb,
-                                                contentPadding: const EdgeInsets.only(left: 5,),
-                                                hintStyle: const TextStyle(fontSize: 14, color: Colors.black54),
-                                              ),
-                                              validator: (isusercodevalid) {
-                                                if (isusercodevalid.toString().isNotEmpty)
-                                                  return null;
-                                                else
-                                                  return 'Enter valid email id';
-                                              },
-                                            ),
-                                          ),
+                                  // Visibility(
+                                  //   visible: selectedOption == "CM",
+                                  //   child: Form(
+                                  //     key: loginformKey1,
+                                  //     child: Column(
+                                  //       children: [
+                                  //         Container(
+                                  //           alignment: Alignment.center,
+                                  //           margin: EdgeInsets.symmetric(horizontal: 40),
+                                  //           child: TextFormField(
+                                  //             controller: cmEmailController,
+                                  //             style: const TextStyle(fontSize: 13, color: Colors.black54),
+                                  //             textInputAction: TextInputAction.next,
+                                  //             cursorColor: Colors.black87,
+                                  //             decoration: InputDecoration(
+                                  //               labelText: "Email ID",
+                                  //               labelStyle: TextStyle(
+                                  //                 fontSize: 16,
+                                  //                 color: Colors.black54,
+                                  //               ),
+                                  //               prefixIcon: Icon(Icons.email_outlined, size: 18, color: Colors.black54),
+                                  //               focusedBorder: focus,
+                                  //               enabledBorder: enb,
+                                  //               contentPadding: const EdgeInsets.only(left: 5,),
+                                  //               hintStyle: const TextStyle(fontSize: 14, color: Colors.black54),
+                                  //             ),
+                                  //             validator: (isusercodevalid) {
+                                  //               if (isusercodevalid.toString().isNotEmpty)
+                                  //                 return null;
+                                  //               else
+                                  //                 return 'Enter valid email id';
+                                  //             },
+                                  //           ),
+                                  //         ),
+                                  //
+                                  //         SizedBox(height:height * 0.03),
+                                  //         Container(
+                                  //           alignment: Alignment.center,
+                                  //           margin: EdgeInsets.symmetric(horizontal: 40),
+                                  //           child: TextFormField(
+                                  //             controller: cmPasswordController,
+                                  //             style: const TextStyle(fontSize: 13, color: Colors.black54),
+                                  //             cursorColor: Colors.black87,
+                                  //             decoration: InputDecoration(
+                                  //               focusedBorder: focus,
+                                  //               enabledBorder: enb,
+                                  //               labelText: "Password",
+                                  //               prefixIcon: Icon(Ionicons.lock_closed_outline, size: 18, color: Colors.black54),
+                                  //               contentPadding: const EdgeInsets.only(left: 5,),
+                                  //               hintStyle: const TextStyle(fontSize: 14, color: Colors.black54),
+                                  //               labelStyle: TextStyle(
+                                  //                 fontSize: 16,
+                                  //                 color: Colors.black54,
+                                  //               ),
+                                  //               suffixIcon: IconButton(
+                                  //                 icon: Icon(
+                                  //                   isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                  //                   color: Colors.black54,
+                                  //                 ),
+                                  //                 onPressed: () {
+                                  //                   // Toggle the password visibility
+                                  //                   setState(() {
+                                  //                     isPasswordVisible = !isPasswordVisible;
+                                  //                   });
+                                  //                 },
+                                  //               ),
+                                  //             ),
+                                  //             obscureText: !isPasswordVisible,
+                                  //             validator: (isPasswordValid) {
+                                  //               if (isPasswordValid.toString().isNotEmpty)
+                                  //                 return null;
+                                  //               else if (isPasswordValid!.length < 8) {
+                                  //                 return 'Password must contain at least 8 characters';
+                                  //               } else
+                                  //                 return 'Enter a valid password';
+                                  //             },
+                                  //           ),
+                                  //         ),
+                                  //       ],
+                                  //     ),
+                                  //   ),
+                                  // ),
 
-                                          SizedBox(height:height * 0.03),
-                                          Container(
-                                            alignment: Alignment.center,
-                                            margin: EdgeInsets.symmetric(horizontal: 40),
-                                            child: TextFormField(
-                                              controller: cmPasswordController,
-                                              style: const TextStyle(fontSize: 13, color: Colors.black54),
-                                              cursorColor: Colors.black87,
-                                              decoration: InputDecoration(
-                                                focusedBorder: focus,
-                                                enabledBorder: enb,
-                                                labelText: "Password",
-                                                prefixIcon: Icon(Ionicons.lock_closed_outline, size: 18, color: Colors.black54),
-                                                contentPadding: const EdgeInsets.only(left: 5,),
-                                                hintStyle: const TextStyle(fontSize: 14, color: Colors.black54),
-                                                labelStyle: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Colors.black54,
-                                                ),
-                                                suffixIcon: IconButton(
-                                                  icon: Icon(
-                                                    isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                                                    color: Colors.black54,
-                                                  ),
-                                                  onPressed: () {
-                                                    // Toggle the password visibility
-                                                    setState(() {
-                                                      isPasswordVisible = !isPasswordVisible;
-                                                    });
-                                                  },
-                                                ),
-                                              ),
-                                              obscureText: !isPasswordVisible,
-                                              validator: (isPasswordValid) {
-                                                if (isPasswordValid.toString().isNotEmpty)
-                                                  return null;
-                                                else if (isPasswordValid!.length < 8) {
-                                                  return 'Password must contain at least 8 characters';
-                                                } else
-                                                  return 'Enter a valid password';
-                                              },
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-
-                                  Visibility(
-                                      visible: selectedOption == "SM",
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        // Navigator.push(
-                                        //   context,
-                                        //   MaterialPageRoute(
-                                        //       builder: (context) =>
-                                        //       const ForgotPasswordView()),
-                                        // );
-                                      },
-                                      child: Container(
-                                        alignment: Alignment.centerRight,
-                                        margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-                                        child: Text(
-                                          "Forgot your password?",
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: StyleData.buttonColor,
-                                          ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //       builder: (context) =>
+                                      //       const ForgotPasswordView()),
+                                      // );
+                                    },
+                                    child: Container(
+                                      alignment: Alignment.centerRight,
+                                      margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                                      child: Text(
+                                        "Forgot your password?",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: StyleData.buttonColor,
                                         ),
                                       ),
                                     ),
@@ -354,199 +348,232 @@ SizedBox(
 
                                   SizedBox(height:height * 0.05),
 
-                                  Visibility(
-                                   visible: selectedOption == "SM",
-                                    child: GestureDetector(
-                                      onTap: () async {
-                                        if (loginformKey.currentState!.validate()) {
-                                          showDialog(
-                                            context: context,
-                                            barrierDismissible: false,
-                                            builder: (BuildContext context) {
-                                              return Center(
-                                                child: SpinKitFadingCircle(
-                                                  color: Colors.redAccent,
-                                                  size: 50.0,
-                                                ),
-                                              );
-                                            },
-                                          );
-                                          SharedPreferences pref = await SharedPreferences.getInstance();
-                                          CollectionReference users = FirebaseFirestore.instance.collection('managerLog');
-                                          print('Employee Code from controller: ${empCodeController.text}');
-                                          users.where("ManagerCode", isEqualTo: empCodeController.text.toUpperCase())
-                                              .where("password", isEqualTo: passwordController.text)
-                                              .get()
-                                              .then((value)  {
-                                            print('Query snapshot: ${value.docs}');
-                                            if (value.docs.isNotEmpty) {
-                                              //  pref.setString("token", credential.user!.uid);
-                                              pref.setString("logintype",
-                                                  value.docs[0].get("userType") ?? "SalesManager");
-                                              pref.setString("Managerlogintype",
-                                                  value.docs[0].get("userType") ?? "ManagerLogin");
-                                              pref.setString("userID", value.docs[0].get("userId"));
-                                              pref.getString("userID") ?? "";
-                                              print("USERIDPrint");
-                                              //  print(userId);
-                                              pref.setString("password", passwordController.text);
-                                              pref.setString("employeeCode", empCodeController.text);
-                                              print('Document exists with employee code: $empCodeController');
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => HomePageView(),
-                                                ),
-                                              );
-                                            } else {
-                                              Navigator.pop(context);
-                                             customSuccessSnackBar("Enter valid credentials");
-                                            }
-                                          }).catchError((error) {
-                                            print('Error getting document: $error');
-                                          });
-                                        }
-                                      },
-                                      child: Container(
-                                        alignment: Alignment.centerRight,
-                                        margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          height: 50.0,
-                                          width: width * 0.5,
-                                          decoration: new BoxDecoration(
-                                              borderRadius: BorderRadius.circular(80.0),
-                                              //color: StyleData.appBarColor3,
-                                              gradient: new LinearGradient(
-                                                  colors: [
-                                                    // Color.fromARGB(255, 168, 2, 2),
-                                                    // Color.fromARGB(255, 206, 122, 122)
-                                                    Color.fromARGB(255, 236, 154, 64),
-                                                    Color.fromARGB(255, 255, 177, 41)
-                                                  ]
-                                              )
-                                          ),
-                                          padding: const EdgeInsets.all(0),
-                                          child: Text(
-                                            "LOGIN",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold
-
+                                  GestureDetector(
+                                    onTap: () async {
+                                      if (loginformKey.currentState!.validate()) {
+                                        showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (BuildContext context) {
+                                            return Center(
+                                              child: SpinKitFadingCircle(
+                                                color: Colors.redAccent,
+                                                size: 50.0,
+                                              ),
+                                            );
+                                          },
+                                        );
+                                        SharedPreferences pref = await SharedPreferences.getInstance();
+                                        CollectionReference users = FirebaseFirestore.instance.collection('managerLog');
+                                        print('Employee Code from controller: ${empCodeController.text}');
+                                        users.where("ManagerCode", isEqualTo: empCodeController.text.toUpperCase())
+                                            .where("password", isEqualTo: passwordController.text)
+                                            .get()
+                                            .then((value)  {
+                                          print('Query snapshot: ${value.docs}');
+                                          if (value.docs.isNotEmpty) {
+                                            //  pref.setString("token", credential.user!.uid);
+                                            // pref.setString("logintype",
+                                            //     value.docs[0].get("userType") ?? "SalesManager");
+                                            pref.setString("logintype",
+                                                value.docs[0].get("userType") == "SalesManager" ? "SalesManager" : "CreditManager" );
+                                            pref.setString("Managerlogintype",
+                                                value.docs[0].get("userType") ?? "ManagerLogin");
+                                            pref.setString("userID", value.docs[0].get("userId"));
+                                            pref.setString("BranchCode", value.docs[0].get("branchCode"));
+                                            pref.setString("ManagerName", value.docs[0].get("ManagerName"));
+                                            pref.getString("userID") ?? "";
+                                            print("USERIDPrint");
+                                            //  print(userId);
+                                            pref.setString("password", passwordController.text);
+                                            pref.setString("employeeCode", empCodeController.text);
+                                            print('Document exists with employee code: $empCodeController');
+                                          ( value.docs[0].get("userType") == "SalesManager") ?
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => HomePageView(),
+                                              ),
+                                            ) :        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => CreditManagerPageView(),
                                             ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Visibility(
-                                    visible: selectedOption == "CM",
-                                    child: GestureDetector(
-                                      onTap: () async {
-                                        if (loginformKey1.currentState!.validate()) {
-                                          showDialog(
-                                            context: context,
-                                            barrierDismissible: false,
-                                            builder: (BuildContext context) {
-                                              return Center(
-                                                child: SpinKitFadingCircle(
-                                                  color: Colors.redAccent,
-                                                  size: 50.0,
-                                                ),
-                                              );
-                                            },
                                           );
-                                          SharedPreferences pref = await SharedPreferences.getInstance();
-                                          CollectionReference users = FirebaseFirestore.instance.collection('creditManagerMapping');
-
-                                          String email = cmEmailController.text;
-                                          String password = cmPasswordController.text;
-
-                                          try {
-                                            QuerySnapshot querySnapshot = await users
-                                                .where("emailID", isEqualTo: email)
-                                                .where("DefaultPassword", isEqualTo: password)
-                                                .get();
-
-                                            if (querySnapshot.docs.isNotEmpty) {
-                                              // Get the first document in the query result
-                                              DocumentSnapshot document = querySnapshot.docs[0];
-
-                                              // Save necessary data to SharedPreferences
-                                              pref.setString("logintype", document.get("userType") ?? "CreditManager");
-                                              pref.setString("BranchCode", document.get("BRANCH_CODE"));
-                                              pref.setString("cmPassword", password);
-                                              pref.setString("cmEMailID", email);
-
-                                              // Navigate to the home page
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => CreditManagerPageView(),
-                                                ),
-                                              );
-                                            } else {
-                                              // If no document matches the query, show error message
-                                              customSuccessSnackBar("Enter valid credentials");
-                                            }
-                                          } catch (error) {
-                                            // Handle any errors that occur during the query
-                                            print('Error getting document: $error');
+                                          } else {
+                                            Navigator.pop(context);
+                                           customSuccessSnackBar("Enter valid credentials");
                                           }
-
-                                        }
-                                      },
-                                      child: Container(
-                                        alignment: Alignment.centerRight,
-                                        margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          height: 50.0,
-                                          width: width * 0.5,
-                                          decoration: new BoxDecoration(
-                                              borderRadius: BorderRadius.circular(80.0),
-                                              //color: StyleData.appBarColor3,
-                                              gradient: new LinearGradient(
-                                                  colors: [
-                                                    // Color.fromARGB(255, 168, 2, 2),
-                                                    // Color.fromARGB(255, 206, 122, 122)
-                                                    Color.fromARGB(255, 236, 154, 64),
-                                                    Color.fromARGB(255, 255, 177, 41)
-                                                  ]
-                                              )
-                                          ),
-                                          padding: const EdgeInsets.all(0),
-                                          child: Text(
-                                            "LOGIN",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold
-
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-
-                                  Visibility(
-                                    visible: selectedOption == "SM",
+                                        }).catchError((error) {
+                                          print('Error getting document: $error');
+                                        });
+                                      }
+                                    },
                                     child: Container(
                                       alignment: Alignment.centerRight,
                                       margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-                                      child: GestureDetector(
-                                        onTap: () => {
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()))
-                                        },
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        height: 50.0,
+                                        width: width * 0.5,
+                                        decoration: new BoxDecoration(
+                                            borderRadius: BorderRadius.circular(80.0),
+                                            //color: StyleData.appBarColor3,
+                                            gradient: new LinearGradient(
+                                                colors: [
+                                                  // Color.fromARGB(255, 168, 2, 2),
+                                                  // Color.fromARGB(255, 206, 122, 122)
+                                                  Color.fromARGB(255, 236, 154, 64),
+                                                  Color.fromARGB(255, 255, 177, 41)
+                                                ]
+                                            )
+                                        ),
+                                        padding: const EdgeInsets.all(0),
                                         child: Text(
-                                          "Don't Have an Account? Sign up",
+                                          "LOGIN",
+                                          textAlign: TextAlign.center,
                                           style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: StyleData.buttonColor,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold
+
                                           ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  // Visibility(
+                                  //   visible: selectedOption == "CM",
+                                  //   child: GestureDetector(
+                                  //     onTap: () async {
+                                  //       if (loginformKey1.currentState!.validate()) {
+                                  //         showDialog(
+                                  //           context: context,
+                                  //           barrierDismissible: false,
+                                  //           builder: (BuildContext context) {
+                                  //             return Center(
+                                  //               child: SpinKitFadingCircle(
+                                  //                 color: Colors.redAccent,
+                                  //                 size: 50.0,
+                                  //               ),
+                                  //             );
+                                  //           },
+                                  //         );
+                                  //
+                                  //         SharedPreferences pref = await SharedPreferences.getInstance();
+                                  //         CollectionReference users = FirebaseFirestore.instance.collection('creditManagerMapping');
+                                  //         String email = cmEmailController.text;
+                                  //         String password = cmPasswordController.text;
+                                  //         users.where("emailID", isEqualTo: email)
+                                  //               .where("DefaultPassword", isEqualTo: password)
+                                  //               .get()
+                                  //             .then((value)  {
+                                  //           print('Query snapshot: ${value.docs}');
+                                  //           if (value.docs.isNotEmpty) {
+                                  //                 pref.setString("logintype", value.docs[0].get("userType") ?? "CreditManager");
+                                  //                 pref.setString("BranchCode", value.docs[0].get("BRANCH_CODE"));
+                                  //                 pref.setString("cmPassword", password);
+                                  //                 pref.setString("cmEMailID", email);
+                                  //                 Navigator.push(
+                                  //                   context,
+                                  //                   MaterialPageRoute(
+                                  //                     builder: (context) => CreditManagerPageView(),
+                                  //                   ),
+                                  //                 );
+                                  //           } else {
+                                  //             Navigator.pop(context);
+                                  //             customSuccessSnackBar("Enter valid credentials");
+                                  //           }
+                                  //         }).catchError((error) {
+                                  //           print('Error getting document: $error');
+                                  //         });
+                                  //
+                                  //         // SharedPreferences pref = await SharedPreferences.getInstance();
+                                  //         // CollectionReference users = FirebaseFirestore.instance.collection('creditManagerMapping');
+                                  //         //
+                                  //         // String email = cmEmailController.text;
+                                  //         // String password = cmPasswordController.text;
+                                  //         //
+                                  //         // try {
+                                  //         //   QuerySnapshot querySnapshot = await users
+                                  //         //       .where("emailID", isEqualTo: email)
+                                  //         //       .where("DefaultPassword", isEqualTo: password)
+                                  //         //       .get();
+                                  //         //
+                                  //         //   if (querySnapshot.docs.isNotEmpty) {
+                                  //         //     // Get the first document in the query result
+                                  //         //     DocumentSnapshot document = querySnapshot.docs[0];
+                                  //         //
+                                  //         //     // Save necessary data to SharedPreferences
+                                  //         //     pref.setString("logintype", value.docs[0].get("userType") ?? "CreditManager");
+                                  //         //     pref.setString("BranchCode", value.docs[0].get("BRANCH_CODE"));
+                                  //         //     pref.setString("cmPassword", password);
+                                  //         //     pref.setString("cmEMailID", email);
+                                  //         //
+                                  //         //     // Navigate to the home page
+                                  //         //     Navigator.push(
+                                  //         //       context,
+                                  //         //       MaterialPageRoute(
+                                  //         //         builder: (context) => CreditManagerPageView(),
+                                  //         //       ),
+                                  //         //     );
+                                  //         //   } else {
+                                  //         //     // If no document matches the query, show error message
+                                  //         //     customSuccessSnackBar("Enter valid credentials");
+                                  //         //   }
+                                  //         // } catch (error) {
+                                  //         //   // Handle any errors that occur during the query
+                                  //         //   print('Error getting document: $error');
+                                  //         // }
+                                  //
+                                  //       }
+                                  //     },
+                                  //     child: Container(
+                                  //       alignment: Alignment.centerRight,
+                                  //       margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                                  //       child: Container(
+                                  //         alignment: Alignment.center,
+                                  //         height: 50.0,
+                                  //         width: width * 0.5,
+                                  //         decoration: new BoxDecoration(
+                                  //             borderRadius: BorderRadius.circular(80.0),
+                                  //             //color: StyleData.appBarColor3,
+                                  //             gradient: new LinearGradient(
+                                  //                 colors: [
+                                  //                   // Color.fromARGB(255, 168, 2, 2),
+                                  //                   // Color.fromARGB(255, 206, 122, 122)
+                                  //                   Color.fromARGB(255, 236, 154, 64),
+                                  //                   Color.fromARGB(255, 255, 177, 41)
+                                  //                 ]
+                                  //             )
+                                  //         ),
+                                  //         padding: const EdgeInsets.all(0),
+                                  //         child: Text(
+                                  //           "LOGIN",
+                                  //           textAlign: TextAlign.center,
+                                  //           style: TextStyle(
+                                  //               color: Colors.white,
+                                  //               fontWeight: FontWeight.bold
+                                  //
+                                  //           ),
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // ),
+
+                                  Container(
+                                    alignment: Alignment.centerRight,
+                                    margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                                    child: GestureDetector(
+                                      onTap: () => {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()))
+                                      },
+                                      child: Text(
+                                        "Don't Have an Account? Sign up",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: StyleData.buttonColor,
                                         ),
                                       ),
                                     ),

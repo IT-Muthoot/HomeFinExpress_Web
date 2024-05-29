@@ -53,7 +53,7 @@ class _HomePageViewState extends State<HomePageView> {
   Map<dynamic, String> employeeFCMTokens = {};
   var fcmToken;
   bool _isLoading = true;
-
+  final ScrollController _scrollController = ScrollController();
 
 
 
@@ -70,22 +70,22 @@ class _HomePageViewState extends State<HomePageView> {
         List<Map<String, dynamic>> filteredList = value.docs.where((doc) =>
         (doc.data() as Map<String, dynamic>).containsKey("LeadID") &&
             (doc["LeadID"] as String).length > 1 &&
-            (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")
+            (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified" || doc["VerificationStatus"] == "Push Back")
         ).map((doc) => doc.data() as Map<String, dynamic>).toList();
 
 // Print out DocumentSnapshot for debugging
         for (var doc in value.docs) {
-          print(doc.data());
+        //  print(doc.data());
         }
 
-        List<DocumentSnapshot> filteredList1 = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).toList();
-        List<DocumentSnapshot> filteredList2 = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified")).toList();
+        List<DocumentSnapshot> filteredList1 = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified" || doc["VerificationStatus"] == "Push Back")).toList();
+        List<DocumentSnapshot> filteredList2 = value.docs.where((doc) => (doc["LeadID"] as String).length > 1 && (doc["VerificationStatus"] == "Sent for Verification" || doc["VerificationStatus"] == "Verified" || doc["VerificationStatus"] == "Push Back")).toList();
 
         setState(() {
           ListOfLeads = filteredList;
           ListOfLeads1 = filteredList2;
           ListOfLeadsId = filteredList1;
-          print(ListOfLeads);
+        //  print(ListOfLeads);
           data = filteredList;
           ManagerName = filteredList.isNotEmpty ? filteredList[0]["ManagerName"] ?? "" : "";
           BranchCode = filteredList.isNotEmpty ? filteredList[0]["homeFinBranchCode"] ?? "" : "";
@@ -94,7 +94,7 @@ class _HomePageViewState extends State<HomePageView> {
         });
 
         for (var i = 0; i < filteredList.length; i++) {
-          print(filteredList[i]);
+        //  print(filteredList[i]);
         }
       });
     } else {
@@ -109,7 +109,7 @@ class _HomePageViewState extends State<HomePageView> {
         });
 
         for (var i = 0; i < filteredList.length; i++) {
-          print(filteredList[i]);
+       //   print(filteredList[i]);
         }
       });
     }
@@ -604,8 +604,9 @@ class _HomePageViewState extends State<HomePageView> {
                   thickness: 8.5,
                   thumbVisibility: true,
                   radius: const Radius.circular(8),
-                  controller: ScrollController(),
+                  controller: _scrollController,
                   child: ListView.builder(
+                    controller: _scrollController,
                     itemCount: searchKEY.text.isEmpty
                         ? ListOfLeads.length
                         : searchListOfLeads.length,

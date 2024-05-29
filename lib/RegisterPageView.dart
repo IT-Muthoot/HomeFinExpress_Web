@@ -460,23 +460,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           CollectionReference users = FirebaseFirestore
                                               .instance
                                               .collection('managerLog');
-
-                                          Map<String, dynamic> params = {
-                                            "ManagerName": ReportingManagerName.text,
-                                            "ManagerCode": ReportingManagerCode.text,
-                                         //   "MobileNumber": mobileNumber.text,
-                                            "email": emailController.text,
-                                            "password": passwordController.text,
-                                            "branchCode": branchcode.text,
-                                            "confirmPassword": confirmpasswordController.text,
-                                            "designation": Designation,
-                                            "Region": RegionName,
-                                            "Zone": Zone,
-                                            "userId": credential.user!.uid,
-                                            "createdDate": Timestamp.now(),
-                                            "userType": "SalesManager",
-                                          };
-                                          users.add(params);
+                                         if(Designation != "CreditManager")
+                                           {
+                                             Map<String, dynamic> params = {
+                                               "ManagerName": ReportingManagerName.text,
+                                               "ManagerCode": ReportingManagerCode.text,
+                                               //   "MobileNumber": mobileNumber.text,
+                                               "email": emailController.text,
+                                               "password": passwordController.text,
+                                               "branchCode": branchcode.text,
+                                               "confirmPassword": confirmpasswordController.text,
+                                               "designation": Designation,
+                                               "Region": RegionName,
+                                               "Zone": Zone,
+                                               "userId": credential.user!.uid,
+                                               "createdDate": Timestamp.now(),
+                                               "userType": "SalesManager",
+                                             };
+                                             users.add(params);
+                                           }
+                                         else {
+                                           Map<String, dynamic> params = {
+                                             "ManagerName": ReportingManagerName.text,
+                                             "ManagerCode": ReportingManagerCode.text,
+                                             //   "MobileNumber": mobileNumber.text,
+                                             "email": emailController.text,
+                                             "password": passwordController.text,
+                                             "branchCode": branchcode.text,
+                                             "confirmPassword": confirmpasswordController.text,
+                                             "designation": Designation,
+                                             "Region": RegionName,
+                                             "Zone": Zone,
+                                             "userId": credential.user!.uid,
+                                             "createdDate": Timestamp.now(),
+                                             "userType": "CreditManager",
+                                           };
+                                           users.add(params);
+                                         }
                                           customSuccessSnackBar1("Registered Successfully");
                                           Navigator.push(
                                             context,

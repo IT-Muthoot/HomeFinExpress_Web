@@ -33,6 +33,7 @@ class _CreditManagerPageViewState extends State<CreditManagerPageView> {
 
   CollectionReference convertedLeads =
   FirebaseFirestore.instance.collection('convertedLeads');
+  final ScrollController _scrollController = ScrollController();
 
   List<QueryDocumentSnapshot> documents = [];
   bool usersVisibility = true;
@@ -74,37 +75,37 @@ class _CreditManagerPageViewState extends State<CreditManagerPageView> {
           return docData.containsKey("LeadID") &&
               docData["LeadID"].toString().length > 1 &&
               (docData["VerificationStatus"] == "Sent for Verification" || docData["VerificationStatus"] == "Verified") &&
-              (docData["VerifiedBy"] == "Verified By SM" || docData["VerifiedBy"] == "Verified By CM" );
+              (docData["VerifiedBy"] == "Verified By SM" || docData["VerifiedBy"] == "Verified By CM" || doc["VerificationStatus"] == "Push Back");
         }).map((doc) => doc.data() as Map<String, dynamic>).toList();
 
         // Print out DocumentSnapshot for debugging
         for (var doc in value.docs) {
-          print(doc.data());
+         // print(doc.data());
         }
 
         List<DocumentSnapshot> filteredList1 = value.docs.where((doc) {
           docData = doc.data();
-          return (docData["LeadID"] as String).length > 1 && (docData["VerificationStatus"] == "Sent for Verification" || docData["VerificationStatus"] == "Verified");
+          return (docData["LeadID"] as String).length > 1 && (docData["VerificationStatus"] == "Sent for Verification" || docData["VerificationStatus"] == "Verified" || doc["VerificationStatus"] == "Push Back");
         }).toList();
         List<DocumentSnapshot> filteredList2 = value.docs.where((doc) {
           docData = doc.data();
-          return (docData["LeadID"] as String).length > 1 && (docData["VerificationStatus"] == "Sent for Verification" || docData["VerificationStatus"] == "Verified");
+          return (docData["LeadID"] as String).length > 1 && (docData["VerificationStatus"] == "Sent for Verification" || docData["VerificationStatus"] == "Verified" || doc["VerificationStatus"] == "Push Back");
         }).toList();
 
         setState(() {
           ListOfLeads = filteredList;
           ListOfLeads1 = filteredList2;
           ListOfLeadsId = filteredList1;
-          print(ListOfLeads);
+         // print(ListOfLeads);
           data = filteredList;
-       //   ManagerName = filteredList.isNotEmpty ? filteredList[0]["ManagerName"] ?? "" : "";
+       ManagerName = pref.getString("ManagerName");
           BranchCode = filteredList.isNotEmpty ? filteredList[0]["homeFinBranchCode"] ?? "" : "";
           EmployeeName = filteredList.isNotEmpty ? filteredList[0]["EmployeeName"] ?? "" : "";
           Designation = filteredList.isNotEmpty ? filteredList[0]["Designation"] ?? "" : "";
         });
 
         for (var i = 0; i < filteredList.length; i++) {
-          print(filteredList[i]);
+        //  print(filteredList[i]);
         }
       });
     } else {
@@ -114,16 +115,16 @@ class _CreditManagerPageViewState extends State<CreditManagerPageView> {
           return docData.containsKey("VerifiedBy") &&
               (docData["VerifiedBy"] == "Verified By SM" || docData["VerifiedBy"] == "Verified By CM" ) &&
               (docData["LeadID"] ?? "").toString().length > 1 &&
-              (docData["VerificationStatus"] == "Sent for Verification" || docData["VerificationStatus"] == "Verified");
+              (docData["VerificationStatus"] == "Sent for Verification" || docData["VerificationStatus"] == "Verified" || docData["VerificationStatus"] == "Push Back");
         }).map((doc) => doc.data() as Map<String, dynamic>).toList();
 
         List<DocumentSnapshot> filteredList1 = value.docs.where((doc) {
          docData = doc.data();
-          return (docData["LeadID"] ?? "" as String).length > 1 && (docData["VerificationStatus"] == "Sent for Verification" || docData["VerificationStatus"] == "Verified");
+          return (docData["LeadID"] ?? "" as String).length > 1 && (docData["VerificationStatus"] == "Sent for Verification" || docData["VerificationStatus"] == "Verified" || docData["VerificationStatus"] == "Push Back");
         }).toList();
         List<DocumentSnapshot> filteredList2 = value.docs.where((doc) {
           docData = doc.data();
-          return (docData["LeadID"] ?? "" as String).length > 1 && (docData["VerificationStatus"] == "Sent for Verification" || docData["VerificationStatus"] == "Verified");
+          return (docData["LeadID"] ?? "" as String).length > 1 && (docData["VerificationStatus"] == "Sent for Verification" || docData["VerificationStatus"] == "Verified" || docData["VerificationStatus"] == "Push Back");
         }).toList();
         setState(() {
           ListOfLeads = filteredList;
@@ -132,7 +133,7 @@ class _CreditManagerPageViewState extends State<CreditManagerPageView> {
         });
 
         for (var i = 0; i < filteredList.length; i++) {
-          print(filteredList[i]);
+        //  print(filteredList[i]);
         }
       });
     }
@@ -356,33 +357,33 @@ class _CreditManagerPageViewState extends State<CreditManagerPageView> {
                   SizedBox(
                     width: width * 0.05,
                   ),
-                  // Builder(
-                  //   builder: (context) {
-                  //   //  String countText =  ManagerName.toString();
-                  //   //  double textWidth = countText.length * 8.0; // Adjust 8.0 based on your font size and preference
-                  //     print(BranchCode);
-                  //     print(EmployeeName);
-                  //     print(Designation);
-                  //     return Container(
-                  //       width: textWidth + 100, // Adjust padding as needed
-                  //       height: height * 0.036,
-                  //       // decoration: BoxDecoration(
-                  //       //   borderRadius: BorderRadius.circular(10),
-                  //       //   color: Colors.white24,
-                  //       // ),
-                  //       child: Center(
-                  //         child: Text(
-                  //           countText,
-                  //           style: TextStyle(
-                  //             fontSize: 18,
-                  //             color: Colors.white,
-                  //             fontFamily: 'Poppins',
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     );
-                  //   },
-                  // ),
+                  Builder(
+                    builder: (context) {
+                     String countText =  ManagerName.toString();
+                     double textWidth = countText.length * 8.0; // Adjust 8.0 based on your font size and preference
+                      print(BranchCode);
+                      print(EmployeeName);
+                      print(Designation);
+                      return Container(
+                        width: textWidth + 100, // Adjust padding as needed
+                        height: height * 0.036,
+                        // decoration: BoxDecoration(
+                        //   borderRadius: BorderRadius.circular(10),
+                        //   color: Colors.white24,
+                        // ),
+                        child: Center(
+                          child: Text(
+                            countText,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontFamily: 'Poppins',
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
 
 
                 ],
@@ -630,8 +631,9 @@ class _CreditManagerPageViewState extends State<CreditManagerPageView> {
                   thickness: 8.5,
                   thumbVisibility: true,
                   radius: const Radius.circular(8),
-                  controller: ScrollController(),
+                  controller:_scrollController,
                   child: ListView.builder(
+                    controller: _scrollController,
                     itemCount: searchKEY.text.isEmpty
                         ? ListOfLeads.length
                         : searchListOfLeads.length,
