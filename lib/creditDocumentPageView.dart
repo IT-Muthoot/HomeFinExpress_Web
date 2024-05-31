@@ -162,48 +162,6 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
     }
   }
 
-
-
-  // void fetchdata() async {
-  //   CollectionReference users =
-  //   FirebaseFirestore.instance.collection('convertedLeads');
-  //   users.doc(widget.docId).get().then((value) async {
-  //     setState(() {
-  //       docData = value.data();
-  //     });
-  //     ApplicantFirstName = docData["firstName"] ?? "";
-  //     LeadID  = docData["LeadID"] ?? "";
-  //     ApplicantLastName = docData["lastName"] ?? "";
-  //     CustomerNumber = docData["customerNumber"] ?? "";
-  //     DateOfBirth = docData["dateOfBirth"] ?? "";
-  //     Gender = docData["gender"] ?? "";
-  //     HomeFinBranchCode = docData["homeFinBranchCode"] ?? "";
-  //     LeadAmount = docData["leadAmount"] ?? "";
-  //     LeadSource = docData["leadSource"] ?? "";
-  //     panCardNumber = docData["panCardNumber"] ?? "";
-  //     aadharNumber = docData["aadharNumber"] ?? "";
-  //     verificationStatus = docData["VerificationStatus"] ?? "";
-  //     Query = docData["Query"] ?? "";
-  //     QueryStatus = docData["isQuery"] ?? "";
-  //     QueryUpdatedByRO = docData["QueryBy"] ?? "";
-  //     //  print(_leadSource.text);
-  //     print(ApplicantFirstName);
-  //     print(LeadID);
-  //
-  //
-  //     // Using for Technical Checklist
-  //
-  //     docData.forEach((key, value) {
-  //       List<String> parts = key.split("-");
-  //       if (parts.isNotEmpty && parts.last == "checklist") {
-  //         filteredData[key] = value;
-  //       }
-  //     });
-  //
-  //   });
-  //
-  // }
-
   Future<void> downloadDocument(String docId, String leadID) async {
     var map = <String, dynamic>{};
     map['DocId'] = docId;
@@ -231,6 +189,17 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
 
   // bool isVerified = false;
   bool isQuery = false;
+  bool _isQueryEntered = false;
+
+  bool _checkIfQueryEntered() {
+    for (var doc in docData) {
+      if (doc['queryController'].text.isNotEmpty) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 
   void UpdatedVerificationStatus() async {
     try {
@@ -269,65 +238,12 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
     }
   }
 
-
-  // void UpdatedVerificationStatus() async {
-  //   try {
-  //     // Reference to the document in the "convertedLeads" collection
-  //     DocumentReference docRef = FirebaseFirestore.instance.collection('convertedLeads').doc(widget.docId);
-  //
-  //     // Update the document with the new field and value
-  //     await docRef.update({
-  //       'VerificationStatus': 'Sent for Verification',
-  //       'VerifiedBy': 'Verified By SM',
-  //     });
-  //     setState(() {
-  //       isVerified = true;
-  //     });
-  //     _showAlertDialogSuccess(context);
-  //     print('Document updated successfully');
-  //
-  //   } catch (e) {
-  //     print('Error updating document: $e');
-  //   }
-  // }
-
-  // void UpdatedQueryStatus() async {
-  //   try {
-  //     // Reference to the documents in the "convertedLeads" collection
-  //     QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('convertedLeads')
-  //         .where('LeadID', isEqualTo: widget.leadID)
-  //         .get();
-  //
-  //     // Check if documents exist
-  //     if (querySnapshot.docs.isNotEmpty) {
-  //       // Update each document with the new field and value
-  //       querySnapshot.docs.forEach((doc) async {
-  //         await doc.reference.update({
-  //           'Query': queryReason.text,
-  //           'isQuery': true,
-  //           'QueryBy': 'Query By CM',
-  //           'VerificationStatus': 'Pending',
-  //         });
-  //       });
-  //
-  //       setState(() {
-  //         isQuery = true;
-  //       });
-  //       _showAlertDialogSuccess1(context);
-  //       sendNotificationToDevice(FCMServerKey,widget.token);
-  //       print('Query updated successfully');
-  //     } else {
-  //       // Handle the case where no document with the specified LeadID is found
-  //       print('No document found with LeadID: ${widget.leadID}');
-  //     }
-  //   } catch (e) {
-  //     print('Error updating document: $e');
-  //   }
-  // }
-
   List<String> queryTexts = [];
   List<String> documentNames = [];
   Map<String, String> queryTextByDocumentName = {};
+  bool isQueryEntered = false;
+
+
   void UpdatedQueryStatus() async {
     try {
       // Reference to the documents in the "convertedLeads" collection
@@ -406,16 +322,17 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
     Map<String, dynamic> notification = {
       'notification': {
         'title': '"HomeFin Express" Verification Status Updated',
-        'body': widget.leadID + "-" + 'Query By CM : \n$documentNamesString',
+        'body': ApplicantFirstName! + ' ' + ApplicantLastName! + " - " + 'Query By CM : \n$documentNamesString',
         'icon': "https://firebasestorage.googleapis.com/v0/b/lms-application-be1ea.appspot.com/o/ic_launcher.png?alt=media&token=c37f6227-036f-4ed9-b757-bd1dc0c27809",
         'click_action': 'FLUTTER_NOTIFICATION_CLICK'
       },
       'priority': 'high',
       'data': {
         'title': '"HomeFin Express" Verification Status Updated',
-        'body': widget.leadID + "-" + 'Query By CM:\n$documentNamesString',
+        'body': ApplicantFirstName! + ' ' + ApplicantLastName! + " - " + 'Query By CM :\n$documentNamesString',
         // Add any additional data you want to send with the notification
         'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+        'screen': 'NotificationPageView'
       },
       'to': FCMToken, // FCM token of the device you want to send the notification to
     };
@@ -447,15 +364,16 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
     Map<String, dynamic> notification = {
       'notification': {
         'title': '"HomeFin Express" Verification Status Updated - Verified',
-        'body': widget.leadID +" - " + "Verified By CM",
+        'body': ApplicantFirstName! + ' ' + ApplicantLastName! +" - " + "Verified By CM",
         'icon': "https://firebasestorage.googleapis.com/v0/b/lms-application-be1ea.appspot.com/o/ic_launcher.png?alt=media&token=c37f6227-036f-4ed9-b757-bd1dc0c27809",
         'click_action': 'FLUTTER_NOTIFICATION_CLICK'
       },
       'priority': 'high',
       'data': {
         'title': '"HomeFin Express" Verification Status Updated - Verified',
-        'body': widget.leadID +" - " + "Verified By CM",
+        'body': ApplicantFirstName! + ' ' + ApplicantLastName! +" - " + "Verified By CM",
         'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+        'screen': 'NotificationPageView'
         // Add any additional data you want to send with the notification
       },
       'to': FCMTOken, // FCM token of the device you want to send the notification to
@@ -685,8 +603,9 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
                                   width: width * 0.02,
                                 ),
                                 ElevatedButton(
-                                  onPressed: () {
-                                    if(verifiedBy == 'Verified By SM' || verifiedBy == 'Verified By CM'  )
+                                  onPressed: isQueryEntered
+                                      ? () {
+                                    if(verifiedBy == 'Verified By SM' && verifiedBy == 'Verified By CM')
                                     {
 
                                     }
@@ -699,9 +618,7 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
                                       }
                                     }
 
-
-
-                                  },
+                                  } : null,
                                   style: ElevatedButton.styleFrom(
                                     primary: StyleData.buttonColor,
                                   ),
@@ -871,6 +788,18 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
                                                           indent: 5,
                                                           endIndent: 5,
                                                         ),
+                                                        verificationStatus == 'Verified' ?
+                                                        Column(
+                                                          children: [
+                                                            Checkbox(
+                                                              value: doc['isChecked'],
+                                                              activeColor: StyleData.appBarColor2,
+                                                              onChanged: (value) {
+                                                              },
+                                                            ),
+                                                            Text('Verified'),
+                                                          ],
+                                                        ) :
                                                         Column(
                                                           children: [
                                                             Checkbox(
@@ -902,6 +831,11 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
                                                     Expanded(
                                                       child: TextField(
                                                         controller: doc['queryController'],
+                                                        onChanged: (value) {
+                                                          setState(() {
+                                                            isQueryEntered = value.isNotEmpty;
+                                                          });
+                                                        },
                                                         decoration: InputDecoration(
                                                           hintText: "Enter your query here",
                                                           // focusedBorder: focus,
@@ -1005,6 +939,18 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
                                                           indent: 5,
                                                           endIndent: 5,
                                                         ),
+                                                        verificationStatus == 'Verified' ?
+                                                        Column(
+                                                          children: [
+                                                            Checkbox(
+                                                              value: doc['isChecked'],
+                                                              activeColor: StyleData.appBarColor2,
+                                                              onChanged: (value) {
+                                                              },
+                                                            ),
+                                                            Text('Verified'),
+                                                          ],
+                                                        ) :
                                                         Column(
                                                           children: [
                                                             Checkbox(
@@ -1036,6 +982,11 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
                                                     Expanded(
                                                       child: TextField(
                                                         controller: doc['queryController'],
+                                                        onChanged: (value) {
+                                                          setState(() {
+                                                            isQueryEntered = value.isNotEmpty;
+                                                          });
+                                                        },
                                                         decoration: InputDecoration(
                                                           hintText: "Enter your query here",
                                                           border: OutlineInputBorder(
@@ -1055,6 +1006,7 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
                                                         ),
                                                         maxLines: 1,
                                                         enabled: !doc['isChecked'],
+
                                                       ),
                                                     ),
                                                   ],
@@ -1083,140 +1035,6 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
       ),
     );
   }
-
-  //
-  // Widget buildListItem(String text) {
-  //   return Column(
-  //     children: [
-  //       Padding(
-  //         padding: const EdgeInsets.symmetric(vertical: 8.0),
-  //         child: Row(
-  //           children: [
-  //             Expanded(
-  //               child: Text(
-  //                 text,
-  //                 style: TextStyle(fontSize: 16),
-  //               ),
-  //             ),
-  //             InkWell(
-  //               onTap: () async {
-  //                 // print(docData);
-  //                 // print("bjksjjjjjjjj");
-  //                 if (docData.containsKey(
-  //                     'Application_Form')) {
-  //                   docId = docData['Application_Form'].toString();
-  //                   // "${docData['Application_Form'].toString()}";
-  //                 }
-  //                 print(docId);
-  //                 if (docData["Bank_Passbook"]) {
-  //                   docId =
-  //                   "$docId,${docData["Bank_Passbook"]}";
-  //                 }
-  //                 // if (data.containsKey(
-  //                 //     'Date_Of_Birth')) {
-  //                 //   docId =
-  //                 //   "$docId,${data['Date_Of_Birth'].toString()}";
-  //                 // }
-  //                 // if (data.containsKey(
-  //                 //     'Login_Fee_Check')) {
-  //                 //   docId =
-  //                 //   "$docId,${data['Login_Fee_Check'].toString()}";
-  //                 // }
-  //                 // if (data.containsKey(
-  //                 //     'Passport_Size_Photo')) {
-  //                 //   docId =
-  //                 //   "$docId,${data['Passport_Size_Photo'].toString()}";
-  //                 // }
-  //                 // if (data.containsKey(
-  //                 //     'Photo_Id_Proof')) {
-  //                 //   docId =
-  //                 //   "$docId,${data['Photo_Id_Proof'].toString()}";
-  //                 // }
-  //                 // if (data.containsKey(
-  //                 //     'Residence_Proof')) {
-  //                 //   docId =
-  //                 //   "$docId,${data['Residence_Proof'].toString()}";
-  //                 // }
-  //                 // if (data.containsKey(
-  //                 //     'Salary_Slip')) {
-  //                 //   docId =
-  //                 //   "$docId,${data['Salary_Slip'].toString()}";
-  //                 // }
-  //                 // if (data.containsKey(
-  //                 //     'Signature_Proof')) {
-  //                 //   docId =
-  //                 //   "$docId,${data['Signature_Proof'].toString()}";
-  //                 // }
-  //                 // if (data.containsKey(
-  //                 //     'Copy_Of_Property')) {
-  //                 //   docId =
-  //                 //   "$docId,${data['Copy_Of_Property'].toString()}";
-  //                 // }
-  //                 // if (data.containsKey(
-  //                 //     'Total_Work_Experience')) {
-  //                 //   docId =
-  //                 //   "$docId,${data['Total_Work_Experience'].toString()}";
-  //                 // }
-  //                 // if (data.containsKey(
-  //                 //     'Work_Experience')) {
-  //                 //   docId =
-  //                 //   "$docId,${data['Work_Experience'].toString()}";
-  //                 // }
-  //                 print(docId);
-  //                 // New Implementation
-  //
-  //                 var map = <String,
-  //                     dynamic>{};
-  //                 map['DocId'] = docId;
-  //                 map['LUSR'] = 'HomeFin';
-  //
-  //                 http.Response
-  //                 response =
-  //                 await http.post(
-  //                   Uri.parse(
-  //                       "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
-  //                   body: map,
-  //                 );
-  //                 final data1 = response
-  //                     .bodyBytes;
-  //                 final mime =
-  //                 lookupMimeType('',
-  //                     headerBytes:
-  //                     data1);
-  //                 // print(mime);
-  //                 if (docId.toString().contains(",")) {
-  //                   AnchorElement(
-  //                       href: "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
-  //                     ..setAttribute(
-  //                         "download",
-  //                         (docData['LeadID'] != null && docData['LeadID'].isNotEmpty)
-  //                             ? "${docData['LeadID']}.zip"
-  //                             : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.zip")
-  //                     ..click();
-  //                 } else {
-  //                   AnchorElement(
-  //                       href: "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
-  //                     ..setAttribute(
-  //                         "download",
-  //                         (docData['LeadID'] != null && docData['LeadID'].isNotEmpty)
-  //                             ? "${docData['LeadID']}.${mime.toString().split("/").last}"
-  //                             : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.${mime.toString().split("/").last}")
-  //                     ..click();
-  //                 }
-  //
-  //               },
-  //               child: Icon(
-  //                   Icons.download_for_offline,
-  //                   color: Colors.red.shade300
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //       Divider(),
-  //     ],
-  //   );
-  // }
 
   void _showAlertDialogSuccess(BuildContext context) {
     showDialog(

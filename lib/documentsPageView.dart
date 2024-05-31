@@ -66,6 +66,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
   var docData;
   Map<String, dynamic> filteredData = {};
   List<Map<String, dynamic>> documents = [];
+  bool isQueryEntered = false;
 
 
 
@@ -316,14 +317,14 @@ class _DocumentPageViewState extends State<DocumentPageView> {
     Map<String, dynamic> notification = {
       'notification': {
         'title': '"HomeFin Express" Verification Status Updated',
-        'body': '${widget.leadID} - Query By SM:\n$documentNamesString',
+        'body': '${ApplicantFirstName! + ' ' + ApplicantLastName!} - Query By SM:\n$documentNamesString',
         'icon': "https://firebasestorage.googleapis.com/v0/b/lms-application-be1ea.appspot.com/o/ic_launcher.png?alt=media&token=c37f6227-036f-4ed9-b757-bd1dc0c27809",
         'click_action': 'FLUTTER_NOTIFICATION_CLICK',
       },
       'priority': 'high',
       'data': {
         'title': '"HomeFin Express" Verification Status Updated',
-        'body': '${widget.leadID} - Query By SM:\n$documentNamesString',
+        'body': '${ApplicantFirstName! + ' ' + ApplicantLastName!} - Query By SM:\n$documentNamesString',
         // Add any additional data you want to send with the notification
         'click_action': 'FLUTTER_NOTIFICATION_CLICK',
         'screen': 'NotificationPageView'
@@ -360,14 +361,14 @@ class _DocumentPageViewState extends State<DocumentPageView> {
     Map<String, dynamic> notification = {
       'notification': {
         'title': '"HomeFin Express" Verification Status Updated',
-        'body': widget.leadID +" - " + "Verification Completed By SM",
+        'body': ApplicantFirstName! + ' ' + ApplicantLastName! +" - " + "Verification Completed By SM",
         'icon': "https://firebasestorage.googleapis.com/v0/b/lms-application-be1ea.appspot.com/o/ic_launcher.png?alt=media&token=c37f6227-036f-4ed9-b757-bd1dc0c27809",
         'click_action': 'FLUTTER_NOTIFICATION_CLICK'
       },
       'priority': 'high',
       'data': {
         'title': '"HomeFin Express" Verification Status Updated',
-        'body': widget.leadID +" - " + "Verification Completed By SM",
+        'body': ApplicantFirstName! + ' ' + ApplicantLastName! +" - " + "Verification Completed By SM",
         'click_action': 'FLUTTER_NOTIFICATION_CLICK',
         'screen': 'NotificationPageView'
         // Add any additional data you want to send with the notification
@@ -602,92 +603,29 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                   width: width * 0.02,
                                 ),
                                 ElevatedButton(
-                                  onPressed: () {
-                                if(verifiedBy == 'Verified By SM' || verifiedBy == 'Verified By CM'  )
-                                  {
-
+                                  onPressed: isQueryEntered
+                                      ? () {
+                                    if (verifiedBy == 'Verified By SM' || verifiedBy == 'Verified By CM') {
+                                      // No action needed
+                                    } else {
+                                      if (verificationStatus == 'Push Back') {
+                                        _showAlertDialog1(context);
+                                      } else {
+                                        UpdatedQueryStatus();
+                                      }
+                                    }
                                   }
-                                else {
-                                  if(verificationStatus == 'Push Back')
-                                  {
-                                    _showAlertDialog1(context);
-                                  }else {
-                                    UpdatedQueryStatus();
-                                  }
-                                }
-
-
-                                    // verifiedBy == 'Verified By SM' || verifiedBy == 'Verified By CM' ? "" :
-                                    // showDialog(
-                                    //   context: context,
-                                    //   builder: (BuildContext context) {
-                                    //     return AlertDialog(
-                                    //       backgroundColor: Colors.white,
-                                    //       title: Text("Query",style: TextStyle(color: StyleData.appBarColor3),),
-                                    //       contentPadding: EdgeInsets.all(16), // Set fixed padding
-                                    //       content: SizedBox(
-                                    //         width: 400, // Set fixed width
-                                    //         child: Column(
-                                    //           mainAxisSize: MainAxisSize.min,
-                                    //           children: [
-                                    //             TextFormField(
-                                    //               controller: queryReason,
-                                    //               decoration: InputDecoration(
-                                    //                 hintText: "Enter your query here",
-                                    //                 border: OutlineInputBorder(
-                                    //                   borderSide: BorderSide(
-                                    //                     color: Colors.black12,
-                                    //                   ),
-                                    //                 ),
-                                    //                 focusedBorder: OutlineInputBorder(
-                                    //                   borderSide: BorderSide(
-                                    //                     color: Colors.grey,
-                                    //                   ),
-                                    //                 ),
-                                    //                 enabledBorder: OutlineInputBorder(
-                                    //                   borderSide: BorderSide(
-                                    //                     color: Colors.black12,
-                                    //                   ),
-                                    //                 ),
-                                    //               ),
-                                    //               maxLines: 3,
-                                    //               // Adjust the number of lines as needed
-                                    //             ),
-                                    //           ],
-                                    //         ),
-                                    //       ),
-                                    //       actions: [
-                                    //         ElevatedButton(
-                                    //           onPressed: () {
-                                    //             Navigator.of(context).pop(); // Close the dialog
-                                    //           },
-                                    //           child: Text("Cancel"),
-                                    //           style: ElevatedButton.styleFrom(
-                                    //             primary: Colors.grey,
-                                    //             onPrimary: Colors.white, // Set text color to white
-                                    //           ),
-                                    //         ),
-                                    //         ElevatedButton(
-                                    //           onPressed: () {
-                                    //             UpdatedQueryStatus();
-                                    //           },
-                                    //           child: Text("Submit"),
-                                    //           style: ElevatedButton.styleFrom(
-                                    //             primary: StyleData.buttonColor,
-                                    //             onPrimary: Colors.white, // Set text color to white
-                                    //           ),
-                                    //         ),
-                                    //       ],
-                                    //     );
-                                    //   },
-                                    // );
-                                  },
+                                      : null, // Disable the button if isQueryEntered is false
                                   style: ElevatedButton.styleFrom(
-                                    primary: StyleData.buttonColor,
+                                    primary: StyleData.buttonColor, // Ensure `StyleData` is properly defined
                                   ),
                                   child: Text(
                                     'Push Back',
-                                    style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: StyleData.boldFont),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontFamily: StyleData.boldFont, // Ensure `StyleData` is properly defined
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
@@ -824,6 +762,18 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                           indent: 5,
                                                           endIndent: 5,
                                                         ),
+                                                        verifiedBy == 'Verified By SM' || verifiedBy == 'Verified By CM' ?
+                                                        Column(
+                                                          children: [
+                                                            Checkbox(
+                                                              value: doc['isChecked'],
+                                                              activeColor: StyleData.appBarColor2,
+                                                              onChanged: (value) {
+                                                              },
+                                                            ),
+                                                            Text('Verified'),
+                                                          ],
+                                                        ) :
                                                         Column(
                                                           children: [
                                                             Checkbox(
@@ -855,6 +805,11 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                     Expanded(
                                                       child: TextField(
                                                         controller: doc['queryController'],
+                                                        onChanged: (value) {
+                                                     setState(() {
+                                                       isQueryEntered = value.isNotEmpty;
+                                                     });
+                                                        },
                                                         decoration: InputDecoration(
                                                           hintText: "Enter your query here",
                                                           // focusedBorder: focus,
@@ -958,6 +913,18 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                           indent: 5,
                                                           endIndent: 5,
                                                         ),
+                                                        verifiedBy == 'Verified By SM' || verifiedBy == 'Verified By CM'  ?
+                                                        Column(
+                                                          children: [
+                                                            Checkbox(
+                                                              value: doc['isChecked'],
+                                                              activeColor: StyleData.appBarColor2,
+                                                              onChanged: (value) {
+                                                              },
+                                                            ),
+                                                            Text('Verified'),
+                                                          ],
+                                                        ) :
                                                         Column(
                                                           children: [
                                                             Checkbox(
@@ -989,6 +956,11 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                     Expanded(
                                                       child: TextField(
                                                         controller: doc['queryController'],
+                                                        onChanged: (value) {
+                                                          setState(() {
+                                                            isQueryEntered = value.isNotEmpty;
+                                                          });
+                                                        },
                                                         decoration: InputDecoration(
                                                           hintText: "Enter your query here",
                                                           border: OutlineInputBorder(
@@ -1140,6 +1112,66 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                     child: ElevatedButton(
                       onPressed: () {
                      Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                      child: Text('OK', style: TextStyle(color: Colors.white)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+  void _showAlertDialog2(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            backgroundColor: Colors.white,
+            elevation: 0, // No shadow
+            content: Container(
+              height:190,
+              width: 200,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Center(
+                    child:
+                    Container(
+                      height: 80,
+                      width: 60,
+                      decoration: BoxDecoration(
+                          color: Colors.yellow,
+                          shape: BoxShape.circle
+                      ),
+                      child: Center(
+                        child: Icon(Icons.warning,color: Colors.white,),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text('Please enter your Query', textAlign: TextAlign.center,style: TextStyle(color: Colors.black87,fontWeight: FontWeight.bold)),
+                  //  SizedBox(height: 8),
+
+                  SizedBox(height: 5),
+                  SizedBox(
+                    height: 25,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
                         primary: Colors.red,

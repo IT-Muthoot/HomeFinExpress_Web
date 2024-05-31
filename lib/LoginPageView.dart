@@ -6,6 +6,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:homefin_express_web/Utils/StyleData.dart';
 import 'CreditManagerPageView.dart';
+import 'ForgotPasswordView.dart';
 import 'HomePageView.dart';
 import 'RegisterPageView.dart';
 
@@ -326,12 +327,12 @@ SizedBox(
 
                                   GestureDetector(
                                     onTap: () {
-                                      // Navigator.push(
-                                      //   context,
-                                      //   MaterialPageRoute(
-                                      //       builder: (context) =>
-                                      //       const ForgotPasswordView()),
-                                      // );
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                            const ForgotPasswordView()),
+                                      );
                                     },
                                     child: Container(
                                       alignment: Alignment.centerRight,

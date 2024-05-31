@@ -74,8 +74,7 @@ class _CreditManagerPageViewState extends State<CreditManagerPageView> {
         docData = doc.data();
           return docData.containsKey("LeadID") &&
               docData["LeadID"].toString().length > 1 &&
-              (docData["VerificationStatus"] == "Sent for Verification" || docData["VerificationStatus"] == "Verified") &&
-              (docData["VerifiedBy"] == "Verified By SM" || docData["VerifiedBy"] == "Verified By CM" || doc["VerificationStatus"] == "Push Back");
+              (docData["VerificationStatus"] == "Sent for Verification" || docData["VerificationStatus"] == "Verified" || docData["VerifiedBy"] == "Verified By SM" || docData["VerifiedBy"] == "Verified By CM" || docData["VerificationStatus"] == "Push Back");
         }).map((doc) => doc.data() as Map<String, dynamic>).toList();
 
         // Print out DocumentSnapshot for debugging
@@ -85,11 +84,11 @@ class _CreditManagerPageViewState extends State<CreditManagerPageView> {
 
         List<DocumentSnapshot> filteredList1 = value.docs.where((doc) {
           docData = doc.data();
-          return (docData["LeadID"] as String).length > 1 && (docData["VerificationStatus"] == "Sent for Verification" || docData["VerificationStatus"] == "Verified" || doc["VerificationStatus"] == "Push Back");
+          return (docData["LeadID"] as String).length > 1 && (docData["VerificationStatus"] == "Sent for Verification" || docData["VerificationStatus"] == "Verified" || docData["VerificationStatus"] == "Push Back");
         }).toList();
         List<DocumentSnapshot> filteredList2 = value.docs.where((doc) {
           docData = doc.data();
-          return (docData["LeadID"] as String).length > 1 && (docData["VerificationStatus"] == "Sent for Verification" || docData["VerificationStatus"] == "Verified" || doc["VerificationStatus"] == "Push Back");
+          return (docData["LeadID"] as String).length > 1 && (docData["VerificationStatus"] == "Sent for Verification" || docData["VerificationStatus"] == "Verified" || docData["VerificationStatus"] == "Push Back");
         }).toList();
 
         setState(() {

@@ -88,7 +88,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         RegionName = outputList1[0]['REGION'];
         Zone = outputList1[0]['ZONE'];
       });
-      print("Output List " + outputList1.toString());
+     // print("Output List " + outputList1.toString());
 
     });
   }

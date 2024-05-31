@@ -1,11 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
-import 'HomePageView.dart';
-import 'LoginPageView.dart';
-import 'PrivacyPolicy.dart';
 import 'SplashView.dart';
-import 'TermsAndCondition.dart';
 import 'firebase_options.dart';
 
 
