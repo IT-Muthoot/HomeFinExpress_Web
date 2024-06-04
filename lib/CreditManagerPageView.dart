@@ -74,7 +74,7 @@ class _CreditManagerPageViewState extends State<CreditManagerPageView> {
         docData = doc.data();
           return docData.containsKey("LeadID") &&
               docData["LeadID"].toString().length > 1 &&
-              (docData["VerificationStatus"] == "Sent for Verification" || docData["VerificationStatus"] == "Verified" || docData["VerifiedBy"] == "Verified By SM" || docData["VerifiedBy"] == "Verified By CM" || docData["VerificationStatus"] == "Push Back");
+              ((docData["VerificationStatus"] == "Sent for Verification" &&  docData["VerifiedBy"] == "Verified By SM" ) || docData["VerificationStatus"] == "Verified" || (docData["VerificationStatus"] == "Push Back" && docData["VerifiedBy"] == "Verified By SM"  ));
         }).map((doc) => doc.data() as Map<String, dynamic>).toList();
 
         // Print out DocumentSnapshot for debugging

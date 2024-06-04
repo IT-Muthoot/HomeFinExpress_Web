@@ -87,7 +87,8 @@ class _HomePageViewState extends State<HomePageView> {
           ListOfLeadsId = filteredList1;
         //  print(ListOfLeads);
           data = filteredList;
-          ManagerName = filteredList.isNotEmpty ? filteredList[0]["ManagerName"] ?? "" : "";
+          ManagerName = pref.getString("ManagerName");
+          // ManagerName = filteredList.isNotEmpty ? filteredList[0]["ManagerName"] ?? "" : "";
           BranchCode = filteredList.isNotEmpty ? filteredList[0]["homeFinBranchCode"] ?? "" : "";
           EmployeeName = filteredList.isNotEmpty ? filteredList[0]["EmployeeName"] ?? "" : "";
           Designation = filteredList.isNotEmpty ? filteredList[0]["Designation"] ?? "" : "";
@@ -332,7 +333,7 @@ class _HomePageViewState extends State<HomePageView> {
                   ),
                   Builder(
                     builder: (context) {
-                      String countText =  ManagerName.toString();
+                      String countText = ManagerName?.toString() ?? '';
                       double textWidth = countText.length * 8.0; // Adjust 8.0 based on your font size and preference
                       print(BranchCode);
                       print(EmployeeName);
