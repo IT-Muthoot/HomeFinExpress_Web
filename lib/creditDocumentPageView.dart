@@ -179,7 +179,7 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
       ..setAttribute(
         "download",
         (leadID.isNotEmpty)
-            ? "$leadID.${mime?.split("/").last ?? 'file'}"
+            ? "$ApplicantFirstName $ApplicantLastName.${mime?.split("/").last ?? 'file'}"
             : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.${mime?.split("/").last ?? 'file'}",
       )
       ..click();
@@ -407,6 +407,7 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
     fetchData();
   }
 
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -485,11 +486,11 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
                                       Row(
                                         children: [
                                           Text(
-                                            "Lead ID: ",
+                                            "Applicant Name: ",
                                             style: TextStyle(color: Colors.black87, fontSize: 16, fontFamily: StyleData.boldFont),
                                           ),
                                           Text(
-                                            LeadID ?? "",
+                                            ((ApplicantFirstName ?? '') + ' ' + (ApplicantLastName ?? '')) ?? "",
                                             style: TextStyle(color: StyleData.appBarColor2, fontSize: 16, fontFamily: StyleData.boldFont),
                                           ),
                                         ],
@@ -499,11 +500,11 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
                                       Row(
                                         children: [
                                           Text(
-                                            "Applicant Name: ",
+                                            "Lead ID: ",
                                             style: TextStyle(color: Colors.black38, fontSize: 13),
                                           ),
                                           Text(
-                                            ((ApplicantFirstName ?? '') + ' ' + (ApplicantLastName ?? '')) ?? "",
+                                            LeadID ?? "",
                                             style: TextStyle(color: Colors.black, fontSize: 15, fontFamily: StyleData.boldFont),
                                           ),
                                         ],
@@ -812,6 +813,7 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
                                                                 if (doc['isChecked']) {
                                                                   setState(() {
                                                                     doc['queryController'].clear();
+                                                                    isQueryEntered = false;
                                                                   });
                                                                 }
                                                               },
@@ -963,6 +965,7 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
                                                                 if (doc['isChecked']) {
                                                                   setState(() {
                                                                     doc['queryController'].clear();
+                                                                    isQueryEntered = false;
                                                                   });
                                                                 }
                                                               },

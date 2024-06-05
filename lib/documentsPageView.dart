@@ -67,6 +67,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
   Map<String, dynamic> filteredData = {};
   List<Map<String, dynamic>> documents = [];
   bool isQueryEntered = false;
+  bool isAllChecked = false;
 
 
 
@@ -190,7 +191,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
       ..setAttribute(
         "download",
         (leadID.isNotEmpty)
-            ? "$leadID.${mime?.split("/").last ?? 'file'}"
+            ? "$ApplicantFirstName $ApplicantLastName.${mime?.split("/").last ?? 'file'}"
             : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.${mime?.split("/").last ?? 'file'}",
       )
       ..click();
@@ -482,11 +483,11 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                       Row(
                                         children: [
                                           Text(
-                                            "Lead ID: ",
+                                            "Applicant Name: ",
                                             style: TextStyle(color: Colors.black87, fontSize: 16, fontFamily: StyleData.boldFont),
                                           ),
                                           Text(
-                                            LeadID ?? "",
+                                            ((ApplicantFirstName ?? '') + ' ' + (ApplicantLastName ?? '')) ?? "",
                                             style: TextStyle(color: StyleData.appBarColor2, fontSize: 16, fontFamily: StyleData.boldFont),
                                           ),
                                         ],
@@ -496,11 +497,11 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                       Row(
                                         children: [
                                           Text(
-                                            "Applicant Name: ",
+                                            "Lead ID: ",
                                             style: TextStyle(color: Colors.black38, fontSize: 13),
                                           ),
                                           Text(
-                                            ((ApplicantFirstName ?? '') + ' ' + (ApplicantLastName ?? '')) ?? "",
+                                            LeadID ?? "",
                                             style: TextStyle(color: Colors.black, fontSize: 15, fontFamily: StyleData.boldFont),
                                           ),
                                         ],
@@ -572,8 +573,10 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                 ElevatedButton(
                                   onPressed: () {
                                     bool allDocumentsChecked = true;
+
                                     for (var doc in documents) {
                                       if (doc['isChecked'] != true) {
+
                                         allDocumentsChecked = false;
                                         break;
                                       }
@@ -786,6 +789,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                                 if (doc['isChecked']) {
                                                                   setState(() {
                                                                     doc['queryController'].clear();
+                                                                    isQueryEntered = false;
                                                                   });
                                                                 }
                                                               },
@@ -937,6 +941,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                                 if (doc['isChecked']) {
                                                                   setState(() {
                                                                     doc['queryController'].clear();
+                                                                    isQueryEntered = false;
                                                                   });
                                                                 }
                                                               },
