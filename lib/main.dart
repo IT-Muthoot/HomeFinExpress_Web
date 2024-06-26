@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       ),
       home:
      //HomePageView(),
-     SplashView(),
+       SplashView(),
     );
   }
 }

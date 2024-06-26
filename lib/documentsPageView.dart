@@ -19,8 +19,9 @@ class DocumentPageView extends StatefulWidget {
   final String docId;
   final String leadID;
   final String token;
+  final String technicalStatus;
   const DocumentPageView({Key? key,
-    required this.docId, required this.leadID, required this.token,})
+    required this.docId, required this.leadID, required this.token,required this.technicalStatus})
       : super(key: key);
 
   @override
@@ -61,6 +62,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
   String? Query;
   bool? QueryStatus;
   String? QueryUpdatedByRO;
+  String? TechnicalDocumentStatus;
 
 
   var docData;
@@ -99,6 +101,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
           Query = docData["Query"] ?? "";
           QueryStatus = docData["isQuery"];
           QueryUpdatedByRO = docData["QueryBy"] ?? "";
+          TechnicalDocumentStatus = docData["technicalStatus"] ?? "";
 
 
           docData.forEach((key, value) {
@@ -213,17 +216,27 @@ class _DocumentPageViewState extends State<DocumentPageView> {
       if (querySnapshot.docs.isNotEmpty) {
         // Update each document with the new field and value
         querySnapshot.docs.forEach((doc) async {
-          await doc.reference.update({
+          Map<String, dynamic> updateData = {
             'VerificationStatus': 'Sent for Verification',
-            'VerifiedBy': 'Verified By SM',
+            'VerifiedBy': 'Pending with CM',
+            'SM Status': 'Verified',
             'Documents': documents.map((doc) => {
               'key': doc['key'],
               'isChecked': doc['isChecked'],
               'query': doc['queryController'].text,
             }).toList(),
-          });
-        });
+          };
+        if (widget.technicalStatus == "Fully Uploaded") {
+          updateData['technicalStatus'] = 'Fully Uploaded';
+        }
+        else if(widget.technicalStatus == "Partially Uploaded")
+          updateData['technicalStatus'] = 'Partially Uploaded';
+        else {
+          updateData['technicalStatus'] = 'Technical Pending';
+        }
 
+        await doc.reference.update(updateData);
+      });
         // setState(() {
         //   isVerified = true;
         // });
@@ -242,6 +255,17 @@ class _DocumentPageViewState extends State<DocumentPageView> {
   List<String> queryTexts = [];
   List<String> documentNames = [];
   Map<String, String> queryTextByDocumentName = {};
+
+  bool checkIfAnyQueryEntered(List<Map<String, dynamic>> documents) {
+    for (var doc in documents) {
+      if (doc['queryController'].text.isNotEmpty) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
   void UpdatedQueryStatus() async {
     try {
       // Reference to the documents in the "convertedLeads" collection
@@ -424,7 +448,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
       child: SafeArea(child: Scaffold(
         appBar:  AppBar(
           backgroundColor: StyleData.appBarColor2,
-          title: Text("Applicant Detail",style: TextStyle(color: Colors.white,fontSize: 18,fontFamily: StyleData.boldFont),),
+          title: Text("Applicant Detail",style: TextStyle(color: Colors.white,fontSize: 18, fontWeight: FontWeight.bold,),),
           centerTitle: true,
           leading: Padding(
             padding: const EdgeInsets.all(19.0),
@@ -460,7 +484,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          width: width * 0.3,
+                          width: width * 0.97,
                           child: Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -477,84 +501,186 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                 color: Colors.white,
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                  child: Row(
                                     children: [
-                                      Row(
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            "Applicant Name: ",
-                                            style: TextStyle(color: Colors.black87, fontSize: 16, fontFamily: StyleData.boldFont),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "Applicant Name: ",
+                                                style: TextStyle(color: Colors.black87, fontSize: 16, fontFamily: StyleData.boldFont),
+                                              ),
+                                              Text(
+                                                ((ApplicantFirstName ?? '') + ' ' + (ApplicantLastName ?? '')) ?? "",
+                                                style: TextStyle(color: StyleData.appBarColor2, fontSize: 16, fontFamily: StyleData.boldFont),
+                                              ),
+                                            ],
                                           ),
-                                          Text(
-                                            ((ApplicantFirstName ?? '') + ' ' + (ApplicantLastName ?? '')) ?? "",
-                                            style: TextStyle(color: StyleData.appBarColor2, fontSize: 16, fontFamily: StyleData.boldFont),
+
+                                          SizedBox(height: 8),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "Lead ID               : ",
+                                                style: TextStyle(color: Colors.black38, fontSize: 13),
+                                              ),
+                                              Text(
+                                                LeadID ?? "",
+                                                style: TextStyle(color: Colors.black, fontSize: 15, fontFamily: StyleData.boldFont),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 4),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "Mobile Number  : ",
+                                                style: TextStyle(color: Colors.black38, fontSize: 13),
+                                              ),
+                                              Text(
+                                                CustomerNumber ?? "",
+                                                style: TextStyle(color: Colors.black, fontSize: 15, fontFamily: StyleData.boldFont),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 4),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "Date Of Birth      : ",
+                                                style: TextStyle(color: Colors.black38, fontSize: 13),
+                                              ),
+                                              Text(
+                                                DateOfBirth ?? "",
+                                                style: TextStyle(color: Colors.black, fontSize: 15, fontFamily: StyleData.boldFont),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 4),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "PAN Number      : ",
+                                                style: TextStyle(color: Colors.black38, fontSize: 13),
+                                              ),
+                                              Text(
+                                                panCardNumber ?? "",
+                                                style: TextStyle(color: Colors.black, fontSize: 15, fontFamily: StyleData.boldFont),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 4),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "Aadhar Number : ",
+                                                style: TextStyle(color: Colors.black38, fontSize: 13),
+                                              ),
+                                              Text(
+                                                aadharNumber ?? "",
+                                                style: TextStyle(color: Colors.black, fontSize: 15, fontFamily: StyleData.boldFont),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
-                          
-                                      SizedBox(height: 8),
-                                      Row(
+                                      SizedBox(width: width * 0.5),
+                                      Column(
                                         children: [
-                                          Text(
-                                            "Lead ID: ",
-                                            style: TextStyle(color: Colors.black38, fontSize: 13),
+                                          Row(
+                                            children: [
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  bool allDocumentsChecked = true;
+
+                                                  for (var doc in documents) {
+                                                    if (doc['isChecked'] != true) {
+
+                                                      allDocumentsChecked = false;
+                                                      break;
+                                                    }
+                                                  }
+                                                  if (allDocumentsChecked) {
+                                                    if (
+                                                    // (verificationStatus == 'Sent for Verification' || verificationStatus == 'Verified' || verificationStatus == 'Push Back' ) &&
+                                                    //     (verifiedBy == 'Pending with CM' || verifiedBy == 'Verified')
+                                                    (verifiedBy == 'Pending with CM' && verificationStatus == 'Sent for Verification') ||
+                                                        (verifiedBy == 'Verified' && verificationStatus == 'Verified')
+                                                    )
+                                                    {
+
+                                                    } else {
+                                                      UpdatedVerificationStatus();
+                                                    }}else {
+                                                    _showAlertDialog(context);
+                                                  }
+
+
+                                                  // ((verificationStatus == 'Sent for Verification' || verificationStatus == 'Verified') &&  (verifiedBy == 'Verified By SM' || verifiedBy == 'Verified By CM'  )) ? _showAlertDialog(context) : UpdatedVerificationStatus();
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  primary: (verifiedBy == 'Pending with CM' || verifiedBy == 'Verified') ? Colors.green[500] : Colors.green[500],
+                                                ),
+                                                child: Text(
+                                                  // (verifiedBy == 'Pending with CM' || verifiedBy == 'Verified') ? 'Verified' : 'Verify',
+                                                  (verifiedBy == 'Pending with CM'  && verificationStatus == 'Sent for Verification') || verificationStatus == 'Verified' ? 'Verified' : 'Verify',
+                                                  style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: StyleData.boldFont),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: width * 0.02,
+                                              ),
+                                              ElevatedButton(
+                                                onPressed:
+
+                                                isQueryEntered
+                                                    ? () {
+
+                                                  if (verifiedBy == 'Pending with CM' || verifiedBy == 'Verified') {
+                                                    // No action needed
+                                                  } else {
+                                                    if (verificationStatus == 'Push Back') {
+                                                      _showAlertDialog1(context);
+                                                    } else {
+                                                      UpdatedQueryStatus();
+                                                    }
+                                                  }
+                                                }
+                                                    : null, // Disable the button if isQueryEntered is false
+                                                style: ElevatedButton.styleFrom(
+                                                  primary: StyleData.buttonColor, // Ensure `StyleData` is properly defined
+                                                ),
+                                                child: Text(
+                                                  'Push Back',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 14,
+                                                    fontFamily: StyleData.boldFont, // Ensure `StyleData` is properly defined
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: width * 0.02,
+                                              ),
+                                              Visibility(
+                                                visible: QueryUpdatedByRO == 'Updated',
+                                                child: ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                    primary: Colors.orange,
+                                                  ),
+                                                  onPressed: () {  },
+                                                  child: Text(
+                                                    'Updated',
+                                                    style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: StyleData.boldFont),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          Text(
-                                            LeadID ?? "",
-                                            style: TextStyle(color: Colors.black, fontSize: 15, fontFamily: StyleData.boldFont),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 4),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Mobile Number: ",
-                                            style: TextStyle(color: Colors.black38, fontSize: 13),
-                                          ),
-                                          Text(
-                                            CustomerNumber ?? "",
-                                            style: TextStyle(color: Colors.black, fontSize: 15, fontFamily: StyleData.boldFont),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 4),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Date Of Birth: ",
-                                            style: TextStyle(color: Colors.black38, fontSize: 13),
-                                          ),
-                                          Text(
-                                            DateOfBirth ?? "",
-                                            style: TextStyle(color: Colors.black, fontSize: 15, fontFamily: StyleData.boldFont),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 4),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "PAN Number: ",
-                                            style: TextStyle(color: Colors.black38, fontSize: 13),
-                                          ),
-                                          Text(
-                                            panCardNumber ?? "",
-                                            style: TextStyle(color: Colors.black, fontSize: 15, fontFamily: StyleData.boldFont),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 4),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Aadhar Number: ",
-                                            style: TextStyle(color: Colors.black38, fontSize: 13),
-                                          ),
-                                          Text(
-                                            aadharNumber ?? "",
-                                            style: TextStyle(color: Colors.black, fontSize: 15, fontFamily: StyleData.boldFont),
+                                          SizedBox(
+                                              height : height * 0.05
                                           ),
                                         ],
                                       ),
@@ -565,95 +691,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                             ),
                           ),
                         ),
-                        SizedBox(width: width * 0.4),
-                        Column(
-                          children: [
-                            Row(
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    bool allDocumentsChecked = true;
 
-                                    for (var doc in documents) {
-                                      if (doc['isChecked'] != true) {
-
-                                        allDocumentsChecked = false;
-                                        break;
-                                      }
-                                    }
-    if (allDocumentsChecked) {
-    if ((verificationStatus == 'Sent for Verification' || verificationStatus == 'Verified' || verificationStatus == 'Push Back' ) &&
-    (verifiedBy == 'Verified By SM' || verifiedBy == 'Verified By CM')) {
-
-    } else {
-    UpdatedVerificationStatus();
-    }}else {
-    _showAlertDialog(context);
-    }
-
-
-                                    // ((verificationStatus == 'Sent for Verification' || verificationStatus == 'Verified') &&  (verifiedBy == 'Verified By SM' || verifiedBy == 'Verified By CM'  )) ? _showAlertDialog(context) : UpdatedVerificationStatus();
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    primary: (verifiedBy == 'Verified By SM' || verifiedBy == 'Verified By CM') ? Colors.green[500] : Colors.green[500],
-                                  ),
-                                  child: Text(
-                                    (verifiedBy == 'Verified By SM' || verifiedBy == 'Verified By CM') ? 'Verified' : 'Verify',
-                                    style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: StyleData.boldFont),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: width * 0.02,
-                                ),
-                                ElevatedButton(
-                                  onPressed: isQueryEntered
-                                      ? () {
-                                    if (verifiedBy == 'Verified By SM' || verifiedBy == 'Verified By CM') {
-                                      // No action needed
-                                    } else {
-                                      if (verificationStatus == 'Push Back') {
-                                        _showAlertDialog1(context);
-                                      } else {
-                                        UpdatedQueryStatus();
-                                      }
-                                    }
-                                  }
-                                      : null, // Disable the button if isQueryEntered is false
-                                  style: ElevatedButton.styleFrom(
-                                    primary: StyleData.buttonColor, // Ensure `StyleData` is properly defined
-                                  ),
-                                  child: Text(
-                                    'Push Back',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontFamily: StyleData.boldFont, // Ensure `StyleData` is properly defined
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: width * 0.02,
-                                ),
-                                Visibility(
-                                  visible: QueryUpdatedByRO == 'Updated',
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      primary: Colors.orange,
-                                    ),
-                                    onPressed: () {  },
-                                    child: Text(
-                                      'Updated',
-                                      style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: StyleData.boldFont),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height : height * 0.05
-                            ),
-                          ],
-                        ),
                       ],
                     ),
                   ),
@@ -662,7 +700,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                       Card(
                         elevation: 3,
                         child: Container(
-                          width: width * 0.95,
+                          width: width * 0.97,
                           color: Colors.white,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -690,7 +728,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                         "Loan Application Document",
                                         style: TextStyle(
                                           color: StyleData.appBarColor2,
-                                          fontFamily: StyleData.boldFont,
+                                          fontWeight: FontWeight.bold,
                                           fontSize: 17,
                                         ),
                                       ),
@@ -719,7 +757,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                               Padding(
                                                 padding: const EdgeInsets.all(8.0),
                                                 child: Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
                                                   children: [
                                                     Expanded(
                                                       child: Text(
@@ -765,7 +803,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                           indent: 5,
                                                           endIndent: 5,
                                                         ),
-                                                        verifiedBy == 'Verified By SM' || verifiedBy == 'Verified By CM' ?
+                                                        verifiedBy == 'Pending with CM' || verifiedBy == 'Verified' ?
                                                         Column(
                                                           children: [
                                                             Checkbox(
@@ -789,7 +827,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                                 if (doc['isChecked']) {
                                                                   setState(() {
                                                                     doc['queryController'].clear();
-                                                                    isQueryEntered = false;
+                                                                    isQueryEntered = checkIfAnyQueryEntered(documents);
                                                                   });
                                                                 }
                                                               },
@@ -811,7 +849,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                         controller: doc['queryController'],
                                                         onChanged: (value) {
                                                      setState(() {
-                                                       isQueryEntered = value.isNotEmpty;
+                                                       isQueryEntered = checkIfAnyQueryEntered(documents);
                                                      });
                                                         },
                                                         decoration: InputDecoration(
@@ -846,18 +884,24 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                       ),
                                     ],
                                   ),
-
+                                SizedBox(
+                                  height: height * 0.03,
+                                ),
                                 // Technical Checklist Heading
                                 if (filteredData.keys.any((key) => key.contains('checklist')))
                                   Column(
                                     children: [
+
                                       Text(
                                         "Technical Checklist",
                                         style: TextStyle(
                                           color: StyleData.appBarColor2,
-                                          fontFamily: StyleData.boldFont,
+                                          fontWeight: FontWeight.bold,
                                           fontSize: 17,
                                         ),
+                                      ),
+                                      SizedBox(
+                                        height: height * 0.009,
                                       ),
                                       Table(
                                         border: TableBorder.all(color: Colors.grey),
@@ -871,7 +915,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                               Padding(
                                                 padding: const EdgeInsets.all(8.0),
                                                 child: Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
                                                   children: [
                                                     Expanded(
                                                       child: Text(
@@ -917,7 +961,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                           indent: 5,
                                                           endIndent: 5,
                                                         ),
-                                                        verifiedBy == 'Verified By SM' || verifiedBy == 'Verified By CM'  ?
+                                          // ( ( verifiedBy == 'Pending with CM' && verificationStatus == 'Sent for Verification') || (verifiedBy == 'Verified' && verificationStatus == 'Verified' ))  ?
+                                          ( ( verifiedBy == 'Pending with CM' && verificationStatus == 'Sent for Verification') || (verifiedBy == 'Verified' && verificationStatus == 'Verified' ))  ?
                                                         Column(
                                                           children: [
                                                             Checkbox(
@@ -941,7 +986,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                                 if (doc['isChecked']) {
                                                                   setState(() {
                                                                     doc['queryController'].clear();
-                                                                    isQueryEntered = false;
+                                                                    isQueryEntered = checkIfAnyQueryEntered(documents);
                                                                   });
                                                                 }
                                                               },
@@ -949,6 +994,39 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                             Text('Verify'),
                                                           ],
                                                         ),
+
+                                                        // verifiedBy == 'Pending with CM' || verifiedBy == 'Verified'  ?
+                                                        // Column(
+                                                        //   children: [
+                                                        //     Checkbox(
+                                                        //       value: doc['isChecked'],
+                                                        //       activeColor: StyleData.appBarColor2,
+                                                        //       onChanged: (value) {
+                                                        //       },
+                                                        //     ),
+                                                        //     Text('Verified'),
+                                                        //   ],
+                                                        // ) :
+                                                        // Column(
+                                                        //   children: [
+                                                        //     Checkbox(
+                                                        //       value: doc['isChecked'],
+                                                        //       activeColor: StyleData.appBarColor2,
+                                                        //       onChanged: (value) {
+                                                        //         setState(() {
+                                                        //           doc['isChecked'] = value!;
+                                                        //         });
+                                                        //         if (doc['isChecked']) {
+                                                        //           setState(() {
+                                                        //             doc['queryController'].clear();
+                                                        //             isQueryEntered = checkIfAnyQueryEntered(documents);
+                                                        //           });
+                                                        //         }
+                                                        //       },
+                                                        //     ),
+                                                        //     Text('Verify'),
+                                                        //   ],
+                                                        // ),
                                                         VerticalDivider(
                                                           color: Colors.grey,
                                                           thickness: 1,
@@ -963,7 +1041,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                         controller: doc['queryController'],
                                                         onChanged: (value) {
                                                           setState(() {
-                                                            isQueryEntered = value.isNotEmpty;
+                                                          isQueryEntered = checkIfAnyQueryEntered(documents);
                                                           });
                                                         },
                                                         decoration: InputDecoration(

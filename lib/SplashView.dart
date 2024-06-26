@@ -1,5 +1,6 @@
 
 import 'dart:html' as html;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -8,6 +9,10 @@ import '../../Utils/NavigatorController.dart';
 import 'CreditManagerPageView.dart';
 import 'HomePageView.dart';
 import 'LoginPageView.dart';
+
+import 'package:http/http.dart' as http;
+
+import 'Utils/StyleData.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -27,6 +32,8 @@ class _SplashViewState extends State<SplashView> {
     print(user);
     return user;
   }
+
+
 
 
   startApp() async {
@@ -50,12 +57,49 @@ class _SplashViewState extends State<SplashView> {
     }
   }
 
-
+  // navigateFunc() async {
+  //   bool isIPAddressMatching = false;
+  //   _auth
+  //       .signInWithEmailAndPassword(
+  //       email: "itcoblr@muthootgroup.com", password: "Muthoot@123\$")
+  //       .then((value) async {
+  //     final User user = value.user!;
+  //     print(user.uid);
+  //     try {
+  //       final uri = Uri.parse('https://api.ipify.org');
+  //       final response = await http.get(uri);
+  //
+  //       if (response.statusCode == 200) {
+  //         final ipAddress = response.body;
+  //         print('Local IP Address: $ipAddress');
+  //
+  //         final snapshot = await FirebaseFirestore.instance
+  //             .collection('ipAddress')
+  //             .where('ipAddress', isEqualTo: ipAddress)
+  //             .get();
+  //         print(snapshot.docs);
+  //         isIPAddressMatching = snapshot.docs.isNotEmpty ? true : false;
+  //         print(snapshot.docs);
+  //
+  //         Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //                 builder: (context) =>
+  //                 isIPAddressMatching ? startApp() : MessagePage()));
+  //       } else {
+  //         print('Failed to retrieve local IP address.');
+  //       }
+  //     } catch (e) {
+  //       print('Error: $e');
+  //     }
+  //   });
+  // }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    startApp();
+   startApp();
+  //  navigateFunc();
    // startApp();
   }
 
@@ -130,4 +174,19 @@ int getExtendedVersionNumber(String version) {
   List versionCells = version.split('.');
   versionCells = versionCells.map((i) => int.parse(i)).toList();
   return versionCells[0] * 100000 + versionCells[1] * 1000 + versionCells[2];
+}
+
+class MessagePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('HomeFin Express'),
+        backgroundColor: StyleData.appBarColor2,
+      ),
+      body: const Center(
+        child: Text('Access denied'),
+      ),
+    );
+  }
 }

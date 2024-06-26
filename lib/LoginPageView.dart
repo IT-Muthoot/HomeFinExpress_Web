@@ -54,6 +54,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Container(
+                color: Colors.white,
                 width: 400,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12.0),
