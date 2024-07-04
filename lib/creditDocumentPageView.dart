@@ -617,7 +617,7 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
                                                   }
                                                 },
                                                 style: ElevatedButton.styleFrom(
-                                                  primary: verifiedBy == 'Verified' ? Colors.green[500] : Colors.green[500],
+                                                  backgroundColor: verifiedBy == 'Verified' ? Colors.green[500] : Colors.green[500],
                                                 ),
                                                 child: Text(
                                                   verifiedBy == 'Verified' ? 'Verified' : 'Verify',
@@ -645,7 +645,7 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
 
                                                 } : null,
                                                 style: ElevatedButton.styleFrom(
-                                                  primary: StyleData.buttonColor,
+                                                  backgroundColor: StyleData.buttonColor,
                                                 ),
                                                 child: Text(
                                                   'Push Back',
@@ -1082,7 +1082,7 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.red,
+                        backgroundColor: Colors.red,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
@@ -1149,7 +1149,7 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.red,
+                        backgroundColor: Colors.red,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
@@ -1210,7 +1210,7 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
                         Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.red,
+                        backgroundColor: Colors.red,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
@@ -1270,7 +1270,7 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
                         Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.red,
+                        backgroundColor: Colors.red,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),

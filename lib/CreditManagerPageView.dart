@@ -528,7 +528,7 @@ class _CreditManagerPageViewState extends State<CreditManagerPageView> {
             buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                primary: Color(0xff973232),
+                foregroundColor: Color(0xff973232),
               ),
             ),
           ),
@@ -1527,7 +1527,7 @@ class _CreditManagerPageViewState extends State<CreditManagerPageView> {
           fetchData();
         },
         style: ElevatedButton.styleFrom(
-          primary: isSelected ? Colors.green.shade500 : StyleData.buttonColor, // Ensure `StyleData` is properly defined
+          backgroundColor: isSelected ? Colors.green.shade500 : StyleData.buttonColor, // Ensure `StyleData` is properly defined
         ),
         child: Text(
           buttonName,

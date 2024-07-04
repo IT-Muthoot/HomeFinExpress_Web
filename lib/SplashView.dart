@@ -1,5 +1,4 @@
 
-import 'dart:html' as html;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +24,7 @@ class _SplashViewState extends State<SplashView> {
   String? version = "";
   String? accessToken;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
   Future<User> handleSignInEmail(String username, String password) async {
     UserCredential result = await _auth.signInWithEmailAndPassword(
         email: username, password: password);
@@ -33,10 +33,7 @@ class _SplashViewState extends State<SplashView> {
     return user;
   }
 
-
-
-
-  startApp() async {
+  Future<Widget> startApp() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? employeeCode = pref.getString("employeeCode");
     String? emailID = pref.getString("emailID");
@@ -44,65 +41,57 @@ class _SplashViewState extends State<SplashView> {
 
     if ((employeeCode != null && employeeCode.isNotEmpty) || (emailID != null && emailID.isNotEmpty)) {
       // User is already logged in, navigate directly to the appropriate home page
-      NavigatorController.pagePush(
-        context,
-        loginType == "SalesManager" ? HomePageView() : CreditManagerPageView(),
-      );
+      return loginType == "SalesManager" ? HomePageView() : CreditManagerPageView();
     } else {
       // User is not logged in, navigate to the login page
-      NavigatorController.pagePush(
-        context,
-        LoginPage(),
-      );
+      return LoginPage();
     }
   }
 
-  // navigateFunc() async {
-  //   bool isIPAddressMatching = false;
-  //   _auth
-  //       .signInWithEmailAndPassword(
-  //       email: "itcoblr@muthootgroup.com", password: "Muthoot@123\$")
-  //       .then((value) async {
-  //     final User user = value.user!;
-  //     print(user.uid);
-  //     try {
-  //       final uri = Uri.parse('https://api.ipify.org');
-  //       final response = await http.get(uri);
-  //
-  //       if (response.statusCode == 200) {
-  //         final ipAddress = response.body;
-  //         print('Local IP Address: $ipAddress');
-  //
-  //         final snapshot = await FirebaseFirestore.instance
-  //             .collection('ipAddress')
-  //             .where('ipAddress', isEqualTo: ipAddress)
-  //             .get();
-  //         print(snapshot.docs);
-  //         isIPAddressMatching = snapshot.docs.isNotEmpty ? true : false;
-  //         print(snapshot.docs);
-  //
-  //         Navigator.push(
-  //             context,
-  //             MaterialPageRoute(
-  //                 builder: (context) =>
-  //                 isIPAddressMatching ? startApp() : MessagePage()));
-  //       } else {
-  //         print('Failed to retrieve local IP address.');
-  //       }
-  //     } catch (e) {
-  //       print('Error: $e');
-  //     }
-  //   });
-  // }
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-   startApp();
-  //  navigateFunc();
-   // startApp();
+  navigateFunc() async {
+    bool isIPAddressMatching = false;
+    _auth
+        .signInWithEmailAndPassword(
+        email: "itcoblr@muthootgroup.com", password: "Muthoot@123\$")
+        .then((value) async {
+      final User user = value.user!;
+      print(user.uid);
+      try {
+        final uri = Uri.parse('https://api.ipify.org');
+        final response = await http.get(uri);
+
+        if (response.statusCode == 200) {
+          final ipAddress = response.body;
+          print('Local IP Address: $ipAddress');
+
+          final snapshot = await FirebaseFirestore.instance
+              .collection('ipAddress')
+              .where('ipAddress', isEqualTo: ipAddress)
+              .get();
+          print(snapshot.docs);
+          isIPAddressMatching = snapshot.docs.isNotEmpty ? true : false;
+          print(snapshot.docs);
+
+          final nextPage = await startApp();
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                  isIPAddressMatching ? nextPage : MessagePage()));
+        } else {
+          print('Failed to retrieve local IP address.');
+        }
+      } catch (e) {
+        print('Error: $e');
+      }
+    });
   }
 
+  @override
+  void initState() {
+    super.initState();
+    navigateFunc();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +103,6 @@ class _SplashViewState extends State<SplashView> {
         backgroundColor: Colors.white,
         body: Center(
           child: Stack(
-            // mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Align(
                 alignment: Alignment.center,
@@ -126,8 +114,9 @@ class _SplashViewState extends State<SplashView> {
                         padding: const EdgeInsets.only(top: 13, right: 15),
                         child: SizedBox(
                             height: height * 0.4,
-                            child: Lottie.asset('assets/jsons/spalsh.json',))),
+                            child: Lottie.asset('assets/jsons/spalsh.json')),
                       ),
+                    ),
                     SizedBox(
                         child: Image.asset(
                           'assets/images/HomeFin.png',
@@ -137,7 +126,6 @@ class _SplashViewState extends State<SplashView> {
                     SizedBox(
                       height: height * 0.08,
                     )
-
                   ],
                 ),
               ),

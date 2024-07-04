@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:html';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -69,21 +68,21 @@ class _HomePageViewState extends State<HomePageView> {
       'Cookie': 'BrowserId=qnhrXMyBEe6lOh9ncfvoTw; CookieConsentPolicy=0:1; LSKey-c\$CookieConsentPolicy=0:1'
     };
     var data = {
-      // 'grant_type': 'password',
-      // 'client_id': '3MVG9WZIyUMp1ZfoWDelgr4puVA8Cbw2py9NcKnfiPbsdxV6CU1HXQssNTT2XpRFqPmQ8OX.F4ZbP_ziL2rmf',
-      // 'client_secret': '4382921A497F5B4DED8F7E451E89D1228EE310F729F64641429A949D53FA1B84',
-      // 'username': 'salesappuser@muthoothomefin.com',
-      // 'password': 'Pass@123456F7aghs4Z5RxQ5hC2pktsSLJfq'
       'grant_type': 'password',
-      'client_id': '3MVG9ct5lb5FGJTNKeeA63nutsPt.67SWB9mzXh9na.RBlkmz2FxM4KH31kKmHWMWQHD1y2apE9qmtoRtiQ9R',
-      'client_secret': 'E9DDAF90143A7B4C6CA622463EFDA17843174AB347FD74A6905F853CD2406BDE',
-      'username': 'itkrishnaprasad@muthootgroup.com.dev2',
-      'password': 'Karthikrishna@1YSRHLEtF4pMRkpOd6aSCeVHDB'
+      'client_id': '3MVG9WZIyUMp1ZfoWDelgr4puVA8Cbw2py9NcKnfiPbsdxV6CU1HXQssNTT2XpRFqPmQ8OX.F4ZbP_ziL2rmf',
+      'client_secret': '4382921A497F5B4DED8F7E451E89D1228EE310F729F64641429A949D53FA1B84',
+      'username': 'salesappuser@muthoothomefin.com',
+      'password': 'Pass@123456F7aghs4Z5RxQ5hC2pktsSLJfq'
+      // 'grant_type': 'password',
+      // 'client_id': '3MVG9ct5lb5FGJTNKeeA63nutsPt.67SWB9mzXh9na.RBlkmz2FxM4KH31kKmHWMWQHD1y2apE9qmtoRtiQ9R',
+      // 'client_secret': 'E9DDAF90143A7B4C6CA622463EFDA17843174AB347FD74A6905F853CD2406BDE',
+      // 'username': 'itkrishnaprasad@muthootgroup.com.dev2',
+      // 'password': 'Karthikrishna@1YSRHLEtF4pMRkpOd6aSCeVHDB'
     };
     var dio = Dio();
     var response = await dio.request(
-      //   'https://muthootltd.my.salesforce.com/services/oauth2/token',
-      'https://muthootltd--muthootdo.sandbox.my.salesforce.com/services/oauth2/token',
+        'https://muthootltd.my.salesforce.com/services/oauth2/token',
+     // 'https://muthootltd--muthootdo.sandbox.my.salesforce.com/services/oauth2/token',
       options: Options(
         method: 'POST',
         headers: headers,
@@ -623,7 +622,7 @@ class _HomePageViewState extends State<HomePageView> {
             buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                primary: Color(0xff973232),
+                foregroundColor: Color(0xff973232),
               ),
             ),
           ),
@@ -1649,7 +1648,7 @@ class _HomePageViewState extends State<HomePageView> {
           fetchData();
         },
         style: ElevatedButton.styleFrom(
-          primary: isSelected ? Colors.green.shade500 : StyleData.buttonColor, // Ensure `StyleData` is properly defined
+          backgroundColor: isSelected ? Colors.green.shade500 : StyleData.buttonColor, // Ensure `StyleData` is properly defined
         ),
         child: Text(
           buttonName,

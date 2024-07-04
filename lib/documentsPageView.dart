@@ -2,9 +2,7 @@
 
 import 'dart:convert';
 import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -177,27 +175,64 @@ class _DocumentPageViewState extends State<DocumentPageView> {
     }
   }
 
+  // Future<void> downloadDocument(String docId, String leadID) async {
+  //   var map = <String, dynamic>{};
+  //   map['DocId'] = docId;
+  //   map['LUSR'] = 'HomeFin';
+  //
+  //   http.Response response = await http.post(
+  //     Uri.parse("https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
+  //     body: map,
+  //   );
+  //   final data1 = response.bodyBytes;
+  //   final mime = lookupMimeType('', headerBytes: data1);
+  //   AnchorElement(
+  //     href: "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}",
+  //   )
+  //     ..setAttribute(
+  //       "download",
+  //       (leadID.isNotEmpty)
+  //           ? "$ApplicantFirstName $ApplicantLastName.${mime?.split("/").last ?? 'file'}"
+  //           : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.${mime?.split("/").last ?? 'file'}",
+  //     )
+  //     ..click();
+  // }
+
   Future<void> downloadDocument(String docId, String leadID) async {
     var map = <String, dynamic>{};
     map['DocId'] = docId;
     map['LUSR'] = 'HomeFin';
 
-    http.Response response = await http.post(
-      Uri.parse("https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
-      body: map,
-    );
-    final data1 = response.bodyBytes;
-    final mime = lookupMimeType('', headerBytes: data1);
-    AnchorElement(
-      href: "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}",
-    )
-      ..setAttribute(
-        "download",
-        (leadID.isNotEmpty)
-            ? "$ApplicantFirstName $ApplicantLastName.${mime?.split("/").last ?? 'file'}"
-            : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.${mime?.split("/").last ?? 'file'}",
-      )
-      ..click();
+    try {
+      print("DOwnloading API");
+      http.Response response = await http.post(
+        Uri.parse("https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
+        body: map,
+      );
+      print('Failed to download document: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final data1 = response.bodyBytes;
+        final mime = lookupMimeType('', headerBytes: data1);
+        AnchorElement(
+          href: "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}",
+        )
+          ..setAttribute(
+            "download",
+            (leadID.isNotEmpty)
+                ? "$ApplicantFirstName $ApplicantLastName.${mime?.split("/").last ?? 'file'}"
+                : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.${mime?.split("/").last ?? 'file'}",
+          )
+          ..click();
+      } else {
+        // Handle error response
+        print('Failed to download document: ${response.statusCode} ${response.reasonPhrase}');
+        // You can also throw an exception or handle the error as needed
+      }
+    } catch (e, stackTrace) {
+      // Handle any other exceptions
+      print('An error occurred: $e');
+      print(stackTrace);
+    }
   }
 
   String? selectedDoc;
@@ -318,7 +353,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
           isQuery = true;
         });
         _showAlertDialogSuccess1(context);
-        sendNotificationToDevice(FCMServerKey,widget.token, queryTextByDocumentName);
+     sendNotificationToDevice(FCMServerKey,widget.token, queryTextByDocumentName);
+      //  sendNotification(FCMServerKey,widget.token, queryTextByDocumentName);
         print('Query updated successfully');
       } else {
         // Handle the case where no document with the specified LeadID is found
@@ -334,6 +370,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
 
   void sendNotificationToDevice(String FCMServerKey, String FCMToken, Map<String, String> documentNames) async {
     final Uri url = Uri.parse('https://fcm.googleapis.com/fcm/send');
+  //  final Uri url = Uri.parse('https://fcm.googleapis.com/v1/projects/lms-application-be1ea/messages:send');
 
     // Convert the documentNames map to a readable string with each key-value pair on a new line
     String documentNamesString = documentNames.entries.map((e) => '${e.key}: ${e.value}').join('\n');
@@ -378,47 +415,133 @@ class _DocumentPageViewState extends State<DocumentPageView> {
     }
   }
 
+  // Future<String> getAccessToken() async {
+  //   // final serviceAccount = ServiceAccountCredentials.fromJson(
+  //   //     File('assets/jsons/ServiceKey.json').readAsStringSync());
+  //   final serviceAccountJson = await rootBundle.loadString('jsons/ServiceKey.json');
+  //   final serviceAccount = ServiceAccountCredentials.fromJson(json.decode(serviceAccountJson));
+  //
+  //   final scopes = ['https://www.googleapis.com/auth/firebase.messaging'];
+  //
+  //   final authClient = await clientViaServiceAccount(serviceAccount, scopes);
+  //   return authClient.credentials.accessToken.data;
+  // }
+  //
+  // Future<void> sendNotification(String FCMServerKey, String FCMToken, Map<String, String> documentNames) async {
+  //   final url = Uri.parse('https://fcm.googleapis.com/v1/projects/lms-application-be1ea/messages:send');
+  // final String accessToken = await getAccessToken();
+  // print(accessToken);
+  //   final headers = <String, String>{
+  //     'Content-Type': 'application/json',
+  //     'Authorization': 'Bearer $accessToken',
+  //   };
+  //
+  //   String documentNamesString = documentNames.entries.map((e) => '${e.key}: ${e.value}').join('\n');
+  //   final message = {
+  //     'message': {
+  //       'token': FCMToken, // Replace with the FCM token of the receiving device
+  //           'notification': {
+  //             'title': '"HomeFin Express" Verification Status Updated',
+  //             'body': '${ApplicantFirstName! + ' ' + ApplicantLastName!} - Query By SM:\n$documentNamesString',
+  //             //'icon': "https://firebasestorage.googleapis.com/v0/b/lms-application-be1ea.appspot.com/o/ic_launcher.png?alt=media&token=c37f6227-036f-4ed9-b757-bd1dc0c27809",
+  //            // 'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+  //           },
+  //     },
+  //   };
+  //
+  //   try {
+  //     final response = await http.post(
+  //       url,
+  //       headers: headers,
+  //       body: jsonEncode(message),
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       print('Notification sent successfully');
+  //     } else {
+  //       print('Failed to send notification. Error ${response.statusCode}: ${response.body}');
+  //     }
+  //   } catch (e) {
+  //     print('Exception while sending notification: $e');
+  //   }
+  // }
 
 
+  // void sendNotificationToDevice1(String FCMServerKey, String FCMTOken,) async {
+  //   final Uri url = Uri.parse('https://fcm.googleapis.com/fcm/send');
+  //  // final Uri url = Uri.parse('https://fcm.googleapis.com/v1/projects/lms-application-be1ea/messages:send');
+  //   Map<String, dynamic> notification = {
+  //     'notification': {
+  //       'title': '"HomeFin Express" Verification Status Updated',
+  //       'body': ApplicantFirstName! + ' ' + ApplicantLastName! +" - " + "Verification Completed By SM",
+  //       'icon': "https://firebasestorage.googleapis.com/v0/b/lms-application-be1ea.appspot.com/o/ic_launcher.png?alt=media&token=c37f6227-036f-4ed9-b757-bd1dc0c27809",
+  //       'click_action': 'FLUTTER_NOTIFICATION_CLICK'
+  //     },
+  //     'priority': 'high',
+  //     'data': {
+  //       'title': '"HomeFin Express" Verification Status Updated',
+  //       'body': ApplicantFirstName! + ' ' + ApplicantLastName! +" - " + "Verification Completed By SM",
+  //       'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+  //       'screen': 'NotificationPageView'
+  //       // Add any additional data you want to send with the notification
+  //     },
+  //     'to': FCMTOken, // FCM token of the device you want to send the notification to
+  //   };
+  //
+  //   // Encode the notification message
+  //   final String notificationJson = jsonEncode(notification);
+  //
+  //   // Send HTTP POST request to FCM endpoint
+  //   final http.Response response = await http.post(
+  //     url,
+  //     headers: <String, String>{
+  //       'Content-Type': 'application/json',
+  //       'Authorization': 'key=$FCMServerKey', // Include FCM server key in Authorization header
+  //     },
+  //     body: notificationJson,
+  //   );
+  //
+  //   // Check if the request was successful
+  //   if (response.statusCode == 200) {
+  //     print('Notification sent successfully');
+  //   } else {
+  //     print('Failed to send notification. Error: ${response.body}');
+  //   }
+  // }
 
-  void sendNotificationToDevice1(String FCMServerKey, String FCMTOken,) async {
-    final Uri url = Uri.parse('https://fcm.googleapis.com/fcm/send');
-    Map<String, dynamic> notification = {
-      'notification': {
-        'title': '"HomeFin Express" Verification Status Updated',
-        'body': ApplicantFirstName! + ' ' + ApplicantLastName! +" - " + "Verification Completed By SM",
-        'icon': "https://firebasestorage.googleapis.com/v0/b/lms-application-be1ea.appspot.com/o/ic_launcher.png?alt=media&token=c37f6227-036f-4ed9-b757-bd1dc0c27809",
-        'click_action': 'FLUTTER_NOTIFICATION_CLICK'
+
+  Future<void> sendNotificationToDevice1(String FCMServerKey, String FCMToken) async {
+    final url = Uri.parse('https://fcm.googleapis.com/v1/projects/lms-application-be1ea/messages:send');
+    final headers = <String, String>{
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $FCMServerKey',
+    };
+    final message = {
+      'message': {
+        'token': FCMToken, // Replace with the FCM token of the receiving device
+            'notification': {
+              'title': '"HomeFin Express" Verification Status Updated',
+              'body': ApplicantFirstName! + ' ' + ApplicantLastName! +" - " + "Verification Completed By SM",
+              'icon': "https://firebasestorage.googleapis.com/v0/b/lms-application-be1ea.appspot.com/o/ic_launcher.png?alt=media&token=c37f6227-036f-4ed9-b757-bd1dc0c27809",
+              'click_action': 'FLUTTER_NOTIFICATION_CLICK'
+            },
       },
-      'priority': 'high',
-      'data': {
-        'title': '"HomeFin Express" Verification Status Updated',
-        'body': ApplicantFirstName! + ' ' + ApplicantLastName! +" - " + "Verification Completed By SM",
-        'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-        'screen': 'NotificationPageView'
-        // Add any additional data you want to send with the notification
-      },
-      'to': FCMTOken, // FCM token of the device you want to send the notification to
     };
 
-    // Encode the notification message
-    final String notificationJson = jsonEncode(notification);
+    try {
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode(message),
+      );
 
-    // Send HTTP POST request to FCM endpoint
-    final http.Response response = await http.post(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        'Authorization': 'key=$FCMServerKey', // Include FCM server key in Authorization header
-      },
-      body: notificationJson,
-    );
-
-    // Check if the request was successful
-    if (response.statusCode == 200) {
-      print('Notification sent successfully');
-    } else {
-      print('Failed to send notification. Error: ${response.body}');
+      if (response.statusCode == 200) {
+        print('Notification sent successfully');
+      } else {
+        print('Failed to send notification. Error ${response.statusCode}: ${response.body}');
+      }
+    } catch (e) {
+      print('Exception while sending notification: $e');
     }
   }
 
@@ -621,7 +744,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                   // ((verificationStatus == 'Sent for Verification' || verificationStatus == 'Verified') &&  (verifiedBy == 'Verified By SM' || verifiedBy == 'Verified By CM'  )) ? _showAlertDialog(context) : UpdatedVerificationStatus();
                                                 },
                                                 style: ElevatedButton.styleFrom(
-                                                  primary: (verifiedBy == 'Pending with CM' || verifiedBy == 'Verified') ? Colors.green[500] : Colors.green[500],
+                                                  backgroundColor: (verifiedBy == 'Pending with CM' || verifiedBy == 'Verified') ? Colors.green[500] : Colors.green[500],
                                                 ),
                                                 child: Text(
                                                   // (verifiedBy == 'Pending with CM' || verifiedBy == 'Verified') ? 'Verified' : 'Verify',
@@ -650,7 +773,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                 }
                                                     : null, // Disable the button if isQueryEntered is false
                                                 style: ElevatedButton.styleFrom(
-                                                  primary: StyleData.buttonColor, // Ensure `StyleData` is properly defined
+                                                  backgroundColor: StyleData.buttonColor, // Ensure `StyleData` is properly defined
                                                 ),
                                                 child: Text(
                                                   'Push Back',
@@ -668,7 +791,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                 visible: QueryUpdatedByRO == 'Updated',
                                                 child: ElevatedButton(
                                                   style: ElevatedButton.styleFrom(
-                                                    primary: Colors.orange,
+                                                    backgroundColor: Colors.orange,
                                                   ),
                                                   onPressed: () {  },
                                                   child: Text(
@@ -1137,7 +1260,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                         Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.red,
+                        backgroundColor: Colors.red,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
@@ -1197,7 +1320,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                      Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.red,
+                        backgroundColor: Colors.red,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
@@ -1257,7 +1380,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                         Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.red,
+                        backgroundColor: Colors.red,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
@@ -1325,7 +1448,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.red,
+                        backgroundColor: Colors.red,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
@@ -1392,7 +1515,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.red,
+                        backgroundColor: Colors.red,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
