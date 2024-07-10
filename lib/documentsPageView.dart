@@ -7,6 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:googleapis_auth/auth.dart';
+import 'package:googleapis_auth/auth_io.dart';
 import 'package:homefin_express_web/HomePageView.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -275,7 +277,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
         // setState(() {
         //   isVerified = true;
         // });
-        sendNotificationToDevice1(FCMServerKey,widget.token);
+     //   sendNotificationToDevice1(widget.token);
         _showAlertDialogSuccess(context);
         print('Documents updated successfully');
       } else {
@@ -353,8 +355,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
           isQuery = true;
         });
         _showAlertDialogSuccess1(context);
-     sendNotificationToDevice(FCMServerKey,widget.token, queryTextByDocumentName);
-      //  sendNotification(FCMServerKey,widget.token, queryTextByDocumentName);
+    // sendNotificationToDevice(FCMServerKey,widget.token, queryTextByDocumentName);
+      sendNotification(widget.token, queryTextByDocumentName);
         print('Query updated successfully');
       } else {
         // Handle the case where no document with the specified LeadID is found
@@ -365,106 +367,106 @@ class _DocumentPageViewState extends State<DocumentPageView> {
     }
   }
 
- // String FCMTOken = "dtC7SAuDRMS3faHIXwuD_8:APA91bEFq-NPddhhT0h5JuYGQykJq-pDX6PDOaxVzhNDvAhgahl9U6FgaOBCGtxJjlyRF-D3N_s1jXrefcLsZVpgJJC2ydjGr7abnkrU0HbnycQKJpjqHi1FxLEDj5mojqyxNXkdxMJH";
-  String FCMServerKey = "AAAAvnuEuSw:APA91bGhzDJBFD0fM8U5D-WRsSYWG9egY7sJX_sL6VnGZ7AC7wrrgC5WmUFIK7-GttG_U4VmLSQ4_TRJy-SDtWD-bABrmIKU7bdg604i3IUgk6zVj-k0elas3fwHN1vmUy6egG0-O4cj";
+ // // String FCMTOken = "dtC7SAuDRMS3faHIXwuD_8:APA91bEFq-NPddhhT0h5JuYGQykJq-pDX6PDOaxVzhNDvAhgahl9U6FgaOBCGtxJjlyRF-D3N_s1jXrefcLsZVpgJJC2ydjGr7abnkrU0HbnycQKJpjqHi1FxLEDj5mojqyxNXkdxMJH";
+ //  String FCMServerKey = "AAAAvnuEuSw:APA91bGhzDJBFD0fM8U5D-WRsSYWG9egY7sJX_sL6VnGZ7AC7wrrgC5WmUFIK7-GttG_U4VmLSQ4_TRJy-SDtWD-bABrmIKU7bdg604i3IUgk6zVj-k0elas3fwHN1vmUy6egG0-O4cj";
+ //
+ //  void sendNotificationToDevice(String FCMServerKey, String FCMToken, Map<String, String> documentNames) async {
+ //    final Uri url = Uri.parse('https://fcm.googleapis.com/fcm/send');
+ //  //  final Uri url = Uri.parse('https://fcm.googleapis.com/v1/projects/lms-application-be1ea/messages:send');
+ //
+ //    // Convert the documentNames map to a readable string with each key-value pair on a new line
+ //    String documentNamesString = documentNames.entries.map((e) => '${e.key}: ${e.value}').join('\n');
+ //
+ //    // Define your notification message
+ //    Map<String, dynamic> notification = {
+ //      'notification': {
+ //        'title': '"HomeFin Express" Verification Status Updated',
+ //        'body': '${ApplicantFirstName! + ' ' + ApplicantLastName!} - Query By SM:\n$documentNamesString',
+ //        'icon': "https://firebasestorage.googleapis.com/v0/b/lms-application-be1ea.appspot.com/o/ic_launcher.png?alt=media&token=c37f6227-036f-4ed9-b757-bd1dc0c27809",
+ //        'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+ //      },
+ //      'priority': 'high',
+ //      'data': {
+ //        'title': '"HomeFin Express" Verification Status Updated',
+ //        'body': '${ApplicantFirstName! + ' ' + ApplicantLastName!} - Query By SM:\n$documentNamesString',
+ //        // Add any additional data you want to send with the notification
+ //        'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+ //        'screen': 'NotificationPageView'
+ //      },
+ //      'to': FCMToken, // FCM token of the device you want to send the notification to
+ //    };
+ //
+ //    // Encode the notification message
+ //    final String notificationJson = jsonEncode(notification);
+ //
+ //    // Send HTTP POST request to FCM endpoint
+ //    final http.Response response = await http.post(
+ //      url,
+ //      headers: <String, String>{
+ //        'Content-Type': 'application/json',
+ //        'Authorization': 'key=$FCMServerKey', // Include FCM server key in Authorization header
+ //      },
+ //      body: notificationJson,
+ //    );
+ //
+ //    // Check if the request was successful
+ //    if (response.statusCode == 200) {
+ //      print('Notification sent successfully');
+ //    } else {
+ //      print('Failed to send notification. Error: ${response.body}');
+ //    }
+ //  }
 
-  void sendNotificationToDevice(String FCMServerKey, String FCMToken, Map<String, String> documentNames) async {
-    final Uri url = Uri.parse('https://fcm.googleapis.com/fcm/send');
-  //  final Uri url = Uri.parse('https://fcm.googleapis.com/v1/projects/lms-application-be1ea/messages:send');
+  Future<String> getAccessToken() async {
+    // final serviceAccount = ServiceAccountCredentials.fromJson(
+    //     File('assets/jsons/ServiceKey.json').readAsStringSync());
+    final serviceAccountJson = await rootBundle.loadString('jsons/ServiceKey.json');
+    final serviceAccount = ServiceAccountCredentials.fromJson(json.decode(serviceAccountJson));
 
-    // Convert the documentNames map to a readable string with each key-value pair on a new line
-    String documentNamesString = documentNames.entries.map((e) => '${e.key}: ${e.value}').join('\n');
+    final scopes = ['https://www.googleapis.com/auth/firebase.messaging'];
 
-    // Define your notification message
-    Map<String, dynamic> notification = {
-      'notification': {
-        'title': '"HomeFin Express" Verification Status Updated',
-        'body': '${ApplicantFirstName! + ' ' + ApplicantLastName!} - Query By SM:\n$documentNamesString',
-        'icon': "https://firebasestorage.googleapis.com/v0/b/lms-application-be1ea.appspot.com/o/ic_launcher.png?alt=media&token=c37f6227-036f-4ed9-b757-bd1dc0c27809",
-        'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-      },
-      'priority': 'high',
-      'data': {
-        'title': '"HomeFin Express" Verification Status Updated',
-        'body': '${ApplicantFirstName! + ' ' + ApplicantLastName!} - Query By SM:\n$documentNamesString',
-        // Add any additional data you want to send with the notification
-        'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-        'screen': 'NotificationPageView'
-      },
-      'to': FCMToken, // FCM token of the device you want to send the notification to
-    };
-
-    // Encode the notification message
-    final String notificationJson = jsonEncode(notification);
-
-    // Send HTTP POST request to FCM endpoint
-    final http.Response response = await http.post(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-        'Authorization': 'key=$FCMServerKey', // Include FCM server key in Authorization header
-      },
-      body: notificationJson,
-    );
-
-    // Check if the request was successful
-    if (response.statusCode == 200) {
-      print('Notification sent successfully');
-    } else {
-      print('Failed to send notification. Error: ${response.body}');
-    }
+    final authClient = await clientViaServiceAccount(serviceAccount, scopes);
+    return authClient.credentials.accessToken.data;
   }
 
-  // Future<String> getAccessToken() async {
-  //   // final serviceAccount = ServiceAccountCredentials.fromJson(
-  //   //     File('assets/jsons/ServiceKey.json').readAsStringSync());
-  //   final serviceAccountJson = await rootBundle.loadString('jsons/ServiceKey.json');
-  //   final serviceAccount = ServiceAccountCredentials.fromJson(json.decode(serviceAccountJson));
-  //
-  //   final scopes = ['https://www.googleapis.com/auth/firebase.messaging'];
-  //
-  //   final authClient = await clientViaServiceAccount(serviceAccount, scopes);
-  //   return authClient.credentials.accessToken.data;
-  // }
-  //
-  // Future<void> sendNotification(String FCMServerKey, String FCMToken, Map<String, String> documentNames) async {
-  //   final url = Uri.parse('https://fcm.googleapis.com/v1/projects/lms-application-be1ea/messages:send');
-  // final String accessToken = await getAccessToken();
-  // print(accessToken);
-  //   final headers = <String, String>{
-  //     'Content-Type': 'application/json',
-  //     'Authorization': 'Bearer $accessToken',
-  //   };
-  //
-  //   String documentNamesString = documentNames.entries.map((e) => '${e.key}: ${e.value}').join('\n');
-  //   final message = {
-  //     'message': {
-  //       'token': FCMToken, // Replace with the FCM token of the receiving device
-  //           'notification': {
-  //             'title': '"HomeFin Express" Verification Status Updated',
-  //             'body': '${ApplicantFirstName! + ' ' + ApplicantLastName!} - Query By SM:\n$documentNamesString',
-  //             //'icon': "https://firebasestorage.googleapis.com/v0/b/lms-application-be1ea.appspot.com/o/ic_launcher.png?alt=media&token=c37f6227-036f-4ed9-b757-bd1dc0c27809",
-  //            // 'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-  //           },
-  //     },
-  //   };
-  //
-  //   try {
-  //     final response = await http.post(
-  //       url,
-  //       headers: headers,
-  //       body: jsonEncode(message),
-  //     );
-  //
-  //     if (response.statusCode == 200) {
-  //       print('Notification sent successfully');
-  //     } else {
-  //       print('Failed to send notification. Error ${response.statusCode}: ${response.body}');
-  //     }
-  //   } catch (e) {
-  //     print('Exception while sending notification: $e');
-  //   }
-  // }
+  Future<void> sendNotification(String FCMToken, Map<String, String> documentNames) async {
+    final url = Uri.parse('https://fcm.googleapis.com/v1/projects/lms-application-be1ea/messages:send');
+  final String accessToken = await getAccessToken();
+  print(accessToken);
+    final headers = <String, String>{
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $accessToken',
+    };
+
+    String documentNamesString = documentNames.entries.map((e) => '${e.key}: ${e.value}').join('\n');
+    final message = {
+      'message': {
+        'token': FCMToken, // Replace with the FCM token of the receiving device
+            'notification': {
+              'title': '"HomeFin Express" Verification Status Updated',
+              'body': '${ApplicantFirstName! + ' ' + ApplicantLastName!} - Query By SM:\n$documentNamesString',
+              //'icon': "https://firebasestorage.googleapis.com/v0/b/lms-application-be1ea.appspot.com/o/ic_launcher.png?alt=media&token=c37f6227-036f-4ed9-b757-bd1dc0c27809",
+             // 'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+            },
+      },
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode(message),
+      );
+
+      if (response.statusCode == 200) {
+        print('Notification sent successfully');
+      } else {
+        print('Failed to send notification. Error ${response.statusCode}: ${response.body}');
+      }
+    } catch (e) {
+      print('Exception while sending notification: $e');
+    }
+  }
 
 
   // void sendNotificationToDevice1(String FCMServerKey, String FCMTOken,) async {
@@ -510,40 +512,40 @@ class _DocumentPageViewState extends State<DocumentPageView> {
   // }
 
 
-  Future<void> sendNotificationToDevice1(String FCMServerKey, String FCMToken) async {
-    final url = Uri.parse('https://fcm.googleapis.com/v1/projects/lms-application-be1ea/messages:send');
-    final headers = <String, String>{
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $FCMServerKey',
-    };
-    final message = {
-      'message': {
-        'token': FCMToken, // Replace with the FCM token of the receiving device
-            'notification': {
-              'title': '"HomeFin Express" Verification Status Updated',
-              'body': ApplicantFirstName! + ' ' + ApplicantLastName! +" - " + "Verification Completed By SM",
-              'icon': "https://firebasestorage.googleapis.com/v0/b/lms-application-be1ea.appspot.com/o/ic_launcher.png?alt=media&token=c37f6227-036f-4ed9-b757-bd1dc0c27809",
-              'click_action': 'FLUTTER_NOTIFICATION_CLICK'
-            },
-      },
-    };
-
-    try {
-      final response = await http.post(
-        url,
-        headers: headers,
-        body: jsonEncode(message),
-      );
-
-      if (response.statusCode == 200) {
-        print('Notification sent successfully');
-      } else {
-        print('Failed to send notification. Error ${response.statusCode}: ${response.body}');
-      }
-    } catch (e) {
-      print('Exception while sending notification: $e');
-    }
-  }
+  // Future<void> sendNotificationToDevice1(String FCMServerKey, String FCMToken) async {
+  //   final url = Uri.parse('https://fcm.googleapis.com/v1/projects/lms-application-be1ea/messages:send');
+  //   final headers = <String, String>{
+  //     'Content-Type': 'application/json',
+  //     'Authorization': 'Bearer $FCMServerKey',
+  //   };
+  //   final message = {
+  //     'message': {
+  //       'token': FCMToken, // Replace with the FCM token of the receiving device
+  //           'notification': {
+  //             'title': '"HomeFin Express" Verification Status Updated',
+  //             'body': ApplicantFirstName! + ' ' + ApplicantLastName! +" - " + "Verification Completed By SM",
+  //             'icon': "https://firebasestorage.googleapis.com/v0/b/lms-application-be1ea.appspot.com/o/ic_launcher.png?alt=media&token=c37f6227-036f-4ed9-b757-bd1dc0c27809",
+  //             'click_action': 'FLUTTER_NOTIFICATION_CLICK'
+  //           },
+  //     },
+  //   };
+  //
+  //   try {
+  //     final response = await http.post(
+  //       url,
+  //       headers: headers,
+  //       body: jsonEncode(message),
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       print('Notification sent successfully');
+  //     } else {
+  //       print('Failed to send notification. Error ${response.statusCode}: ${response.body}');
+  //     }
+  //   } catch (e) {
+  //     print('Exception while sending notification: $e');
+  //   }
+  // }
 
   @override
   void initState() {

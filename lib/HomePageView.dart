@@ -60,6 +60,28 @@ class _HomePageViewState extends State<HomePageView> {
   Map<String, String> leadStatuses = {};
 
 
+
+  //
+  // void fetchDocumentData() async {
+  //   FirebaseFirestore.instance
+  //       .collection("connectorName")
+  //       .doc('connectorName')
+  //       .get()
+  //       .then((value) {
+  //     if (value.exists) {
+  //       for (var element in value.data()!['connectorName']) {
+  //         print('ID: ${element['id']}, Title: ${element['title']}');
+  //       }
+  //     } else {
+  //       print("Document does not exist");
+  //     }
+  //   }).catchError((error) {
+  //     print("Error fetching document: $error");
+  //   });
+  // }
+  //
+
+
   Future<void> getToken()
   async {
     var headers = {
@@ -692,6 +714,7 @@ class _HomePageViewState extends State<HomePageView> {
     // TODO: implement initState
     fetchdata();
     super.initState();
+   // fetchDocumentData();
     fetchFCMdata();
     getToken();
    // fetchAndPrintCampaignData();

@@ -66,6 +66,7 @@ dependencies:
   firebase_analytics: ^10.8.5
   flutter_local_notifications: ^17.1.2
   shimmer: ^3.0.0
+  googleapis_auth: ^1.6.0
 
 
 dev_dependencies:
