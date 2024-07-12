@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:html';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:homefin_express_web/Model/apiurls.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
@@ -55,6 +57,7 @@ class _CreditManagerPageViewState extends State<CreditManagerPageView> {
   bool _isLoading = true;
   String? technicalChecklistStatus;
   String? technicalStatus;
+  String? accessToken;
 
   var docData;
 
@@ -1104,50 +1107,80 @@ class _CreditManagerPageViewState extends State<CreditManagerPageView> {
                                                 // print(data);
                                                 print(docId);
                                                 // New Implementation
-
-                                                var map = <String,
-                                                    dynamic>{};
-                                                map['DocId'] = docId;
-                                                map['LUSR'] = 'SBL';
-
-                                                http.Response
-                                                response =
-                                                await http.post(
-                                                  Uri.parse(
-                                                      "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
-                                                  body: map,
+                                                var headers = {
+                                                  'Content-Type': 'application/x-www-form-urlencoded',
+                                                  'AuthToken': ApiUrls().AuthToken
+                                                };
+                                                var dio = Dio();
+                                                var response = await dio.request(
+                                                  ApiUrls().authGenerate,
+                                                  options: Options(
+                                                    method: 'GET',
+                                                    headers: headers,
+                                                  ),
                                                 );
-                                                final data1 = response
-                                                    .bodyBytes;
-                                                final mime =
-                                                lookupMimeType('',
-                                                    headerBytes:
-                                                    data1);
-                                                if (docId
-                                                    .toString()
-                                                    .contains(",")) {
-                                                  AnchorElement(
-                                                      href:
-                                                      "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
-                                                    ..setAttribute(
-                                                        "download",
-                                                        data.containsKey(
-                                                            'LeadID')
-                                                            ? "${data['firstName']+"" +data['lastName']}.zip"
-                                                            : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.zip")
-                                                    ..click();
-                                                } else {
-                                                  AnchorElement(
-                                                      href:
-                                                      "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
-                                                    ..setAttribute(
-                                                        "download",
-                                                        data.containsKey(
-                                                            'LeadID')
-                                                            ? "${data['firstName']+"" +data['lastName']}.${mime.toString().split("/").last}"
-                                                            : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.${mime.toString().split("/").last}")
-                                                    ..click();
+
+                                                if (response.statusCode == 200) {
+                                                  print(json.encode(response.data));
+                                                  String jsonResponse = json.encode(response.data);
+                                                  Map<String, dynamic> jsonMap = json.decode(jsonResponse);
+                                                  accessToken = jsonMap['access_token'];
                                                 }
+                                                else {
+                                                  print(response.statusMessage);
+                                                }
+                                                try{
+                                                  var map = <String,
+                                                      dynamic>{};
+                                                  map['DocId'] = docId;
+                                                  map['LUSR'] = 'HomeFin';
+
+                                                  http.Response
+                                                  response =
+                                                  await http.post(
+                                                    Uri.parse(
+                                                        ApiUrls().downloadDoc
+                                                    ),
+                                                    body: map,
+                                                  );
+                                                  final data1 = response
+                                                      .bodyBytes;
+                                                  final mime =
+                                                  lookupMimeType('',
+                                                      headerBytes:
+                                                      data1);
+                                                  if (docId
+                                                      .toString()
+                                                      .contains(",")) {
+                                                    AnchorElement(
+                                                        href:
+                                                        "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
+                                                      ..setAttribute(
+                                                          "download",
+                                                          data.containsKey(
+                                                              'LeadID')
+                                                              ? "${data['firstName']+"" +data['lastName']}.zip"
+                                                              : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.zip")
+                                                      ..click();
+                                                  } else {
+                                                    AnchorElement(
+                                                        href:
+                                                        "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}")
+                                                      ..setAttribute(
+                                                          "download",
+                                                          data.containsKey(
+                                                              'LeadID')
+                                                              ? "${data['firstName']+"" +data['lastName']}.${mime.toString().split("/").last}"
+                                                              : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now()).toString()}.${mime.toString().split("/").last}")
+                                                      ..click();
+                                                  }
+                                                }
+                                                catch(e)
+                                                {
+                                                  print(e);
+                                                }
+
+
                                               },
                                               icon: Column(
                                                 children: [

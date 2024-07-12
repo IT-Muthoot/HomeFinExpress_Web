@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:homefin_express_web/HomePageView.dart';
+import 'package:homefin_express_web/Model/apiurls.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
@@ -173,29 +174,65 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
     return false;
   }
 
-
+  String? accessToken;
   Future<void> downloadDocument(String docId, String leadID) async {
-
-    var map = <String, dynamic>{};
-    map['DocId'] = docId;
-    map['LUSR'] = 'HomeFin';
-
-    http.Response response = await http.post(
-      Uri.parse("https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
-      body: map,
+    var headers = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'AuthToken': ApiUrls().AuthToken,
+    };
+    var dio = Dio();
+    var response = await dio.request(
+     ApiUrls().authGenerate,
+      options: Options(
+        method: 'GET',
+        headers: headers,
+      ),
     );
-    final data1 = response.bodyBytes;
-    final mime = lookupMimeType('', headerBytes: data1);
-    AnchorElement(
-      href: "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}",
-    )
-      ..setAttribute(
-        "download",
-        (leadID.isNotEmpty)
-            ? "$ApplicantFirstName $ApplicantLastName.${mime?.split("/").last ?? 'file'}"
-            : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.${mime?.split("/").last ?? 'file'}",
+    if (response.statusCode == 200) {
+      print(json.encode(response.data));
+      String jsonResponse = json.encode(response.data);
+      Map<String, dynamic> jsonMap = json.decode(jsonResponse);
+      accessToken = jsonMap['access_token'];
+    }
+    else {
+      print(response.statusMessage);
+    }
+    try{
+      var headers = {
+        'AuthToken': ApiUrls().AuthToken,
+        'Authorization': 'Bearer ${accessToken ?? ''}'
+      };
+
+      var map = <String, dynamic>{};
+      map['DocId'] = docId;
+      map['LUSR'] = 'HomeFin';
+
+      http.Response response = await http.post(
+        Uri.parse(
+            ApiUrls().downloadDoc
+        ),
+        body: map,
+        headers: headers,
+      );
+      final data1 = response.bodyBytes;
+      final mime = lookupMimeType('', headerBytes: data1);
+      AnchorElement(
+        href: "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(response.bodyBytes)}",
       )
-      ..click();
+        ..setAttribute(
+          "download",
+          (leadID.isNotEmpty)
+              ? "$ApplicantFirstName $ApplicantLastName.${mime?.split("/").last ?? 'file'}"
+              : "Documents_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.${mime?.split("/").last ?? 'file'}",
+        )
+        ..click();
+    }
+    catch(e)
+    {
+      print('An error occurred: $e');
+    }
+
+
   }
 
   String? selectedDoc;

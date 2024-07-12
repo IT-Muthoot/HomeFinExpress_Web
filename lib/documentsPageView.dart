@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:html';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:mime/mime.dart';
 import '../Utils/StyleData.dart';
+import 'Model/apiurls.dart';
 
 class DocumentPageView extends StatefulWidget {
   final String docId;
@@ -36,7 +38,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
   bool isVerification = false;
   String? docId;
   bool downloading = false;
-
+  String? accessToken;
   TextEditingController queryReason = TextEditingController();
 
   var userType;
@@ -183,7 +185,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
   //   map['LUSR'] = 'HomeFin';
   //
   //   http.Response response = await http.post(
-  //     Uri.parse("https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
+  //     Uri.parse("https://dmshub.muthootfinance.com/api/DownloadFile"),
   //     body: map,
   //   );
   //   final data1 = response.bodyBytes;
@@ -201,15 +203,46 @@ class _DocumentPageViewState extends State<DocumentPageView> {
   // }
 
   Future<void> downloadDocument(String docId, String leadID) async {
-    var map = <String, dynamic>{};
-    map['DocId'] = docId;
-    map['LUSR'] = 'HomeFin';
+    print(docId);
+    var headers = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'AuthToken': ApiUrls().AuthToken,
+    };
+    var dio = Dio();
+    var response = await dio.request(
+      ApiUrls().authGenerate,
+      options: Options(
+        method: 'GET',
+        headers: headers,
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      print(json.encode(response.data));
+      String jsonResponse = json.encode(response.data);
+      Map<String, dynamic> jsonMap = json.decode(jsonResponse);
+      accessToken = jsonMap['access_token'];
+    }
+    else {
+      print(response.statusMessage);
+    }
 
     try {
-      print("DOwnloading API");
+      print("Downloading API");
+      var map = <String, dynamic>{};
+      map['DocId'] = docId;
+      map['LUSR'] = 'HomeFin';
+      var headers = {
+        'AuthToken': ApiUrls().AuthToken,
+        'Authorization': 'Bearer ${accessToken ?? ''}'
+      };
+      print(headers);
       http.Response response = await http.post(
-        Uri.parse("https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
+        Uri.parse(
+            ApiUrls().downloadDoc
+        ),
         body: map,
+        headers: headers,
       );
       print('Failed to download document: ${response.statusCode}');
       if (response.statusCode == 200) {
@@ -243,7 +276,69 @@ class _DocumentPageViewState extends State<DocumentPageView> {
   bool isQuery = false;
 
   void UpdatedVerificationStatus() async {
+
     try {
+      print("sbfkjsvkjsfv");
+      // var headers = {
+      //   'X-PrettyPrint': '1',
+      //   'Content-Type': 'application/x-www-form-urlencoded',
+      //   'Cookie': 'BrowserId=qnhrXMyBEe6lOh9ncfvoTw; CookieConsentPolicy=0:1; LSKey-c\$CookieConsentPolicy=0:1'
+      // };
+      // print(headers);
+      // var data = {
+      //   'grant_type': 'password',
+      //   'client_id': '3MVG9ct5lb5FGJTNKeeA63nutsPt.67SWB9mzXh9na.RBlkmz2FxM4KH31kKmHWMWQHD1y2apE9qmtoRtiQ9R',
+      //   'client_secret': 'E9DDAF90143A7B4C6CA622463EFDA17843174AB347FD74A6905F853CD2406BDE',
+      //   'username': 'itkrishnaprasad@muthootgroup.com.dev2',
+      //   'password': 'Karthikrishna@127jb7htnfs8WigpiW5SOP6I7qZ'
+      // };
+      // print(data);
+      // var dio = Dio();
+      // var response = await dio.request(
+      //   //'https://muthootltd.my.salesforce.com/services/oauth2/token',
+      //   'https://muthootltd--muthootdo.sandbox.my.salesforce.com/services/oauth2/token',
+      //   options: Options(
+      //     method: 'POST',
+      //     headers: headers,
+      //   ),
+      //   data: data,
+      // );
+      // print(response);
+      // print(response.statusCode );
+      // String jsonResponse = json.encode(response.data);
+      // if (response.statusCode == 200) {
+      //   Map<String, dynamic> jsonMap = json.decode(jsonResponse);
+      //   accessToken = jsonMap['access_token'];
+      //   print("AccessToken");
+      //   print(accessToken);
+      //   var headers = {
+      //     'Authorization': 'Bearer ${accessToken}',
+      //     'Content-Type': 'application/json',
+      //     'Cookie': 'BrowserId=qnhrXMyBEe6lOh9ncfvoTw; CookieConsentPolicy=0:1; LSKey-c\$CookieConsentPolicy=0:1'
+      //   };
+      //   var data = json.encode({
+      //     "Leadid": LeadID,
+      //     "isDocumentCollected": true
+      //   });
+      //   var dio = Dio();
+      //   var response = await dio.request(
+      //     'https://muthootltd--muthootdo.sandbox.my.salesforce.com/services/apexrest/DMSUpdate/',
+      //     options: Options(
+      //       method: 'POST',
+      //       headers: headers,
+      //     ),
+      //     data: data,
+      //   );
+      //
+      //   if (response.statusCode == 200) {
+      //     print(json.encode(response.data));
+      //   }
+      //   else {
+      //     print(response.statusMessage);
+      //   }
+      // }
+
+
       // Reference to the documents in the "convertedLeads" collection
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('convertedLeads')
           .where('LeadID', isEqualTo: widget.leadID)
@@ -1587,7 +1682,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
 //
 //                   http.Response response = await http.post(
 //                     Uri.parse(
-//                         "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
+//                         "https://dmshub.muthootfinance.com/api/DownloadFile"),
 //                     body: map,
 //                   );
 //                   final data1 = response.bodyBytes;
@@ -1734,7 +1829,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
 //
 //                                 http.Response response = await http.post(
 //                                   Uri.parse(
-//                                       "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
+//                                       "https://dmshub.muthootfinance.com/api/DownloadFile"),
 //                                   body: map,
 //                                 );
 //                                 final data1 = response.bodyBytes;
@@ -1866,7 +1961,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
 //                                   map['LUSR'] = 'HomeFin';
 //
 //                                   http.Response response = await http.post(
-//                                     Uri.parse("https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
+//                                     Uri.parse("https://dmshub.muthootfinance.com/api/DownloadFile"),
 //                                     body: map,
 //                                   );
 //                                   final data1 = response.bodyBytes;
@@ -2005,7 +2100,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
 //                             response =
 //                             await http.post(
 //                               Uri.parse(
-//                                   "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
+//                                   "https://dmshub.muthootfinance.com/api/DownloadFile"),
 //                               body: map,
 //                             );
 //                             final data1 = response
@@ -2095,7 +2190,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
 //                             response =
 //                             await http.post(
 //                               Uri.parse(
-//                                   "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
+//                                   "https://dmshub.muthootfinance.com/api/DownloadFile"),
 //                               body: map,
 //                             );
 //                             final data1 = response
@@ -2193,7 +2288,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
 //                             response =
 //                             await http.post(
 //                               Uri.parse(
-//                                   "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
+//                                   "https://dmshub.muthootfinance.com/api/DownloadFile"),
 //                               body: map,
 //                             );
 //                             final data1 = response
@@ -2283,7 +2378,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
 //                             response =
 //                             await http.post(
 //                               Uri.parse(
-//                                   "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
+//                                   "https://dmshub.muthootfinance.com/api/DownloadFile"),
 //                               body: map,
 //                             );
 //                             final data1 = response
@@ -2381,7 +2476,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
 //                             response =
 //                             await http.post(
 //                               Uri.parse(
-//                                   "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
+//                                   "https://dmshub.muthootfinance.com/api/DownloadFile"),
 //                               body: map,
 //                             );
 //                             final data1 = response
@@ -2471,7 +2566,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
 //                             response =
 //                             await http.post(
 //                               Uri.parse(
-//                                   "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
+//                                   "https://dmshub.muthootfinance.com/api/DownloadFile"),
 //                               body: map,
 //                             );
 //                             final data1 = response
@@ -2569,7 +2664,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
 //                             response =
 //                             await http.post(
 //                               Uri.parse(
-//                                   "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
+//                                   "https://dmshub.muthootfinance.com/api/DownloadFile"),
 //                               body: map,
 //                             );
 //                             final data1 = response
@@ -2684,7 +2779,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
 //                             response =
 //                             await http.post(
 //                               Uri.parse(
-//                                   "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
+//                                   "https://dmshub.muthootfinance.com/api/DownloadFile"),
 //                               body: map,
 //                             );
 //                             final data1 = response
@@ -2774,7 +2869,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
 //                             response =
 //                             await http.post(
 //                               Uri.parse(
-//                                   "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
+//                                   "https://dmshub.muthootfinance.com/api/DownloadFile"),
 //                               body: map,
 //                             );
 //                             final data1 = response
@@ -2872,7 +2967,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
 //                             response =
 //                             await http.post(
 //                               Uri.parse(
-//                                   "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
+//                                   "https://dmshub.muthootfinance.com/api/DownloadFile"),
 //                               body: map,
 //                             );
 //                             final data1 = response
@@ -2962,7 +3057,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
 //                             response =
 //                             await http.post(
 //                               Uri.parse(
-//                                   "https://6cpduvi80d.execute-api.ap-south-1.amazonaws.com/dms/downloaddoc"),
+//                                   "https://dmshub.muthootfinance.com/api/DownloadFile"),
 //                               body: map,
 //                             );
 //                             final data1 = response
