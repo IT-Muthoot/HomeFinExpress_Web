@@ -9,8 +9,6 @@ import 'CreditManagerPageView.dart';
 import 'HomePageView.dart';
 import 'LoginPageView.dart';
 
-import 'package:http/http.dart' as http;
-
 import 'Utils/StyleData.dart';
 
 class SplashView extends StatefulWidget {
@@ -33,64 +31,87 @@ class _SplashViewState extends State<SplashView> {
     return user;
   }
 
-  Future<Widget> startApp() async {
+  // Future<Widget> startApp() async {
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   String? employeeCode = pref.getString("employeeCode");
+  //   String? emailID = pref.getString("emailID");
+  //   String? loginType = pref.getString("logintype");
+  //
+  //   if ((employeeCode != null && employeeCode.isNotEmpty) || (emailID != null && emailID.isNotEmpty)) {
+  //     // User is already logged in, navigate directly to the appropriate home page
+  //     return loginType == "SalesManager" ? HomePageView() : CreditManagerPageView();
+  //   } else {
+  //     // User is not logged in, navigate to the login page
+  //     return LoginPage();
+  //   }
+  // }
+
+  Future<void> startApp() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? employeeCode = pref.getString("employeeCode");
     String? emailID = pref.getString("emailID");
     String? loginType = pref.getString("logintype");
 
+    Widget nextPage;
+
     if ((employeeCode != null && employeeCode.isNotEmpty) || (emailID != null && emailID.isNotEmpty)) {
       // User is already logged in, navigate directly to the appropriate home page
-      return loginType == "SalesManager" ? HomePageView() : CreditManagerPageView();
+      nextPage = loginType == "SalesManager" ? HomePageView() : CreditManagerPageView();
     } else {
       // User is not logged in, navigate to the login page
-      return LoginPage();
+      nextPage = LoginPage();
     }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => nextPage),
+    );
   }
 
-  navigateFunc() async {
-    bool isIPAddressMatching = false;
-    _auth
-        .signInWithEmailAndPassword(
-        email: "itcoblr@muthootgroup.com", password: "Muthoot@123\$")
-        .then((value) async {
-      final User user = value.user!;
-      print(user.uid);
-      try {
-        final uri = Uri.parse('https://api.ipify.org');
-        final response = await http.get(uri);
-
-        if (response.statusCode == 200) {
-          final ipAddress = response.body;
-          print('Local IP Address: $ipAddress');
-
-          final snapshot = await FirebaseFirestore.instance
-              .collection('ipAddress')
-              .where('ipAddress', isEqualTo: ipAddress)
-              .get();
-          print(snapshot.docs);
-          isIPAddressMatching = snapshot.docs.isNotEmpty ? true : false;
-          print(snapshot.docs);
-
-          final nextPage = await startApp();
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                  isIPAddressMatching ? nextPage : MessagePage()));
-        } else {
-          print('Failed to retrieve local IP address.');
-        }
-      } catch (e) {
-        print('Error: $e');
-      }
-    });
-  }
+  // navigateFunc() async {
+  //   bool isIPAddressMatching = false;
+  //   _auth
+  //       .signInWithEmailAndPassword(
+  //       email: "itcoblr@muthootgroup.com", password: "Muthoot@123\$")
+  //       .then((value) async {
+  //     final User user = value.user!;
+  //     print(user.uid);
+  //     try {
+  //       final uri = Uri.parse('https://api.ipify.org');
+  //       final response = await http.get(uri);
+  //
+  //       if (response.statusCode == 200) {
+  //         final ipAddress = response.body;
+  //         print('Local IP Address: $ipAddress');
+  //
+  //         final snapshot = await FirebaseFirestore.instance
+  //             .collection('ipAddress')
+  //             .where('ipAddress', isEqualTo: ipAddress)
+  //             .get();
+  //         print(snapshot.docs);
+  //         isIPAddressMatching = snapshot.docs.isNotEmpty ? true : false;
+  //         print(snapshot.docs);
+  //
+  //         final nextPage = await startApp();
+  //         Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //                 builder: (context) =>
+  //                 isIPAddressMatching ? nextPage : MessagePage()));
+  //       } else {
+  //         print('Failed to retrieve local IP address.');
+  //       }
+  //     } catch (e) {
+  //       print('Error: $e');
+  //     }
+  //   });
+  // }
 
   @override
   void initState() {
     super.initState();
-    navigateFunc();
+  //  navigateFunc();
+    startApp();
   }
 
   @override
