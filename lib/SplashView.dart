@@ -9,6 +9,8 @@ import 'CreditManagerPageView.dart';
 import 'HomePageView.dart';
 import 'LoginPageView.dart';
 
+import 'package:http/http.dart' as http;
+
 import 'Utils/StyleData.dart';
 
 class SplashView extends StatefulWidget {
