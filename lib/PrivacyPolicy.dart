@@ -40,7 +40,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
                 width: MediaQuery.of(context).size.width * 0.6, // Set container width to 60% of screen width
                 padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
                 child: Text(
-                    'The Mobile App for Sales (Homefin Express) is developed by (Muthoot IT – CO South) for the exclusive use of the Sales staff who is working at various branches of Muthoot Homefin India Ltd by using the Employee Code and password given to them by the company. Nobody other than Branch Staff of Muthoot Homefin India Ltd can login to this application unless the Employee Code and password are provided to them by the company.'),
+                    'The Mobile App (Homefin Express) is developed by (Muthoot IT – CO South) Muthoot Homefin India Ltd to generate Leads.'),
               ),
             ),
             Center(
@@ -48,7 +48,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
                 width: MediaQuery.of(context).size.width * 0.6, // Set container width to 60% of screen width
                 padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
                 child: Text(
-                    'This privacy policy is to provide information to you, our client, on how your personal data is gathered and used within our practice, and the circumstances in which we may share it with third parties.'),
+                    'This privacy policy is to provide information to you, our Customer, on how your personal data is gathered and used within our practice.'),
               ),
             ),
             Center(
@@ -106,15 +106,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
                 width: MediaQuery.of(context).size.width * 0.6, // Set container width to 60% of screen width
                 padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
                 child: Text(
-                    'Contact data: This includes your email addresses, phone numbers, and postal address.'),
-              ),
-            ),
-            Center(
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.6, // Set container width to 60% of screen width
-                padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-                child: Text(
-                    'Identity and Profile-related Data: This includes personal information concerning the personal or material circumstances of an identified or identifiable User, e.g. name, gender, date of birth, password, password validation, employment verification information and other similar details shared via the Platform.'),
+                    'Contact data: This includes your email addresses, phone numbers, and postal address.Identity and Profile-related Data: This includes personal information concerning the personal or material circumstances of an identified or identifiable User, e.g. name, gender, date of birth, password, password validation, employment verification information and other similar details shared via the Platform.'),
               ),
             ),
             Center(
@@ -130,7 +122,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
                 width: MediaQuery.of(context).size.width * 0.6, // Set container width to 60% of screen width
                 padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
                 child: Text(
-                    'Financial data: This will include your past credit history, income details, details of loans issued, or otherwise applied for through the Platform, payments and repayments thereof, your bank account details and bank account statements.'),
+                    'Financial data: This will include your past credit history, income details, details of loans issued, or otherwise applied for through the Platform, payments and repayments thereof, yourbank account details and bank account statements.'),
               ),
             ),
             Center(
@@ -193,7 +185,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
                 width: MediaQuery.of(context).size.width * 0.6, // Set container width to 60% of screen width
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                    'To process transactions your information, whether public or private, will not be sold, exchanged, transferred, or given to any other company for any reason whatsoever, without your consent, other than for the express purpose of delivering the purchased product or service requested.'
+                    'To improve customer service (your information helps us to more effectively respond to your customer service requests and support needs)'
                 ),
               ),
             ),
@@ -202,7 +194,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
                 width: MediaQuery.of(context).size.width * 0.6, // Set container width to 60% of screen width
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                    'To administer a contest, promotion, survey or other site feature'
+                    'To process transactions your information, whether public or private, will not be sold,exchanged, transferred, or given to any other company for any reason whatsoever, without your consent, other than for the express purpose of delivering the purchased product or service requested.'
                 ),
               ),
             ),
@@ -211,7 +203,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
                 width: MediaQuery.of(context).size.width * 0.6, // Set container width to 60% of screen width
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                    'To send periodic emails'
+                    'To administer a contest, promotion, survey or other site feature To send periodic emails'
                 ),
               ),
             ),
@@ -246,7 +238,7 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
                 width: MediaQuery.of(context).size.width * 0.6, // Set container width to 60% of screen width
                 padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 child: Text(
-                    'We do not sell, trade, or otherwise transfer to outside parties your personally identifiable information. This does not include trusted third parties who assist us in operating our App, conducting our business, or servicing you, so long as those parties agree to keep this information confidential. We may also release your information when we believe release is appropriate to comply with the law, enforce our app policies, or protect ours or others rights, property, or safety. However, non-personally identifiable visitor information may be provided to other parties for marketing, advertising, or other uses.'),
+                    'We do not sell, trade, or otherwise transfer to outside parties your personally identifiable information. This does not include trusted third parties who assist us in operating our App, conducting our business, or servicing you, so long as those parties agree to keep this information confidential. We may also release your information when we believe release is appropriate to comply with the law, enforce our app policies, or protect ours or others rights, property, or safety. However, non-personally identifiable visitor information may be providedto other parties for marketing, advertising, or other uses.'),
               ),
             ),
 
@@ -296,17 +288,10 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
                 width: MediaQuery.of(context).size.width * 0.6, // Set container width to 60% of screen width
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                    'We implement a variety of security measures to maintain the safety of your personal information when you enter, submit, or access your personal information.'),
+                    'We implement a variety of security measures to maintain the safety of your personal information when you enter, submit, or access your personal information. If we make any material changes to this Privacy Policy, we will notify you either through the email address you have provided us, or by placing a prominent notice on our App.'),
               ),
             ),
-            Center(
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.6, // Set container width to 60% of screen width
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                    'If we make any material changes to this Privacy Policy, we will notify you either through the email address you have provided us, or by placing a prominent notice on our App.'),
-              ),
-            ),
+
 
 
             SizedBox(height: 30.0,),

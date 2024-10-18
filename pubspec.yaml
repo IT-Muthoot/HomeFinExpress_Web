@@ -67,6 +67,9 @@ dependencies:
   flutter_local_notifications: ^17.1.2
   shimmer: ^3.0.0
   googleapis_auth: ^1.6.0
+  firebase_storage: ^11.6.9
+  excel: ^4.0.3
+  spreadsheet_decoder: ^2.2.0
 
 
 dev_dependencies:

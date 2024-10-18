@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'PrivacyPolicy.dart';
 import 'SplashView.dart';
+import 'adminPageView.dart';
 import 'firebase_options.dart';
 
 
@@ -32,8 +33,9 @@ class MyApp extends StatelessWidget {
       ),
       home:
      //HomePageView(),
-      SplashView(),
-     // PrivacyPolicy(title: 'Privacy Policy',),
+     // AdminPageView(),
+    SplashView(),
+   // PrivacyPolicy(title: 'Privacy Policy',),
     );
   }
 }

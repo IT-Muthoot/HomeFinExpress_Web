@@ -65,6 +65,9 @@ class _DocumentPageViewState extends State<DocumentPageView> {
   bool? QueryStatus;
   String? QueryUpdatedByRO;
   String? TechnicalDocumentStatus;
+  String? selfieImageURl;
+  String? selfieCapturedDateTime;
+  String? LatLong;
 
 
   var docData;
@@ -104,6 +107,10 @@ class _DocumentPageViewState extends State<DocumentPageView> {
           QueryStatus = docData["isQuery"];
           QueryUpdatedByRO = docData["QueryBy"] ?? "";
           TechnicalDocumentStatus = docData["technicalStatus"] ?? "";
+          selfieImageURl = docData["selfie"];
+          selfieCapturedDateTime = docData["selfieDateTime"];
+          print("fhbhjfvf");
+          print(selfieImageURl);
 
 
           docData.forEach((key, value) {
@@ -124,7 +131,8 @@ class _DocumentPageViewState extends State<DocumentPageView> {
               "Signature_Proof",
               "Copy_Of_Property",
               "Total_Work_Experience",
-              "Qualification_Proof"
+              "Qualification_Proof",
+              "Bank_Statement",
             ].contains(key)) {
               filteredData[key] = value;
             }
@@ -941,6 +949,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                   "Copy_Of_Property",
                                   "Total_Work_Experience",
                                   "Qualification_Proof",
+                                  "Bank_Statement",
                                 ].contains(key)))
                                   Column(
                                     children: [
@@ -970,6 +979,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                               "Copy_Of_Property",
                                               "Total_Work_Experience",
                                               "Qualification_Proof",
+                                              "Bank_Statement",
                                             ].contains(doc['key']))
                                             .map((doc) {
                                           return TableRow(
@@ -1215,6 +1225,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                           ],
                                                         ),
 
+
                                                         // verifiedBy == 'Pending with CM' || verifiedBy == 'Verified'  ?
                                                         // Column(
                                                         //   children: [
@@ -1285,6 +1296,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                                         enabled: !doc['isChecked'],
                                                       ),
                                                     ),
+
                                                   ],
                                                 ),
                                               ),
@@ -1294,7 +1306,14 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                       ),
                                     ],
                                   ),
-                              ],
+                                selfieImageURl != null
+                                    ? Image.network(
+                                  selfieImageURl!,
+                                  errorBuilder: (context, error, stackTrace) => Text('Failed to load image'),
+                                )
+                                    : CircularProgressIndicator(),
+
+    ],
                             ),
                           ),
                         ),
@@ -1304,8 +1323,6 @@ class _DocumentPageViewState extends State<DocumentPageView> {
 
                 ],
               ),
-
-
             ],
           ),
         ),

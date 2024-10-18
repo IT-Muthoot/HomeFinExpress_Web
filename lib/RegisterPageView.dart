@@ -82,14 +82,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
       setState(() {
         outputList1 =
             employeeList.where((o) => o['Reporting Manager Code'] == ReportingManagerCode.text).toList();
+        print(outputList1);
         ReportingManagerName.text = outputList1[0]['Reporting Manager Name'];
+        print(ReportingManagerName.text);
         branchcode.text = outputList1[0]['BRANCH CODE'];
         Designation = outputList1[0]['DSGN_NAME'];
         RegionName = outputList1[0]['REGION'];
         Zone = outputList1[0]['ZONE'];
       });
      // print("Output List " + outputList1.toString());
-
     });
   }
 
