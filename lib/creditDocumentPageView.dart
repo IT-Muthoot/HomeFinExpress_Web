@@ -112,7 +112,7 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
               "Copy_Of_Property",
               "Total_Work_Experience",
               "Qualification_Proof",
-              "Bank_Statement",
+              "Account_Aggregator_Bank_Statement",
             ].contains(key)) {
               filteredData[key] = value;
             }
@@ -733,7 +733,7 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
                                   "Copy_Of_Property",
                                   "Total_Work_Experience",
                                   "Qualification_Proof",
-                                  "Bank_Statement",
+                                  "Account_Aggregator_Bank_Statement",
                                 ].contains(key)))
                                   Column(
                                     children: [
@@ -763,7 +763,7 @@ class _CreditDocumentPageViewState extends State<CreditDocumentPageView> {
                                               "Copy_Of_Property",
                                               "Total_Work_Experience",
                                               "Qualification_Proof",
-                                              "Bank_Statement",
+                                              "Account_Aggregator_Bank_Statement",
                                             ].contains(doc['key']))
                                             .map((doc) {
                                           return TableRow(

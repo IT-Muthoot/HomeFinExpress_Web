@@ -132,7 +132,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
               "Copy_Of_Property",
               "Total_Work_Experience",
               "Qualification_Proof",
-              "Bank_Statement",
+              "Account_Aggregator_Bank_Statement",
             ].contains(key)) {
               filteredData[key] = value;
             }
@@ -949,7 +949,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                   "Copy_Of_Property",
                                   "Total_Work_Experience",
                                   "Qualification_Proof",
-                                  "Bank_Statement",
+                                  "Account_Aggregator_Bank_Statement",
                                 ].contains(key)))
                                   Column(
                                     children: [
@@ -979,7 +979,7 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                               "Copy_Of_Property",
                                               "Total_Work_Experience",
                                               "Qualification_Proof",
-                                              "Bank_Statement",
+                                              "Account_Aggregator_Bank_Statement",
                                             ].contains(doc['key']))
                                             .map((doc) {
                                           return TableRow(
@@ -1306,12 +1306,12 @@ class _DocumentPageViewState extends State<DocumentPageView> {
                                       ),
                                     ],
                                   ),
-                                selfieImageURl != null
-                                    ? Image.network(
-                                  selfieImageURl!,
-                                  errorBuilder: (context, error, stackTrace) => Text('Failed to load image'),
-                                )
-                                    : CircularProgressIndicator(),
+                                // selfieImageURl != null
+                                //     ? Image.network(
+                                //   selfieImageURl!,
+                                //   errorBuilder: (context, error, stackTrace) => Text('Failed to load image'),
+                                // )
+                                //     : CircularProgressIndicator(),
 
     ],
                             ),
