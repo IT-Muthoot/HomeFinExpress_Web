@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: StyleData.appBarColor,
-        title: Center(child: Text('HomeFin Express',style: TextStyle(color: StyleData.appBarColor3,fontSize: 25),)),
+        title: Center(child: Text('Homefin Express',style: TextStyle(color: StyleData.appBarColor3,fontSize: 25),)),
 
       ),
       body: Center(
