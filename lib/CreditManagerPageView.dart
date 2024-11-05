@@ -1092,6 +1092,7 @@ class _CreditManagerPageViewState extends State<CreditManagerPageView> {
                                                   docId =
                                                   "$docId,${data['Signature_Proof'].toString()}";
                                                 }
+
                                                 data.forEach((key, value) {
                                                   List<String> parts = key.split("-");
                                                   if (parts.isNotEmpty && parts.last == "checklist") {
